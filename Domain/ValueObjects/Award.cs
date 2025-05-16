@@ -1,6 +1,5 @@
 ﻿using Domain.SeedWork;
 using Domain.SeedWork.Validation;
-using System.ComponentModel.DataAnnotations;
 
 namespace Domain.ValueObjects
 {
