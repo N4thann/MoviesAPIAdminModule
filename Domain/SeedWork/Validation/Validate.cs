@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-
-namespace Domain.SeedWork.Validation
+﻿namespace Domain.SeedWork.Validation
 {
     public static class Validate
     {
@@ -84,3 +81,4 @@ namespace Domain.SeedWork.Validation
             }
         }
     }
+}
