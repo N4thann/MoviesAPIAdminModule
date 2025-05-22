@@ -26,6 +26,19 @@
           }
         }
       },
+      "Serilog/4.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Serilog.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Serilog.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore/6.6.2": {
         "type": "package",
         "dependencies": {
@@ -338,6 +351,31 @@
         "microsoft.openapi.nuspec"
       ]
     },
+    "Serilog/4.2.0": {
+      "sha512": "gmoWVOvKgbME8TYR+gwMf7osROiWAURterc6Rt2dQyX7wtjZYpqFiA/pY6ztjGQKKV62GGCyOcmtP1UKMHgSmA==",
+      "type": "package",
+      "path": "serilog/4.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "icon.png",
+        "lib/net462/Serilog.dll",
+        "lib/net462/Serilog.xml",
+        "lib/net471/Serilog.dll",
+        "lib/net471/Serilog.xml",
+        "lib/net6.0/Serilog.dll",
+        "lib/net6.0/Serilog.xml",
+        "lib/net8.0/Serilog.dll",
+        "lib/net8.0/Serilog.xml",
+        "lib/net9.0/Serilog.dll",
+        "lib/net9.0/Serilog.xml",
+        "lib/netstandard2.0/Serilog.dll",
+        "lib/netstandard2.0/Serilog.xml",
+        "serilog.4.2.0.nupkg.sha512",
+        "serilog.nuspec"
+      ]
+    },
     "Swashbuckle.AspNetCore/6.6.2": {
       "sha512": "+NB4UYVYN6AhDSjW0IJAd1AGD8V33gemFNLPaxKTtPkHB+HaKAKf9MGAEUPivEWvqeQfcKIw8lJaHq6LHljRuw==",
       "type": "package",
@@ -443,6 +481,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Serilog >= 4.2.0",
       "Swashbuckle.AspNetCore >= 6.6.2"
     ]
   },
@@ -452,11 +491,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Windows 10\\source\\repos\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj",
+      "projectUniqueName": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj",
       "projectName": "MoviesAPIAdminModule",
-      "projectPath": "C:\\Users\\Windows 10\\source\\repos\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj",
+      "projectPath": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj",
       "packagesPath": "C:\\Users\\Windows 10\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Windows 10\\source\\repos\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\obj\\",
+      "outputPath": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Windows 10\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -491,6 +530,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Serilog": {
+            "target": "Package",
+            "version": "[4.2.0, )"
+          },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[6.6.2, )"

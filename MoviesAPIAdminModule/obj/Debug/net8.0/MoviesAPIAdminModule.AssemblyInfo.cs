@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MoviesAPIAdminModule")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+11538cd31ae1bb2446160a722099eea0712057bb")]
 [assembly: System.Reflection.AssemblyProductAttribute("MoviesAPIAdminModule")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MoviesAPIAdminModule")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "nUZBf/AVtzE=",
+  "dgSpecHash": "wH/kXvnwJXo=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Windows 10\\source\\repos\\MoviesAPIAdminModule\\Application\\Application.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Windows 10\\.nuget\\packages\\serilog\\4.2.0\\serilog.4.2.0.nupkg.sha512"
+  ],
   "logs": []
 }
