@@ -80,5 +80,14 @@
                 throw new ValidationException(parameterName, $"{parameterName} does not match the required pattern.");
             }
         }
+
+        public static void IsValidUrl(string value, string name)
+        {
+            if (!Uri.TryCreate(value, UriKind.Absolute, out Uri uri) ||
+                (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            {
+                throw new ArgumentException($"{name} must be a valid HTTP or HTTPS URL.", name);
+            }
+        }
     }
 }
