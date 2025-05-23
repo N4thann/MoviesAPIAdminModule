@@ -24,3 +24,11 @@ obj/
 
 # Application logs
 *.log
+
+# Cache files
+*.cache
+.dtbcache.v2
+
+# Assembly files
+*.AssemblyInfo.cs
+*.AssemblyInfoInputs.cache
