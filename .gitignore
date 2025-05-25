@@ -28,7 +28,16 @@ obj/
 # Cache files
 *.cache
 .dtbcache.v2
+.futdcache.v2
 
 # Assembly files
 *.AssemblyInfo.cs
 *.AssemblyInfoInputs.cache
+
+# JSON layout files
+DocumentLayout.json
+DocumentLayout.backup.json
+
+# Debug folders
+Debug/
+obj/Debug/
