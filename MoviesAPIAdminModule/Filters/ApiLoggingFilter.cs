@@ -5,7 +5,11 @@ namespace MoviesAPIAdminModule.Filters
     public class ApiLoggingFilter : IActionFilter
     {
         private readonly ILogger<ApiLoggingFilter> _logger;
-
+        /// <summary>
+        /// Foca em registrar o fluxo normal e anormal das requisições dentro do contexto das ações do controlador. 
+        /// É para monitoramento e diagnóstico de sucesso e falha.
+        /// </summary>
+        /// <param name="logger"></param>
         public ApiLoggingFilter(ILogger<ApiLoggingFilter> logger) => _logger = logger;
 
         void IActionFilter.OnActionExecuting(ActionExecutingContext context)

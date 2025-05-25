@@ -7,10 +7,9 @@ namespace MoviesAPIAdminModule.Extensions
     public static class ApiExceptionMiddleware
     {
         /// <summary>
-        /// Este filtro, que implementa IExceptionFilter, é projetado para capturar e tratar exceções não tratadas que 
-        /// ocorrem durante a execução de uma ação ou de outros filtros. Ele centraliza o tratamento de erros.Em vez de
-        /// adicionar blocos try-catch em cada método de ação, este filtro intercepta automaticamente as exceções. 
-        /// Isso segue o princípio DRY (Don't Repeat Yourself)
+        ///  É a solução de tratamento de exceções mais abrangente, capturando exceções em qualquer lugar no pipeline HTTP da sua aplicação. 
+        ///  É essencial para garantir que nenhuma exceção vaze para o cliente sem um tratamento adequado e uma resposta padronizada, 
+        ///  mesmo em middlewares anteriores ou falhas de inicialização.
         /// </summary>
         /// <param name="app"></param>
         public static void ConfigureExceptionHandler(this IApplicationBuilder app)
