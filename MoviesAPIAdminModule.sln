@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoviesAPIAdminModule", "MoviesAPIAdminModule\MoviesAPIAdminModule.csproj", "{66B65390-C7E0-408C-8F00-24C83AE3E12D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{864946D1-9240-4799-A2ED-52B04FEC85CD} = {864946D1-9240-4799-A2ED-52B04FEC85CD}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{B897C9E2-A669-44F6-9930-AD5AF5E7D2FB}"
 EndProject

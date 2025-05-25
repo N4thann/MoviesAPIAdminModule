@@ -20,7 +20,7 @@ namespace MoviesAPIAdminModule.Filters
 
         void IActionFilter.OnActionExecuted(ActionExecutedContext context)
         {
-            //executa antes do método Action
+            //executa depois do método Action
             _logger.LogInformation("### Executado -> OnActionExecuted");
             _logger.LogInformation("####################################");
             _logger.LogInformation($"{DateTime.Now.ToLongTimeString}");
@@ -29,3 +29,9 @@ namespace MoviesAPIAdminModule.Filters
         }
     }
 }
+/*Existem 5 tipos de filtros na asp.net core, authorization, resource, action, exception e result.
+ * São 2 abordagens, implementação síncrona e assíncrona. 
+ * Síncronos executam código antes e depois do estágio do pipeline definidos pelo os métodos
+ * OnActionExecuting e OnActionExecuted. Os filtros podem ser adicionados eo pipeline em um dos 
+ * tres escopos: Pelo método Action, pela a classe controlador ou Globalmente(é aplicado a todos os controladores e actions)
+ */

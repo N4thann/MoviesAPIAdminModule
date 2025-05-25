@@ -167,7 +167,7 @@ namespace Domain.Entities
         {
             Validate.Range(durationInMinutes, MIN_DURATION_MINUTES, MAX_DURATION_MINUTES, nameof(durationInMinutes));
 
-            Duration = durationInMinutes;
+            Duration = new Duration(durationInMinutes);
             UpdatedAt = DateTime.UtcNow;
         }
 
