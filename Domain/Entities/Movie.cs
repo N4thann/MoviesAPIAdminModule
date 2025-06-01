@@ -6,24 +6,23 @@ namespace Domain.Entities
 {
     public class Movie : BaseEntity
     {
-        // Constantes para validação
-        private const int MIN_RELEASE_YEAR = 1888; // Primeiro filme da história
+        private const int MIN_RELEASE_YEAR = 1888;
         private const int MAX_FUTURE_YEARS = 5;
         private const int MIN_DURATION_MINUTES = 1;
-        private const int MAX_DURATION_MINUTES = 600; // 10 horas
+        private const int MAX_DURATION_MINUTES = 600;
         private const int MAX_TITLE_LENGTH = 200;
         private const int MAX_SYNOPSIS_LENGTH = 2000;
+        private const int MAX_GALLERY_IMAGES = 4;
 
         private readonly List<Award> _awards;
         private readonly List<MovieImage> _images;
-        private readonly List<Director> _directors;
 
         protected Movie()
         {
             _awards = new List<Award>();
             _images = new List<MovieImage>();
-            _directors = new List<Director>();
         }
+
         public Movie(
             string title,
             string originalTitle,
@@ -31,18 +30,20 @@ namespace Domain.Entities
             int releaseYear,
             int durationInMinutes,
             Country country,
-            Studio studio) : this()
+            Studio studio,
+            Director director) : this()
         {
-            ValidateConstructorInputs(title ,originalTitle, synopsis, releaseYear, durationInMinutes, country, studio);
+            ValidateConstructorInputs(title ,originalTitle, synopsis, releaseYear, durationInMinutes, country, studio, director);
 
             Name = title.Trim();
             OriginalTitle = string.IsNullOrWhiteSpace(originalTitle) ? title.Trim() : originalTitle.Trim();
             Synopsis = synopsis.Trim();
             ReleaseYear = releaseYear;
-            Duration = new Duration(durationInMinutes);//Verificar se as demais variáveis são atribuídas
+            Duration = new Duration(durationInMinutes);
             Country = country;
             Studio = studio;
-            Rating = Rating.CreateEmpty(10); // Escala de 1-10 para votos dos clientes
+            Director = director;
+            Rating = Rating.CreateEmpty(10);
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
             IsActive = true;
@@ -55,6 +56,7 @@ namespace Domain.Entities
         public Duration Duration { get; private set; }
         public Country Country { get; private set; }
         public Studio Studio { get; private set; }
+        public Director Director { get; private set; }
         public Rating Rating { get; private set; }
         public Money? BoxOffice { get; private set; }
         public Money? Budget { get; private set; }
@@ -64,20 +66,18 @@ namespace Domain.Entities
         public DateTime UpdatedAt { get; private set; }
         public bool IsActive { get; private set; }
 
-        // Coleções somente leitura (virtual para EF Core)
-        public virtual ICollection<Award> Awards => _awards;
-        public virtual ICollection<MovieImage> Images => _images;
-        public IReadOnlyCollection<Director> Directors => _directors.AsReadOnly();
+        public IReadOnlyCollection<Award> Awards => _awards.AsReadOnly();
+        public IReadOnlyCollection<MovieImage> Images => _images.AsReadOnly();
 
         // Propriedades calculadas para imagens
         public MovieImage? Poster => _images.FirstOrDefault(img => img.Type == MovieImage.ImageType.Poster);
-        public IEnumerable<MovieImage> GalleryImages => _images.Where(img => img.Type == MovieImage.ImageType.Gallery);
         public MovieImage? Thumbnail => _images.FirstOrDefault(img => img.Type == MovieImage.ImageType.Thumbnail);
+        public IEnumerable<MovieImage> GalleryImages => _images.Where(img => img.Type == MovieImage.ImageType.Gallery);
 
         // Outras propriedades calculadas
-        public bool HasAwards => _awards.Any();
-        public bool HasImages => _images.Any();
         public bool HasPoster => Poster != null;
+        public bool HasThumbnail => Thumbnail != null;
+        public int GalleryImagesCount => GalleryImages.Count();
 
         #region Métodos de Validação
 
@@ -88,7 +88,8 @@ namespace Domain.Entities
             int releaseYear,
             int duration,
             Country country,
-            Studio studio)
+            Studio studio,
+            Director director)
         {
             // Validação do título
             Validate.NotNullOrEmpty(title, nameof(title));
@@ -114,6 +115,7 @@ namespace Domain.Entities
             // Validação de objetos obrigatórios
             Validate.NotNull(country, nameof(country));
             Validate.NotNull(studio, nameof(studio));
+            Validate.NotNull(director, nameof(director));
         }
 
         private static void ValidateBasicInfoUpdate(string title, string originalTitle, string synopsis)
@@ -185,37 +187,6 @@ namespace Domain.Entities
 
         #endregion
 
-        #region Métodos de Negócio - Diretores
-
-        /// <summary>
-        /// Adiciona um diretor ao filme
-        /// </summary>
-        public void AddDirector(Director director)
-        {
-            Validate.NotNull(director, nameof(director));
-
-            if (_directors.Any(d => d.Id == director.Id))
-                throw new InvalidOperationException("Director already exists for this movie");
-
-            _directors.Add(director);
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        /// <summary>
-        /// Remove um diretor do filme
-        /// </summary>
-        public void RemoveDirector(Guid directorId)
-        {
-            var director = _directors.FirstOrDefault(d => d.Id == directorId);
-            if (director == null)
-                throw new InvalidOperationException("Director not found for this movie");
-
-            _directors.Remove(director);
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        #endregion
-
         #region Métodos de Negócio - Prêmios
 
         /// <summary>
@@ -226,7 +197,7 @@ namespace Domain.Entities
             Validate.NotNull(award, nameof(award));
 
             if (_awards.Contains(award))
-                throw new InvalidOperationException("This award already exists for this movie");
+                throw new InvalidOperationException("Filme já possui este prêmio neste ano");
 
             _awards.Add(award);
             UpdatedAt = DateTime.UtcNow;
@@ -240,7 +211,7 @@ namespace Domain.Entities
             Validate.NotNull(award, nameof(award));
 
             if (!_awards.Remove(award))
-                throw new InvalidOperationException("Award not found for this movie");
+                throw new InvalidOperationException("Prêmio não encontrado para esse filme");
 
             UpdatedAt = DateTime.UtcNow;
         }
@@ -259,64 +230,100 @@ namespace Domain.Entities
         #region Métodos de Negócio - Imagens
 
         /// <summary>
-        /// Adiciona uma imagem ao filme
+        /// Define o poster do filme (apenas um permitido)
         /// </summary>
-        public void AddImage(MovieImage image)
+        public void SetPoster(MovieImage poster)
         {
-            Validate.NotNull(image, nameof(image));
+            Validate.NotNull(poster, nameof(poster));
 
-            // Se é um poster e já existe um, remove o anterior
-            if (image.Type == MovieImage.ImageType.Poster && HasPoster)
-            {
-                var existingPoster = Poster;
+            if (poster.Type != MovieImage.ImageType.Poster)
+                throw new InvalidOperationException("Imagem deve ser do tipo Poster");
+
+            // Remove poster existente
+            var existingPoster = Poster;
+            if (existingPoster != null)
                 _images.Remove(existingPoster);
+
+            // Adiciona novo poster
+            _images.Add(poster);
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Define o thumbnail do filme (apenas um permitido)
+        /// </summary>
+        public void SetThumbnail(MovieImage thumbnail)
+        {
+            Validate.NotNull(thumbnail, nameof(thumbnail));
+
+            if (thumbnail.Type != MovieImage.ImageType.Thumbnail)
+                throw new InvalidOperationException("Imagem deve ser do tipo Thumbnail");
+
+            // Remove thumbnail existente
+            var existingThumbnail = Thumbnail;
+            if (existingThumbnail != null)
+                _images.Remove(existingThumbnail);
+
+            // Adiciona novo thumbnail
+            _images.Add(thumbnail);
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Adiciona imagem à galeria (máximo 4)
+        /// </summary>
+        public void AddGalleryImage(MovieImage galleryImage)
+        {
+            Validate.NotNull(galleryImage, nameof(galleryImage));
+
+            if (galleryImage.Type != MovieImage.ImageType.Gallery)
+                throw new InvalidOperationException("Imagem deve ser do tipo Gallery");
+
+            if (GalleryImagesCount >= MAX_GALLERY_IMAGES)
+                throw new InvalidOperationException($"Máximo de {MAX_GALLERY_IMAGES} imagens na galeria permitido");
+
+            _images.Add(galleryImage);
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Remove imagem da galeria
+        /// </summary>
+        public void RemoveGalleryImage(MovieImage galleryImage)
+        {
+            Validate.NotNull(galleryImage, nameof(galleryImage));
+
+            if (galleryImage.Type != MovieImage.ImageType.Gallery)
+                throw new InvalidOperationException("Apenas imagens de galeria podem ser removidas por este método");
+
+            _images.Remove(galleryImage);
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Remove o poster atual
+        /// </summary>
+        public void RemovePoster()
+        {
+            var poster = Poster;
+            if (poster != null)
+            {
+                _images.Remove(poster);
+                UpdatedAt = DateTime.UtcNow;
             }
-
-            _images.Add(image);
-            UpdatedAt = DateTime.UtcNow;
         }
 
         /// <summary>
-        /// Remove uma imagem do filme
+        /// Remove o thumbnail atual
         /// </summary>
-        public void RemoveImage(MovieImage image)
+        public void RemoveThumbnail()
         {
-            Validate.NotNull(image, nameof(image));
-
-            if (!_images.Remove(image))
-                throw new InvalidOperationException("Image not found for this movie");
-
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        /// <summary>
-        /// Define o poster do filme
-        /// </summary>
-        public void SetPoster(string url, string altText = null)
-        {
-            Validate.NotNullOrEmpty(url, nameof(url));
-            var posterImage = MovieImage.CreatePoster(url, altText);
-            AddImage(posterImage);
-        }
-
-        /// <summary>
-        /// Adiciona uma imagem à galeria
-        /// </summary>
-        public void AddGalleryImage(string url, string altText = null)
-        {
-            Validate.NotNullOrEmpty(url, nameof(url));
-            var galleryImage = MovieImage.CreateGallery(url, altText);
-            AddImage(galleryImage);
-        }
-
-        /// <summary>
-        /// Define a thumbnail do filme
-        /// </summary>
-        public void SetThumbnail(string url, string altText = null)
-        {
-            Validate.NotNullOrEmpty(url, nameof(url));
-            var thumbnailImage = MovieImage.CreateThumbnail(url, altText);
-            AddImage(thumbnailImage);
+            var thumbnail = Thumbnail;
+            if (thumbnail != null)
+            {
+                _images.Remove(thumbnail);
+                UpdatedAt = DateTime.UtcNow;
+            }
         }
 
         #endregion
