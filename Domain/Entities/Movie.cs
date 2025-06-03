@@ -1,10 +1,11 @@
-﻿using Domain.SeedWork.Validation;
+﻿using Domain.SeedWork;
+using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
 
 namespace Domain.Entities
 {
-    public class Movie : BaseEntity
+    public class Movie : BaseEntity, IAggregateRoot
     {
         private const int MIN_RELEASE_YEAR = 1888;
         private const int MAX_FUTURE_YEARS = 5;

@@ -1,11 +1,12 @@
-﻿using Domain.SeedWork.Validation;
+﻿using Domain.SeedWork;
+using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
 
 namespace Domain.Entities
 {
 
-    public class Director : BaseEntity
+    public class Director : BaseEntity, IAggregateRoot
     {
         private const int MAX_BIO_LENGTH = 1000;
 
