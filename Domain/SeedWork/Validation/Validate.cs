@@ -18,6 +18,25 @@
             }
         }
 
+        public static void IsPastDate(DateTime date, string parameterName, bool allowToday = false)
+        {
+            DateTime now = DateTime.UtcNow.Date;
+            if (allowToday)
+            {
+                if (date.Date > now)
+                {
+                    throw new ValidationException(parameterName, $"{parameterName} cannot be a future date.");
+                }
+            }
+            else
+            {
+                if (date.Date >= now)
+                {
+                    throw new ValidationException(parameterName, $"{parameterName} must be a past date.");
+                }
+            }
+        }
+
         public static void GreaterThan(int value, int minimum, string parameterName)
         {
             if (value <= minimum)

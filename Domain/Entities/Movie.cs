@@ -31,9 +31,10 @@ namespace Domain.Entities
             int durationInMinutes,
             Country country,
             Studio studio,
-            Director director) : this()
+            Director director,
+            Genre genre) : this()
         {
-            ValidateConstructorInputs(title ,originalTitle, synopsis, releaseYear, durationInMinutes, country, studio, director);
+            ValidateConstructorInputs(title ,originalTitle, synopsis, releaseYear, durationInMinutes, country, studio, director, genre);
 
             Name = title.Trim();
             OriginalTitle = string.IsNullOrWhiteSpace(originalTitle) ? title.Trim() : originalTitle.Trim();
@@ -43,6 +44,7 @@ namespace Domain.Entities
             Country = country;
             Studio = studio;
             Director = director;
+            Genre = genre;
             Rating = Rating.CreateEmpty(10);
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
@@ -57,6 +59,7 @@ namespace Domain.Entities
         public Country Country { get; private set; }
         public Studio Studio { get; private set; }
         public Director Director { get; private set; }
+        public Genre Genre { get; private set; }
         public Rating Rating { get; private set; }
         public Money? BoxOffice { get; private set; }
         public Money? Budget { get; private set; }
@@ -80,7 +83,6 @@ namespace Domain.Entities
         public int GalleryImagesCount => GalleryImages.Count();
 
         #region Métodos de Validação
-
         private static void ValidateConstructorInputs(
             string title,
             string originalTitle,
@@ -89,7 +91,8 @@ namespace Domain.Entities
             int duration,
             Country country,
             Studio studio,
-            Director director)
+            Director director,
+            Genre genre)
         {
             // Validação do título
             Validate.NotNullOrEmpty(title, nameof(title));
@@ -116,6 +119,7 @@ namespace Domain.Entities
             Validate.NotNull(country, nameof(country));
             Validate.NotNull(studio, nameof(studio));
             Validate.NotNull(director, nameof(director));
+            Validate.NotNull(genre, nameof(genre));
         }
 
         private static void ValidateBasicInfoUpdate(string title, string originalTitle, string synopsis)
@@ -136,9 +140,6 @@ namespace Domain.Entities
 
         #region Métodos de Negócio - Informações Básicas
 
-        /// <summary>
-        /// Atualiza as informações básicas do filme
-        /// </summary>
         public void UpdateBasicInfo(string title, string originalTitle, string synopsis)
         {
             ValidateBasicInfoUpdate(title, originalTitle, synopsis);
@@ -149,9 +150,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Atualiza informações de produção
-        /// </summary>
         public void UpdateProductionInfo(Studio studio, Money? budget = null, Money? boxOffice = null)
         {
             Validate.NotNull(studio, nameof(studio));
@@ -162,9 +160,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Atualiza a duração do filme
-        /// </summary>
         public void UpdateDuration(int durationInMinutes)
         {
             Validate.Range(durationInMinutes, MIN_DURATION_MINUTES, MAX_DURATION_MINUTES, nameof(durationInMinutes));
@@ -173,9 +168,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Atualiza o ano de lançamento
-        /// </summary>
         public void UpdateReleaseYear(int releaseYear)
         {
             var maxYear = DateTime.UtcNow.Year + MAX_FUTURE_YEARS;
@@ -189,9 +181,6 @@ namespace Domain.Entities
 
         #region Métodos de Negócio - Prêmios
 
-        /// <summary>
-        /// Adiciona um prêmio ao filme
-        /// </summary>
         public void AddAward(Award award)
         {
             Validate.NotNull(award, nameof(award));
@@ -203,9 +192,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Remove um prêmio do filme
-        /// </summary>
         public void RemoveAward(Award award)
         {
             Validate.NotNull(award, nameof(award));
@@ -216,9 +202,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Verifica se o filme possui um tipo específico de prêmio
-        /// </summary>
         public bool HasAwardFromInstitution(string institution)
         {
             Validate.NotNullOrEmpty(institution, nameof(institution));
@@ -229,9 +212,6 @@ namespace Domain.Entities
 
         #region Métodos de Negócio - Imagens
 
-        /// <summary>
-        /// Define o poster do filme (apenas um permitido)
-        /// </summary>
         public void SetPoster(MovieImage poster)
         {
             Validate.NotNull(poster, nameof(poster));
@@ -249,9 +229,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Define o thumbnail do filme (apenas um permitido)
-        /// </summary>
         public void SetThumbnail(MovieImage thumbnail)
         {
             Validate.NotNull(thumbnail, nameof(thumbnail));
@@ -269,9 +246,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Adiciona imagem à galeria (máximo 4)
-        /// </summary>
         public void AddGalleryImage(MovieImage galleryImage)
         {
             Validate.NotNull(galleryImage, nameof(galleryImage));
@@ -286,9 +260,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Remove imagem da galeria
-        /// </summary>
         public void RemoveGalleryImage(MovieImage galleryImage)
         {
             Validate.NotNull(galleryImage, nameof(galleryImage));
@@ -300,9 +271,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Remove o poster atual
-        /// </summary>
         public void RemovePoster()
         {
             var poster = Poster;
@@ -313,9 +281,6 @@ namespace Domain.Entities
             }
         }
 
-        /// <summary>
-        /// Remove o thumbnail atual
-        /// </summary>
         public void RemoveThumbnail()
         {
             var thumbnail = Thumbnail;
@@ -330,10 +295,6 @@ namespace Domain.Entities
 
         #region Métodos de Negócio - Sistema de Avaliação (Rating)
 
-        /// <summary>
-        /// Processa um voto recebido do módulo Catalog via evento
-        /// Voto deve estar entre 1 e 10 (validado no Catalog)
-        /// </summary>
         public void ProcessRatingFromCatalog(decimal voteValue)
         {
             // Validação adicional no Admin por segurança
@@ -343,9 +304,6 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Remove uma avaliação específica (para correções administrativas)
-        /// </summary>
         public void RemoveRating(decimal voteValue)
         {
             Validate.Range((int)voteValue, 1, 10, nameof(voteValue));
@@ -357,18 +315,12 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Redefine todas as avaliações (para recálculos administrativos)
-        /// </summary>
         public void ResetRatings()
         {
             Rating = Rating.CreateEmpty(10);
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Atualiza o rating diretamente com valores calculados (para migrações/correções)
-        /// </summary>
         public void UpdateRatingDirectly(decimal totalSum, int votesCount)
         {
             Validate.GreaterThan(votesCount, -1, nameof(votesCount));
@@ -382,18 +334,12 @@ namespace Domain.Entities
 
         #region Métodos de Negócio - Status
 
-        /// <summary>
-        /// Ativa o filme
-        /// </summary>
         public void Activate()
         {
             IsActive = true;
             UpdatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Desativa o filme
-        /// </summary>
         public void Deactivate()
         {
             IsActive = false;
@@ -404,42 +350,28 @@ namespace Domain.Entities
 
         #region Métodos de Negócio - Regras Calculadas
 
-        /// <summary>
-        /// Verifica se o filme pode ser considerado um blockbuster
-        /// </summary>
         public bool IsBlockbuster()
         {
-            return BoxOffice?.Amount >= 100_000_000; // 100 milhões
+            return BoxOffice?.Amount >= 100_000_000; 
         }
 
-        /// <summary>
-        /// Verifica se o filme é bem avaliado
-        /// </summary>
         public bool IsWellRated(decimal threshold = 7.0m)
         {
             Validate.Range((int)threshold, 1, 10, nameof(threshold));
             return Rating.HasVotes && Rating.AverageValue >= threshold;
         }
 
-        /// <summary>
-        /// Verifica se é um filme clássico (mais de 30 anos)
-        /// </summary>
+
         public bool IsClassic()
         {
             return DateTime.UtcNow.Year - ReleaseYear >= 30;
         }
 
-        /// <summary>
-        /// Verifica se é um filme recente (últimos 3 anos)
-        /// </summary>
         public bool IsRecent()
         {
             return DateTime.UtcNow.Year - ReleaseYear <= 3;
         }
 
-        /// <summary>
-        /// Verifica se o filme teve lucro
-        /// </summary>
         public bool WasProfitable()
         {
             return Budget != null && BoxOffice != null &&
@@ -447,9 +379,6 @@ namespace Domain.Entities
                    BoxOffice.Amount > Budget.Amount;
         }
 
-        /// <summary>
-        /// Verifica se é um filme longo (mais de 150 minutos)
-        /// </summary>
         public bool IsLongMovie()
         {
             return Duration.Minutes > 150;
