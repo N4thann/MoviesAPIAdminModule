@@ -13,7 +13,7 @@ namespace Domain.Entities
 
         public Studio(string name, Country country, DateTime foundationDate, string? history = null) : this() 
         {
-            ValidateConstructorInputs(name, history, country, foundationDate);
+            ValidateConstructorInputs(name, country, foundationDate, history);
 
             Name = name.Trim();
             Country = country;
@@ -39,10 +39,10 @@ namespace Domain.Entities
         #region Métodos de Validação
 
         private static void ValidateConstructorInputs(
-            string name,
-            string? history,
+            string name,           
             Country country,
-            DateTime foundationDate
+            DateTime foundationDate,
+            string? history
             )
         {
             Validate.NotNullOrEmpty(name, nameof(name));
