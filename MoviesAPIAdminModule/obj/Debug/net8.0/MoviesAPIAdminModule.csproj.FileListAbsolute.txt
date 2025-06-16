@@ -1,0 +1,48 @@
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\appsettings.Development.json
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\appsettings.json
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\MoviesAPIAdminModule.exe
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\MoviesAPIAdminModule.deps.json
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\MoviesAPIAdminModule.runtimeconfig.json
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\MoviesAPIAdminModule.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\MoviesAPIAdminModule.pdb
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\Serilog.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.csproj.AssemblyReference.cache
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.GeneratedMSBuildEditorConfig.editorconfig
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.AssemblyInfoInputs.cache
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.AssemblyInfo.cs
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.csproj.CoreCompileInputs.cache
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.MvcApplicationPartsAssemblyInfo.cs
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.MvcApplicationPartsAssemblyInfo.cache
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.sourcelink.json
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\staticwebassets.build.json
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\staticwebassets.development.json
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\staticwebassets\msbuild.MoviesAPIAdminModule.Microsoft.AspNetCore.StaticWebAssets.props
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\staticwebassets\msbuild.build.MoviesAPIAdminModule.props
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.MoviesAPIAdminModule.props
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.MoviesAPIAdminModule.props
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\staticwebassets.pack.json
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\scopedcss\bundle\MoviesAPIAdminModule.styles.css
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAP.7A685A06.Up2Date
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\refint\MoviesAPIAdminModule.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.pdb
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.genruntimeconfig.cache
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\ref\MoviesAPIAdminModule.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\Application.dll
+D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\bin\Debug\net8.0\Application.pdb
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.csproj.AssemblyReference.cache
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.AssemblyInfoInputs.cache
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.AssemblyInfo.cs
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.csproj.CoreCompileInputs.cache
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.sourcelink.json
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.dll
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\refint\MoviesAPIAdminModule.dll
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.pdb
