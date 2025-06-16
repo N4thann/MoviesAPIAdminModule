@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj": {}
+    "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj": {}
   },
   "projects": {
-    "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj": {
+    "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj",
+        "projectUniqueName": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj",
-        "packagesPath": "C:\\Users\\Windows 10\\.nuget\\packages\\",
-        "outputPath": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\obj\\",
+        "projectPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj",
+        "packagesPath": "C:\\Users\\Nathan Farias\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Windows 10\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Nathan Farias\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -40,12 +44,17 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
             "Serilog": {
               "target": "Package",
               "version": "[4.2.0, )"
@@ -67,21 +76,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj": {
+    "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Infraestructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj",
-        "projectName": "MoviesAPIAdminModule",
-        "projectPath": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj",
-        "packagesPath": "C:\\Users\\Windows 10\\.nuget\\packages\\",
-        "outputPath": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\obj\\",
+        "projectUniqueName": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Infraestructure.csproj",
+        "projectName": "Infraestructure",
+        "projectPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Infraestructure.csproj",
+        "packagesPath": "C:\\Users\\Nathan Farias\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Windows 10\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Nathan Farias\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -96,8 +109,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj": {
-                "projectPath": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj"
+              "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj": {
+                "projectPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj"
               }
             }
           }
@@ -111,12 +124,100 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj",
+        "projectName": "MoviesAPIAdminModule",
+        "projectPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj",
+        "packagesPath": "C:\\Users\\Nathan Farias\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Nathan Farias\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj": {
+                "projectPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\Application.csproj"
+              },
+              "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Infraestructure.csproj": {
+                "projectPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Infraestructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
             "Serilog": {
               "target": "Package",
               "version": "[4.2.0, )"
@@ -145,7 +246,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

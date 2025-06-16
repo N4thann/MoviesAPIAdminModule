@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "YOwZrYc0mks=",
+  "dgSpecHash": "ceVEmy5nmCc=",
   "success": true,
-  "projectFilePath": "D:\\NATHAN\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Infraestructure.csproj",
+  "projectFilePath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Infraestructure.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Windows 10\\.nuget\\packages\\serilog\\4.2.0\\serilog.4.2.0.nupkg.sha512"
+    "C:\\Users\\Nathan Farias\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.5\\microsoft.extensions.dependencyinjection.abstractions.9.0.5.nupkg.sha512",
+    "C:\\Users\\Nathan Farias\\.nuget\\packages\\serilog\\4.2.0\\serilog.4.2.0.nupkg.sha512"
   ],
   "logs": []
 }
