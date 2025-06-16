@@ -1,4 +1,4 @@
-﻿using Domain.SeedWork;
+﻿using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
