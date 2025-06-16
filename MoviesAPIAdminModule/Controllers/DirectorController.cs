@@ -1,12 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MoviesAPIAdminModule.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class DirectorController : Controller
     {
-        public IActionResult Index()
+        private readonly IMediator _mediator;
+        public DirectorController(IMediator mediator) => _mediator = mediator;
+        
+        public async Task<IActionResult> CreateDirector()
         {
-            return View();
-        }
+
+        } 
     }
 }
