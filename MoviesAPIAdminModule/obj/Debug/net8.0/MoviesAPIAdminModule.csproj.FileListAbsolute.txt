@@ -43,6 +43,3 @@ C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdm
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.sourcelink.json
-C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.dll
-C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\refint\MoviesAPIAdminModule.dll
-C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\MoviesAPIAdminModule\obj\Debug\net8.0\MoviesAPIAdminModule.pdb

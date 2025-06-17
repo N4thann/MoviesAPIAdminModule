@@ -3,24 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|c:\\users\\nathan farias\\documents\\projetos .net\\moviesapiadminmodule\\infraestructure\\persistence\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|solutionrelative:infraestructure\\persistence\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|c:\\users\\nathan farias\\documents\\projetos .net\\moviesapiadminmodule\\infraestructure\\entitiesconfigurations\\studioconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|solutionrelative:infraestructure\\entitiesconfigurations\\studioconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|c:\\users\\nathan farias\\documents\\projetos .net\\moviesapiadminmodule\\infraestructure\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|solutionrelative:infraestructure\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|c:\\users\\nathan farias\\documents\\projetos .net\\moviesapiadminmodule\\infraestructure\\entitiesconfigurations\\directorconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|solutionrelative:infraestructure\\entitiesconfigurations\\directorconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{66B65390-C7E0-408C-8F00-24C83AE3E12D}|MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj|c:\\users\\nathan farias\\documents\\projetos .net\\moviesapiadminmodule\\moviesapiadminmodule\\controllers\\directorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66B65390-C7E0-408C-8F00-24C83AE3E12D}|MoviesAPIAdminModule\\MoviesAPIAdminModule.csproj|solutionrelative:moviesapiadminmodule\\controllers\\directorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{864946D1-9240-4799-A2ED-52B04FEC85CD}|Application\\Application.csproj|c:\\users\\nathan farias\\documents\\projetos .net\\moviesapiadminmodule\\application\\dtos\\response\\director\\directorinforesponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{864946D1-9240-4799-A2ED-52B04FEC85CD}|Application\\Application.csproj|solutionrelative:application\\dtos\\response\\director\\directorinforesponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B897C9E2-A669-44F6-9930-AD5AF5E7D2FB}|Domain\\Domain.csproj|c:\\users\\nathan farias\\documents\\projetos .net\\moviesapiadminmodule\\domain\\valueobjects\\country.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B897C9E2-A669-44F6-9930-AD5AF5E7D2FB}|Domain\\Domain.csproj|solutionrelative:domain\\valueobjects\\country.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|c:\\users\\nathan farias\\documents\\projetos .net\\moviesapiadminmodule\\infraestructure\\entitiesconfigurations\\baseentityconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FB1F98AF-91A3-4BEE-8806-4656E47E2196}|Infraestructure\\Infraestructure.csproj|solutionrelative:infraestructure\\entitiesconfigurations\\baseentityconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 882,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,67 +42,41 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Context\\ApplicationDbContext.cs",
-              "RelativeDocumentMoniker": "Infraestructure\\Context\\ApplicationDbContext.cs",
-              "ToolTip": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Context\\ApplicationDbContext.cs",
-              "RelativeToolTip": "Infraestructure\\Context\\ApplicationDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-16T17:01:19.679Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "UnitOfWork.cs",
-              "DocumentMoniker": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Persistence\\UnitOfWork.cs",
-              "RelativeDocumentMoniker": "Infraestructure\\Persistence\\UnitOfWork.cs",
-              "ToolTip": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\Persistence\\UnitOfWork.cs",
-              "RelativeToolTip": "Infraestructure\\Persistence\\UnitOfWork.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Title": "StudioConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\EntitiesConfigurations\\StudioConfiguration.cs",
+              "RelativeDocumentMoniker": "Infraestructure\\EntitiesConfigurations\\StudioConfiguration.cs",
+              "ToolTip": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\EntitiesConfigurations\\StudioConfiguration.cs",
+              "RelativeToolTip": "Infraestructure\\EntitiesConfigurations\\StudioConfiguration.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAxwCUAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-16T16:57:31.084Z",
+              "WhenOpened": "2025-06-17T19:43:56.245Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Country.cs",
-              "DocumentMoniker": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Domain\\ValueObjects\\Country.cs",
-              "RelativeDocumentMoniker": "Domain\\ValueObjects\\Country.cs",
-              "ToolTip": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Domain\\ValueObjects\\Country.cs",
-              "RelativeToolTip": "Domain\\ValueObjects\\Country.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAA6wCQAAAA+AAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "DirectorConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\EntitiesConfigurations\\DirectorConfiguration.cs",
+              "RelativeDocumentMoniker": "Infraestructure\\EntitiesConfigurations\\DirectorConfiguration.cs",
+              "ToolTip": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\EntitiesConfigurations\\DirectorConfiguration.cs",
+              "RelativeToolTip": "Infraestructure\\EntitiesConfigurations\\DirectorConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-16T14:28:03.605Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "DirectorInfoResponse.cs",
-              "DocumentMoniker": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\DTOs\\Response\\Director\\DirectorInfoResponse.cs",
-              "RelativeDocumentMoniker": "Application\\DTOs\\Response\\Director\\DirectorInfoResponse.cs",
-              "ToolTip": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Application\\DTOs\\Response\\Director\\DirectorInfoResponse.cs",
-              "RelativeToolTip": "Application\\DTOs\\Response\\Director\\DirectorInfoResponse.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-16T14:15:58.206Z",
+              "WhenOpened": "2025-06-17T14:44:53.035Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "DirectorController.cs",
-              "DocumentMoniker": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\Controllers\\DirectorController.cs",
-              "RelativeDocumentMoniker": "MoviesAPIAdminModule\\Controllers\\DirectorController.cs",
-              "ToolTip": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\MoviesAPIAdminModule\\Controllers\\DirectorController.cs",
-              "RelativeToolTip": "MoviesAPIAdminModule\\Controllers\\DirectorController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Title": "BaseEntityConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\EntitiesConfigurations\\BaseEntityConfiguration.cs",
+              "RelativeDocumentMoniker": "Infraestructure\\EntitiesConfigurations\\BaseEntityConfiguration.cs",
+              "ToolTip": "C:\\Users\\Nathan Farias\\Documents\\PROJETOS .NET\\MoviesAPIAdminModule\\Infraestructure\\EntitiesConfigurations\\BaseEntityConfiguration.cs",
+              "RelativeToolTip": "Infraestructure\\EntitiesConfigurations\\BaseEntityConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-16T14:14:35.942Z",
+              "WhenOpened": "2025-06-17T14:43:52.872Z",
               "EditorCaption": ""
             }
           ]

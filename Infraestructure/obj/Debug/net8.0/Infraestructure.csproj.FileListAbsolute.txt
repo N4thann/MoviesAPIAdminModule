@@ -11,12 +11,23 @@ D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\In
 D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\refint\Infraestructure.dll
 D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.pdb
 D:\NATHAN\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\ref\Infraestructure.dll
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\bin\Debug\net8.0\Infraestructure.deps.json
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\bin\Debug\net8.0\Infraestructure.runtimeconfig.json
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\bin\Debug\net8.0\Infraestructure.dll
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\bin\Debug\net8.0\Infraestructure.pdb
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\bin\Debug\net8.0\Application.dll
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\bin\Debug\net8.0\Domain.dll
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\bin\Debug\net8.0\Application.pdb
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\bin\Debug\net8.0\Domain.pdb
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.csproj.AssemblyReference.cache
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.AssemblyInfoInputs.cache
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.AssemblyInfo.cs
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.csproj.CoreCompileInputs.cache
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.sourcelink.json
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraest.B0D41582.Up2Date
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.dll
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\refint\Infraestructure.dll
 C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.pdb
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\Infraestructure.genruntimeconfig.cache
+C:\Users\Nathan Farias\Documents\PROJETOS .NET\MoviesAPIAdminModule\Infraestructure\obj\Debug\net8.0\ref\Infraestructure.dll
