@@ -35,9 +35,9 @@ namespace Domain.Entities
         public DateTime BirthDate { get; private set; }
         public Country Country { get; private set; } 
         public string? Biography { get; private set; }
-        public Gender Gender { get; private set; } 
+        public Gender Gender { get; private set; }
 
-
+        // Propriedades de controle
         public bool IsActive { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
@@ -45,11 +45,10 @@ namespace Domain.Entities
         // Propriedades calculadas
         public int Age => CalculateAge(BirthDate);
 
-
         public void UpdateBasicInfo(string name, string? biography = null, Gender gender = Gender.NotSpecified)
         {
             Validate.NotNullOrEmpty(name, nameof(name));
-            Validate.MaxLength(name, 50, nameof(name));
+            Validate.MaxLength(name, 100, nameof(name));
             if (!string.IsNullOrWhiteSpace(biography))
             {
                 Validate.MaxLength(biography, MAX_BIO_LENGTH, nameof(biography));

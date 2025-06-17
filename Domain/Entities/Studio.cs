@@ -24,6 +24,7 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
+        // Propriedades principais
         public Country Country { get; private set; }
         public DateTime FoundationDate { get; private set; }
         public string? History { get; private set; }
@@ -46,7 +47,7 @@ namespace Domain.Entities
             )
         {
             Validate.NotNullOrEmpty(name, nameof(name));
-            Validate.MaxLength(name, 50, nameof(name));
+            Validate.MaxLength(name, 100, nameof(name));
 
             Validate.NotNull(country, nameof(country));
 

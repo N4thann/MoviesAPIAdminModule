@@ -11,7 +11,7 @@ namespace Domain.Entities
         private const int MAX_FUTURE_YEARS = 5;
         private const int MIN_DURATION_MINUTES = 1;
         private const int MAX_DURATION_MINUTES = 600;
-        private const int MAX_TITLE_LENGTH = 200;
+        private const int MAX_TITLE_LENGTH = 100;
         private const int MAX_SYNOPSIS_LENGTH = 2000;
         private const int MAX_GALLERY_IMAGES = 4;
 

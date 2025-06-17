@@ -14,9 +14,10 @@ namespace Domain.ValueObjects
 
            Minutes = minutes;   
         }
-
+        // Propriedade principal
         public int Minutes { get; private set; }
 
+        // Propriedades calculadas
         public int Hours => Minutes / 60;
         public int RemainingMinutes => Minutes % 60;
 
