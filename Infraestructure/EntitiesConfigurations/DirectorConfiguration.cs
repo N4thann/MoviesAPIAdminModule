@@ -6,9 +6,11 @@ namespace Infraestructure.EntitiesConfigurations
 {
     public class DirectorConfiguration : BaseEntityConfiguration<Director>
     {
-        public override void Configure(EntityTypeBuilder<Director> builder)
+        protected override void AppendConfig(EntityTypeBuilder<Director> builder)
         {
             base.Configure(builder);
+
+            builder.ToTable("Director");
 
             builder.Property(d => d.Biography)
                 .HasMaxLength(1000);

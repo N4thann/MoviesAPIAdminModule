@@ -6,9 +6,11 @@ namespace Infraestructure.EntitiesConfigurations
 {
     public class MovieConfiguration : BaseEntityConfiguration<Movie>
     {
-        public override void Configure(EntityTypeBuilder<Movie> builder)
+        protected override void AppendConfig(EntityTypeBuilder<Movie> builder)
         {
-            base.Configure(builder); 
+            base.Configure(builder);
+
+            builder.ToTable("Movie");
 
             builder.Property(m => m.OriginalTitle)
                    .HasMaxLength(200)

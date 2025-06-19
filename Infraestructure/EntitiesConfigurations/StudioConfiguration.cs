@@ -6,9 +6,11 @@ namespace Infraestructure.EntitiesConfigurations
 {
     public class StudioConfiguration : BaseEntityConfiguration<Studio>
     {
-        public override void Configure(EntityTypeBuilder<Studio> builder)
+        protected override void AppendConfig(EntityTypeBuilder<Studio> builder)
         {
             base.Configure(builder);
+
+            builder.ToTable("Studio");
 
             builder.Property(s => s.History)
                 .HasMaxLength(2000);

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Entities;
+using Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructure.Context
 {
@@ -7,6 +9,10 @@ namespace Infraestructure.Context
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
         {
         }
+
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Director> Directors { get; set; }
+        public DbSet<Award> Awards { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
