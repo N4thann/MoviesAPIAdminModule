@@ -8,8 +8,6 @@ namespace Infraestructure.EntitiesConfigurations
     {
         protected override void AppendConfig(EntityTypeBuilder<Studio> builder)
         {
-            base.Configure(builder);
-
             builder.ToTable("Studio");
 
             builder.Property(s => s.History)

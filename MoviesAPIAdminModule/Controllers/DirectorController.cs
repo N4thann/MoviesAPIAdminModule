@@ -11,10 +11,10 @@ namespace MoviesAPIAdminModule.Controllers
         private readonly IMediator _mediator;
         public DirectorController(IMediator mediator) => _mediator = mediator;
 
-        [HttpPost]
-        public async Task<IActionResult> CreateDirector([FromBody] CreateDirectorRequest request, CancellationToken cancellationToken)
-        {
+        //[HttpPost]
+        //public async Task<IActionResult> CreateDirector([FromBody] CreateDirectorRequest request, CancellationToken cancellationToken)
+        //{
 
-        } 
+        //} 
     }
 }

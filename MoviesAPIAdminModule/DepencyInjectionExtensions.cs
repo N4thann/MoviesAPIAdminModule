@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
+using Infraestructure.Context;
 using Infraestructure.Mediator;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace MoviesAPIAdminModule
@@ -27,8 +29,12 @@ namespace MoviesAPIAdminModule
             return services;
         }
 
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
             return services;
         }
         // Métodos de extensão auxiliares para registrar handlers (implementados logo abaixo)

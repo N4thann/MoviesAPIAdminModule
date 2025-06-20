@@ -8,8 +8,6 @@ namespace Infraestructure.EntitiesConfigurations
     {
         protected override void AppendConfig(EntityTypeBuilder<Movie> builder)
         {
-            base.Configure(builder);
-
             builder.ToTable("Movie");
 
             builder.Property(m => m.OriginalTitle)
@@ -138,15 +136,14 @@ namespace Infraestructure.EntitiesConfigurations
             imageBuilder.WithOwner().HasForeignKey("MovieId"); // Chave estrangeira de volta para Movie
         });
 
-            // Relacionamentos com outras entidades (assuming they are separate entities and not owned types)
         builder.HasOne(m => m.Director)
                    .WithMany()
-                   .HasForeignKey(m => m.Director.Id) // Supondo que você mapeará a propriedade do Value Object
+                   .HasForeignKey(m => m.DirectorId) // Supondo que você mapeará a propriedade do Value Object
                    .IsRequired();
 
         builder.HasOne(m => m.Studio)
                    .WithMany()
-                   .HasForeignKey(m => m.Studio.Id)
+                   .HasForeignKey(m => m.StudioId)
                    .IsRequired();
         }
     }

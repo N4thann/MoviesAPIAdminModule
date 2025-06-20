@@ -43,8 +43,13 @@ namespace Domain.Entities
             ReleaseYear = releaseYear;
             Duration = new Duration(durationInMinutes);
             Country = country;
+
             Studio = studio;
+            StudioId = Studio.Id;
+
             Director = director;
+            DirectorId = Director.Id;
+
             Genre = genre;
             Rating = Rating.CreateEmpty(10);
             CreatedAt = DateTime.UtcNow;
@@ -64,6 +69,10 @@ namespace Domain.Entities
         public Rating Rating { get; private set; }
         public Money? BoxOffice { get; private set; }
         public Money? Budget { get; private set; }
+
+        // propriedades de chave estrangeira (FKs explícitas)
+        public Guid DirectorId { get; private set; }
+        public Guid StudioId { get; private set; }
 
         // Propriedades de controle
         public DateTime CreatedAt { get; private set; }

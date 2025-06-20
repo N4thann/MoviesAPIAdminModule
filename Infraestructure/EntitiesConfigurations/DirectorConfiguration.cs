@@ -8,8 +8,6 @@ namespace Infraestructure.EntitiesConfigurations
     {
         protected override void AppendConfig(EntityTypeBuilder<Director> builder)
         {
-            base.Configure(builder);
-
             builder.ToTable("Director");
 
             builder.Property(d => d.Biography)
