@@ -1,6 +1,9 @@
 ﻿using Application.Interfaces;
+using Domain.SeedWork.Interfaces;
 using Infraestructure.Context;
 using Infraestructure.Mediator;
+using Infraestructure.Persistence;
+using Infraestructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -34,6 +37,9 @@ namespace MoviesAPIAdminModule
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+            services.AddScoped<IDirectorRepository, DirectorRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
@@ -81,3 +87,35 @@ namespace MoviesAPIAdminModule
         }
     }
 }
+
+/*services.AddScoped<IMediator, InMemoryMediator>();
+
+Esta linha registra a implementação do seu IMediator. Isso significa que, sempre que algo solicitar um IMediator (como o 
+seu DirectorController), o ASP.NET Core fornecerá uma instância de InMemoryMediator.
+var applicationAssembly = typeof(ICommand).Assembly;
+
+Esta linha obtém o Assembly (o projeto compilado, geralmente a DLL) onde suas interfaces ICommand e ICommandHandler 
+e suas implementações de Use Cases (Handlers) estão localizadas (provavelmente o projeto Application). Isso é crucial 
+para que a reflexão possa varrer esses tipos.
+services.RegisterCommandHandlers(applicationAssembly);
+
+Este método auxiliar que você criou (e está implementado mais abaixo no seu código) faz o seguinte:
+Ele varre o applicationAssembly.
+Para cada tipo (Type) que ele encontra que implementa a interface genérica ICommandHandler<> (com 1 argumento genérico) e 
+não é abstrato/interface, ele registra essa implementação.
+Exemplo: Se você tivesse um DeleteDirectorUseCase implementando ICommandHandler<DeleteDirectorCommand>, ele seria registrado aqui.
+services.RegisterCommandHandlersWithResult(applicationAssembly);
+
+Este método auxiliar (também implementado mais abaixo) faz o seguinte:
+Ele varre o applicationAssembly.
+Para cada tipo (Type) que ele encontra que implementa a interface genérica ICommandHandler<,> (com 2 argumentos genéricos) e 
+não é abstrato/interface, ele registra essa implementação.
+Este é o método que registra o CreateDirectorUseCase! Quando ele encontra CreateDirectorUseCase implementando 
+ICommandHandler<CreateDirectorCommand, DirectorInfoResponse>, ele executa uma lógica equivalente a:
+
+"services.AddScoped(typeof(ICommandHandler<CreateDirectorCommand, DirectorInfoResponse>), typeof(CreateDirectorUseCase));"
+
+Ele faz isso para todos os seus handlers que possuem resultado de forma automática.
+services.RegisterQueryHandlersWithResult(applicationAssembly);
+
+Faz o mesmo que o anterior, mas para interfaces IQueryHandler<,>.*/

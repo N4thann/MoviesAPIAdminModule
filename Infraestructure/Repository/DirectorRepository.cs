@@ -1,22 +1,19 @@
 ﻿using Domain.Entities;
+using Domain.SeedWork.Interfaces;
+using Infraestructure.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructure.Repository
 {
-    public class DirectorRepository
+    public class DirectorRepository : IDirectorRepository
     {
-        private readonly DbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DirectorRepository(DbContext context) => _context = context;
+        public DirectorRepository(ApplicationDbContext context) => _context = context;
 
         public async Task AddAsync(Director director)
         {
-            
+            await _context.Directors.AddAsync(director);
         }
     }
 }

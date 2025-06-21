@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.DTOs.Response.Director
+﻿namespace Application.DTOs.Response.Director
 {
     public record class DirectorInfoResponse(
         Guid Id,
@@ -17,9 +11,5 @@ namespace Application.DTOs.Response.Director
         DateTime CreatedAt,
         DateTime UpdatedAt,
         int Age
-        )
-    {
-    
-    }
-
+        );
 }
