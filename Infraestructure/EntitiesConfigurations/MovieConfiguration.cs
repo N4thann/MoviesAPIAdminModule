@@ -138,7 +138,7 @@ namespace Infraestructure.EntitiesConfigurations
 
         builder.HasOne(m => m.Director)
                    .WithMany()
-                   .HasForeignKey(m => m.DirectorId) // Supondo que você mapeará a propriedade do Value Object
+                   .HasForeignKey(m => m.DirectorId)
                    .IsRequired();
 
         builder.HasOne(m => m.Studio)
