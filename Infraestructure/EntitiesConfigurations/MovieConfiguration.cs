@@ -30,6 +30,13 @@ namespace Infraestructure.EntitiesConfigurations
             builder.Property(m => m.UpdatedAt)
                    .IsRequired();
 
+            builder.Ignore(m => m.Poster);
+            builder.Ignore(m => m.Thumbnail);
+            builder.Ignore(m => m.GalleryImages);
+            builder.Ignore(m => m.HasPoster);
+            builder.Ignore(m => m.HasThumbnail);
+            builder.Ignore(m => m.GalleryImagesCount);
+
             // Owned Types
             builder.OwnsOne(m => m.Duration, durationBuilder =>
             {

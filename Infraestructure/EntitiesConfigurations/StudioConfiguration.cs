@@ -26,6 +26,8 @@ namespace Infraestructure.EntitiesConfigurations
             builder.Property(s => s.UpdatedAt)
                    .IsRequired();
 
+            builder.Ignore(s => s.YearsInOperation);
+
             builder.OwnsOne(s => s.Country, countryBuilder =>
             {
                 countryBuilder.Property(c => c.Name)

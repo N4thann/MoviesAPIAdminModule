@@ -12,7 +12,7 @@ namespace Infraestructure.Context
 
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Director> Directors { get; set; }
-        public DbSet<Award> Awards { get; set; }
+        public DbSet<Studio> Studios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

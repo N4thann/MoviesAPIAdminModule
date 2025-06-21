@@ -1,11 +1,12 @@
-﻿using Domain.SeedWork.Validation;
+﻿using Domain.SeedWork.Interfaces;
+using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
 using System.Xml.Linq;
 
 namespace Domain.Entities
 {
-    public class Studio : BaseEntity
+    public class Studio : BaseEntity, IAggregateRoot
     {
         private const int MAX_HISTORY_LENGTH = 2000;
 
