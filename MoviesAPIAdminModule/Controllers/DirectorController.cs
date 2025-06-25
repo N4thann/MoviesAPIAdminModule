@@ -25,7 +25,7 @@ namespace MoviesAPIAdminModule.Controllers
                 request.Gender
             );
 
-            var response = await _mediator.Send<CreateDirectorCommand, DirectorInfoResponse>(command);
+            var response = await _mediator.Send<CreateDirectorCommand, DirectorInfoResponse>(command, cancellationToken);
 
             return CreatedAtAction(nameof(GetDirectorById),
                 new { id = response.Id },

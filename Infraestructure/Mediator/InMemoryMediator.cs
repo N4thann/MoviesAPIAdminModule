@@ -10,57 +10,64 @@ namespace Infraestructure.Mediator
 
         public InMemoryMediator(IServiceProvider serviceProvider)  =>  _serviceProvider = serviceProvider;
 
-        // Método para Comandos sem retorno
-        public async Task Send<TCommand>(TCommand command) where TCommand : ICommand
+        public async Task Send<TCommand>(TCommand command, CancellationToken cancellationToken) where TCommand : ICommand
         {
-            Type handlerType = typeof(ICommandHandler<>).MakeGenericType(command.GetType());
-            // Usa GetRequiredService(Type) para resolver dinamicamente e garantir que não será nulo
-            object handler = _serviceProvider.GetRequiredService(handlerType);
+            using var scope = _serviceProvider.CreateScope();
+            var handlerType = typeof(ICommandHandler<>).MakeGenericType(command.GetType());
 
-            MethodInfo handleMethod = handlerType.GetMethod(nameof(ICommandHandler<TCommand>.Handle));
+            object handler = scope.ServiceProvider.GetRequiredService(handlerType);
+
+            MethodInfo handleMethod = handlerType.GetMethod(
+                nameof(ICommandHandler<TCommand>.Handle),
+                new[] { typeof(TCommand), typeof(CancellationToken) } 
+            );
 
             if (handleMethod == null)
             {
-                throw new InvalidOperationException($"Handle method not found on handler for command {typeof(TCommand).Name}.");
+                throw new InvalidOperationException($"Handle method not found on handler for command {typeof(TCommand).Name}. Ensure it has a CancellationToken parameter.");
             }
 
-            await (Task)handleMethod.Invoke(handler, new object[] { command });
+            await (Task)handleMethod.Invoke(handler, new object[] { command, cancellationToken });
         }
 
-        // Método para Comandos com retorno
-        public async Task<TResult> Send<TCommand, TResult>(TCommand command) where TCommand : ICommand<TResult>
+        public async Task<TResult> Send<TCommand, TResult>(TCommand command, CancellationToken cancellationToken) where TCommand : ICommand<TResult> // Adicionado CancellationToken
         {
-            Type handlerType = typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult));
-            // Usa GetRequiredService(Type)
-            object handler = _serviceProvider.GetRequiredService(handlerType);
+            using var scope = _serviceProvider.CreateScope();
+            var handlerType = typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult));
 
-            MethodInfo handleMethod = handlerType.GetMethod(nameof(ICommandHandler<TCommand, TResult>.Handle));
+            object handler = scope.ServiceProvider.GetRequiredService(handlerType);
+
+            MethodInfo handleMethod = handlerType.GetMethod(
+                nameof(ICommandHandler<TCommand, TResult>.Handle),
+                new[] { typeof(TCommand), typeof(CancellationToken) } 
+            );
 
             if (handleMethod == null)
             {
-                throw new InvalidOperationException($"Handle method not found on handler for command {typeof(TCommand).Name} with result {typeof(TResult).Name}.");
+                throw new InvalidOperationException($"Handle method not found on handler for command {typeof(TCommand).Name} with result {typeof(TResult).Name}. Ensure it has a CancellationToken parameter.");
             }
 
-            return await (Task<TResult>)handleMethod.Invoke(handler, new object[] { command });
+            return await (Task<TResult>)handleMethod.Invoke(handler, new object[] { command, cancellationToken });
         }
 
-        // Método para Queries (sempre com retorno)
-        // Implementa o método 'Query' da interface IMediator (nome diferente para evitar conflito)
-        public async Task<TResult> Query<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>
+        public async Task<TResult> Query<TQuery, TResult>(TQuery query, CancellationToken cancellationToken) where TQuery : IQuery<TResult> 
         {
-            Type handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
-            // Usa GetRequiredService(Type)
-            object handler = _serviceProvider.GetRequiredService(handlerType);
+            using var scope = _serviceProvider.CreateScope();
+            var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
 
-            // O 'nameof' aqui buscará o método 'Handle' da interface IQueryHandler<TQuery, TResult>
-            MethodInfo handleMethod = handlerType.GetMethod(nameof(IQueryHandler<TQuery, TResult>.Handle));
+            object handler = scope.ServiceProvider.GetRequiredService(handlerType);
+
+            MethodInfo handleMethod = handlerType.GetMethod(
+                nameof(IQueryHandler<TQuery, TResult>.Handle),
+                new[] { typeof(TQuery), typeof(CancellationToken) }
+            );
 
             if (handleMethod == null)
             {
-                throw new InvalidOperationException($"Handle method not found on handler for query {typeof(TQuery).Name} with result {typeof(TResult).Name}.");
+                throw new InvalidOperationException($"Handle method not found on handler for query {typeof(TQuery).Name} with result {typeof(TResult).Name}. Ensure it has a CancellationToken parameter.");
             }
 
-            return await (Task<TResult>)handleMethod.Invoke(handler, new object[] { query });
+            return await (Task<TResult>)handleMethod.Invoke(handler, new object[] { query, cancellationToken });
         }
     }
 }
