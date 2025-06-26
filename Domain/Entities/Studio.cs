@@ -90,7 +90,7 @@ namespace Domain.Entities
             UpdatedAt = DateTime.Now;
         }
         
-        public void UpdateFoundationDate(DateTime foundationDate)
+        public void UpdateFoundationDate(DateTime foundationDate) 
         {
             Validate.IsPastDate(foundationDate, nameof(foundationDate), allowToday: true);
 
