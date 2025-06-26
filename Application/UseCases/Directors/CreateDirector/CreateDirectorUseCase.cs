@@ -8,12 +8,12 @@ namespace Application.UseCases.Directors.CreateDirector
 {
     public class CreateDirectorUseCase : ICommandHandler<CreateDirectorCommand, DirectorInfoResponse>
     {
-        private readonly IDirectorRepository _directorRepository;
+        private readonly IDirectorRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateDirectorUseCase(IDirectorRepository directorRepository, IUnitOfWork unitOfWork)
         {
-            _directorRepository = directorRepository;
+            _repository = directorRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -29,7 +29,7 @@ namespace Application.UseCases.Directors.CreateDirector
                 command.Gender
                 );
 
-            await _directorRepository.AddAsync(director);
+            await _repository.AddAsync(director);
             await _unitOfWork.Commit(cancellationToken);
 
             var response = new DirectorInfoResponse(

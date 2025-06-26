@@ -31,7 +31,7 @@ namespace Domain.ValueObjects
 
         //Factory Methods
         public static Country Brazil => new("Brazil", "BR");
-        public static Country UnitedStates => new("United States", "US");
+        public static Country UnitedStates => new("United States", "USA");
         public static Country UnitedKingdom => new("United Kingdom", "GB");
         public static Country France => new("France", "FR");
         public static Country Germany => new("Germany", "DE");

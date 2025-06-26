@@ -25,7 +25,6 @@
     <Folder Include="UseCases\Directors\UpdateDirectorInfo\" />
     <Folder Include="UseCases\Movies\CreateMovie\" />
     <Folder Include="UseCases\Movies\UpdateMovieBasicInfo\" />
-    <Folder Include="UseCases\Studios\" />
   </ItemGroup>
 
   <ItemGroup>
