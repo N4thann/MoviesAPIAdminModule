@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Domain.SeedWork.Validation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace MoviesAPIAdminModule.Filters
@@ -15,12 +17,50 @@ namespace MoviesAPIAdminModule.Filters
 
         public void OnException(ExceptionContext context)
         {
-            _logger.LogError(context.Exception, "Ocorreu uma exceção não tratada: Status Code 500");
+            _logger.LogError(context.Exception, "Ocorreu uma exceção tratada pelo filtro de API.");
 
-            context.Result = new ObjectResult("Ocorreu um problema ao tratar a sua solicitação: Status Code 500")
+            if (context.Exception is KeyNotFoundException keyNotFoundException)
             {
-                StatusCode = StatusCodes.Status500InternalServerError,
-            };
+                context.Result = new NotFoundObjectResult(new
+                {
+                    statusCode = StatusCodes.Status404NotFound,
+                    message = keyNotFoundException.Message 
+                });
+                context.ExceptionHandled = true;
+                return;
+            }
+            else if (context.Exception is ValidationException validationException)
+            {
+                context.Result = new BadRequestObjectResult(new
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    message = validationException.Message
+                });
+                context.ExceptionHandled = true;
+                return;
+            }
+            // 3. Tratamento para "Operação Inválida" (erros de negócio que não são de validação de entrada, mas sim de estado)
+            // Lembre-se que você lançou InvalidOperationException no UseCase para erros inesperados.
+            // Se você quiser diferenciar erros de validação de entrada (400) de outros erros de lógica de negócio (400 ou 409),
+            // considere criar uma exceção de domínio mais específica ou ajustar a mensagem da InvalidOperationException.
+            else if (context.Exception is InvalidOperationException invalidOperationException)
+            {
+                _logger.LogWarning(invalidOperationException, "Operação de negócio inválida detectada.");
+                context.Result = new BadRequestObjectResult(new 
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    message = invalidOperationException.Message
+                });
+                context.ExceptionHandled = true;
+                return;
+            }
+
+
+            // Se a exceção não for tratada por nenhum dos 'if/else if' acima,
+            // ela não terá 'context.Result' definido e 'context.ExceptionHandled' será false.
+            // Isso fará com que a exceção continue propagando na pipeline
+            // até ser capturada pelo seu middleware global (ApiExceptionMiddleware),
+            // que a transformará em um 500 Internal Server Error.
         }
     }
 }
