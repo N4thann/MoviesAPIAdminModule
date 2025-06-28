@@ -1,11 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 using Infraestructure.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructure.Repository
 {
@@ -18,6 +13,11 @@ namespace Infraestructure.Repository
         public async Task AddAsync(Studio studio)
         {
             await _context.Studios.AddAsync(studio);
+        }
+
+        public async Task<Studio?> GetByIdAsync(Guid id)
+        {
+            return await _context.Studios.FindAsync(id);
         }
     }
 }

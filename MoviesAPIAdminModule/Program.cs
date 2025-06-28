@@ -13,6 +13,10 @@ builder.Services.AddControllers(options =>{
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Logging.ClearProviders(); //Remove todos os providers de logging configurados por padrão pelo ASP.NET Core (como EventLog, Console, Debug)
+builder.Logging.AddConsole();//Adiciona o provider que exibe logs no console/terminal da aplicação 
+builder.Logging.AddDebug();//Adiciona o provider que exibe logs na janela de Debug Output do Visual Studio
+
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 

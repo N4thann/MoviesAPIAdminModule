@@ -2,12 +2,15 @@
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Application.UseCases.Studios.CreateStudio;
+using Application.UseCases.Studios.UpdateStudio;
 using Microsoft.AspNetCore.Mvc;
+using MoviesAPIAdminModule.Filters;
 
 namespace MoviesAPIAdminModule.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ServiceFilter(typeof(ApiLoggingFilter))]
     public class StudioController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -34,5 +37,19 @@ namespace MoviesAPIAdminModule.Controllers
 
         [HttpGet("{id}")]
         public IActionResult GetStudioById(Guid id) => Ok($"Studio with ID {id} details.");
+
+        [HttpPut("{id}/update-basic-info")]
+        public async Task<IActionResult> UpdateBasicInfo(Guid id, [FromBody] UpdateBasicInfoStudioRequest request, CancellationToken cancellationToken)
+        {
+            var command = new UpdateBasicInfoStudioCommand(
+                id,
+                request.Name,
+                request.History
+                );
+
+            var response = await _mediator.Send<UpdateBasicInfoStudioCommand,StudioInfoResponse>(command, cancellationToken);
+
+            return Ok(response);
+        }
     }
 }
