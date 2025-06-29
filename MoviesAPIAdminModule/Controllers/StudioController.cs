@@ -75,5 +75,22 @@ namespace MoviesAPIAdminModule.Controllers
 
             return Ok(response);
         }
+
+        [HttpPut("{id}/update-foundation-date")]
+        [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateFoundationDate(Guid id, [FromBody] UpdateFoundationStudioRequest request, CancellationToken cancellationToken)
+        {
+            var command = new UpdateFoundationStudioCommand(
+                id,
+                request.FoundationDate
+                );
+
+            var response = await _mediator.Send<UpdateFoundationStudioCommand, StudioInfoResponse>(command, cancellationToken);
+
+            return Ok(response);
+        }
     }
 }
