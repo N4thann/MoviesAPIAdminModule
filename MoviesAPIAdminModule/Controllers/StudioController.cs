@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Request.Studio;
+﻿using Application.DTOs.Common;
+using Application.DTOs.Request.Studio;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Application.UseCases.Studios.CreateStudio;
@@ -38,7 +39,12 @@ namespace MoviesAPIAdminModule.Controllers
         [HttpGet("{id}")]
         public IActionResult GetStudioById(Guid id) => Ok($"Studio with ID {id} details.");
 
+
         [HttpPut("{id}/update-basic-info")]
+        [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)] 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]                   
+        [ProducesResponseType(StatusCodes.Status404NotFound)]                   
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateBasicInfo(Guid id, [FromBody] UpdateBasicInfoStudioRequest request, CancellationToken cancellationToken)
         {
             var command = new UpdateBasicInfoStudioCommand(
@@ -48,6 +54,24 @@ namespace MoviesAPIAdminModule.Controllers
                 );
 
             var response = await _mediator.Send<UpdateBasicInfoStudioCommand,StudioInfoResponse>(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpPut("{id}/update-country-studio")]
+        [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateCountry(Guid id, [FromBody] UpdateCountryRequest request, CancellationToken cancellationToken)
+        {
+            var command = new UpdateCountryStudioCommand(
+                id,
+                request.CountryName,
+                request.CountryCode
+                );
+
+            var response = await _mediator.Send<UpdateCountryStudioCommand, StudioInfoResponse>(command, cancellationToken);
 
             return Ok(response);
         }

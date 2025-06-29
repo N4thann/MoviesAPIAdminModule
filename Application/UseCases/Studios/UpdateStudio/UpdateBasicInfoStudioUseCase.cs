@@ -24,8 +24,7 @@ namespace Application.UseCases.Studios.UpdateStudio
                 throw new KeyNotFoundException($"Studio with ID {command.Id} not found.");
             try
             {
-                studio.UpdateBasicInfo(command.Name, command.History); //não precisa salvar no contexto esse objeto studio?
-                //testar se enviar vazio o campo history
+                studio.UpdateBasicInfo(command.Name, command.History);
                 await _unitOfWork.Commit(cancellationToken);
 
                 var response = new StudioInfoResponse(
