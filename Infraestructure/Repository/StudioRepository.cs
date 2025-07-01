@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 using Infraestructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructure.Repository
 {
@@ -18,6 +19,11 @@ namespace Infraestructure.Repository
         public async Task<Studio?> GetByIdAsync(Guid id)
         {
             return await _context.Studios.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Studio>> GetAllAsync()
+        {
+            return await _context.Studios.AsNoTracking().ToListAsync();
         }
     }
 }

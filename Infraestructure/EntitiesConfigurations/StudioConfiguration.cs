@@ -11,7 +11,7 @@ namespace Infraestructure.EntitiesConfigurations
             builder.ToTable("Studio");
 
             builder.Property(s => s.History)
-                .HasMaxLength(2000);
+                .HasMaxLength(5000);
 
             builder.Property(s => s.FoundationDate)
                 .IsRequired()

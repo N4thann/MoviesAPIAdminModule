@@ -8,7 +8,7 @@ namespace Domain.Entities
 {
     public class Studio : BaseEntity, IAggregateRoot
     {
-        private const int MAX_HISTORY_LENGTH = 2000;
+        private const int MAX_HISTORY_LENGTH = 5000;
 
         protected Studio() { }
 

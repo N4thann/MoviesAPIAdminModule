@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Domain.SeedWork.Interfaces
 {
-    public interface IStudioRepository
+    public interface IStudioRepository 
     {
         Task AddAsync(Studio studio);
 
         Task<Studio?> GetByIdAsync(Guid id);
+
+        Task<IEnumerable<Studio>> GetAllAsync();
     }
 }

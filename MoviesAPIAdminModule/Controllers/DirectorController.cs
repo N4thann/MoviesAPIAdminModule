@@ -3,6 +3,7 @@ using Application.DTOs.Response.Director;
 using Application.Interfaces;
 using Application.UseCases.Directors.CreateDirector;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
@@ -14,6 +15,7 @@ namespace MoviesAPIAdminModule.Controllers
         public DirectorController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Cria um novo diretor", Tags = new[] { "Director Commands" })]
         public async Task<IActionResult> CreateDirector([FromBody] CreateDirectorRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateDirectorCommand(
@@ -33,6 +35,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Obtém um diretor por ID", Tags = new[] { "Director Queries" })]
         public IActionResult GetDirectorById(Guid id) => Ok($"Director with ID {id} details.");
     }
 }

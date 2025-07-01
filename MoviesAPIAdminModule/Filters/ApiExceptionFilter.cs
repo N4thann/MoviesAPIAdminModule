@@ -55,7 +55,6 @@ namespace MoviesAPIAdminModule.Filters
                 return;
             }
 
-
             // Se a exceção não for tratada por nenhum dos 'if/else if' acima,
             // ela não terá 'context.Result' definido e 'context.ExceptionHandled' será false.
             // Isso fará com que a exceção continue propagando na pipeline
