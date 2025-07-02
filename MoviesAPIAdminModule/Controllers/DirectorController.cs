@@ -1,10 +1,8 @@
 ﻿using Application.DTOs.Request.Director;
 using Application.DTOs.Response.Director;
-using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Application.UseCases.Directors.CreateDirector;
 using Application.UseCases.Directors.GetDirector;
-using Application.UseCases.Studios.GetStudio;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Swashbuckle.AspNetCore.Annotations;

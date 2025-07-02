@@ -25,7 +25,7 @@ namespace Application.UseCases.Studios.UpdateStudio
             try
             {
                 var country = new Country(command.CountryName, command.CountryCode);
-                studio.UpdateCountry(country);
+                studio.UpdateCountry(country);//Quando uma entidade é carregada do DbContext (que seu repositório está usando), o EF Core automaticamente começa a rastrear essa entidade.
                 await _unitOfWork.Commit(cancellationToken);
 
                 var response = new StudioInfoResponse(

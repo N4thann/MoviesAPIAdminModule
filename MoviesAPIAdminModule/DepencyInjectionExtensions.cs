@@ -38,6 +38,7 @@ namespace MoviesAPIAdminModule
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IDirectorRepository, DirectorRepository>();
             services.AddScoped<IStudioRepository, StudioRepository>();
 
