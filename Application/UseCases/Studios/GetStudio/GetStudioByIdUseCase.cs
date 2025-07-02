@@ -10,12 +10,12 @@ namespace Application.UseCases.Studios.GetStudio
 
         public GetStudioByIdUseCase(IStudioRepository repository)  => _repository = repository;
 
-        public async Task<StudioInfoResponse> Handle(GetStudioByIdQuery command, CancellationToken cancellationToken)
+        public async Task<StudioInfoResponse> Handle(GetStudioByIdQuery query, CancellationToken cancellationToken)
         {
-            var studio = await _repository.GetByIdAsync(command.Id);
+            var studio = await _repository.GetByIdAsync(query.Id);
 
             if (studio == null)
-                throw new KeyNotFoundException($"Studio with ID {command.Id} not found.");
+                throw new KeyNotFoundException($"Studio with ID {query.Id} not found.");
             try
             {
                 var response = new StudioInfoResponse(
@@ -35,7 +35,7 @@ namespace Application.UseCases.Studios.GetStudio
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException($"An unexpected error occurred while updating Studio with ID {command.Id}. Details: {ex.Message}", ex);
+                throw new InvalidOperationException($"An unexpected error occurred while updating Studio with ID {query.Id}. Details: {ex.Message}", ex);
             }
         }
     }

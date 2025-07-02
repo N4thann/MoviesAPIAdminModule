@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Response.Studio;
+﻿using Application.DTOs.Response.Director;
+using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 
 namespace Application.UseCases.Studios.GetStudio

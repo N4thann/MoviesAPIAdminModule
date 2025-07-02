@@ -56,7 +56,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<StudioInfoResponse>), StatusCodes.Status200OK)] // Retorna 200 OK com a lista (vazia ou não)
+        [ProducesResponseType(typeof(IEnumerable<StudioInfoResponse>), StatusCodes.Status200OK)] 
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista todos os estúdios", Tags = new[] { "Studio Queries" })]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

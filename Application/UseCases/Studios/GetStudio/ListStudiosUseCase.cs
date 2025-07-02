@@ -1,11 +1,6 @@
 ﻿using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Domain.SeedWork.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.UseCases.Studios.GetStudio
 {
@@ -15,7 +10,7 @@ namespace Application.UseCases.Studios.GetStudio
 
         public ListStudiosUseCase(IStudioRepository repository) => _repository = repository;
 
-        public async Task<IEnumerable<StudioInfoResponse>> Handle(ListStudiosQuery command, CancellationToken cancellationToken)
+        public async Task<IEnumerable<StudioInfoResponse>> Handle(ListStudiosQuery query, CancellationToken cancellationToken)
         {
             var studios = await _repository.GetAllAsync();
 

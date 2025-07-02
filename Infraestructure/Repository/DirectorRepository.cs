@@ -15,5 +15,15 @@ namespace Infraestructure.Repository
         {
             await _context.Directors.AddAsync(director);
         }
+
+        public async Task<Director?> GetByIdAsync(Guid id)
+        {
+            return await _context.Directors.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Director>> GetAllAsync()
+        {
+            return await _context.Directors.AsNoTracking().ToListAsync();
+        }
     }
 }

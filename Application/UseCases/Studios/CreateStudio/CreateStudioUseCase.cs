@@ -19,32 +19,39 @@ namespace Application.UseCases.Studios.CreateStudio
 
         public async Task<StudioInfoResponse> Handle(CreateStudioCommand command, CancellationToken cancellationToken)
         {
-            var country = new Country(command.CountryName, command.CountryCode);
+            try
+            {
+                var country = new Country(command.CountryName, command.CountryCode);
 
-            var studio = new Studio(
-                command.Name,
-                country,
-                command.FoundationDate,
-                command.History
-                ); 
+                var studio = new Studio(
+                    command.Name,
+                    country,
+                    command.FoundationDate,
+                    command.History
+                    );
 
-            await _repository.AddAsync( studio );
-            await _unitOfWork.Commit(cancellationToken);
+                await _repository.AddAsync(studio);
+                await _unitOfWork.Commit(cancellationToken);
 
-            var response = new StudioInfoResponse(
-                studio.Id,
-                studio.Name,
-                studio.Country.Name,
-                studio.Country.Code,
-                studio.FoundationDate,
-                studio.History,
-                studio.IsActive,
-                studio.CreatedAt,
-                studio.UpdatedAt,
-                studio.YearsInOperation
-                );
+                var response = new StudioInfoResponse(
+                    studio.Id,
+                    studio.Name,
+                    studio.Country.Name,
+                    studio.Country.Code,
+                    studio.FoundationDate,
+                    studio.History,
+                    studio.IsActive,
+                    studio.CreatedAt,
+                    studio.UpdatedAt,
+                    studio.YearsInOperation
+                    );
 
-            return response;
+                return response;
+            }
+            catch (Exception ex) 
+            {
+                throw new InvalidOperationException($"An unexpected error occurred while creating Studio. Details: {ex.Message}", ex);
+            }         
         }
 
     }

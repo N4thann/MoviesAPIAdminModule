@@ -11,5 +11,7 @@ namespace Domain.SeedWork.Interfaces
     public interface IDirectorRepository
     {
         Task AddAsync(Director director);
+        Task<Director?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Director>> GetAllAsync();
     }
 }
