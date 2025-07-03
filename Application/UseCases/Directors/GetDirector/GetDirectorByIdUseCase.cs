@@ -1,14 +1,15 @@
 ﻿using Application.DTOs.Response.Director;
 using Application.Interfaces;
+using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 
 namespace Application.UseCases.Directors.GetDirector
 {
     public class GetDirectorByIdUseCase : IQueryHandler<GetDirectorByIdQuery, DirectorInfoResponse>
     {
-        private readonly IDirectorRepository _repository;
+        private readonly IRepository<Director> _repository;
 
-        public GetDirectorByIdUseCase(IDirectorRepository directorRepository) => _repository = directorRepository;
+        public GetDirectorByIdUseCase(IRepository<Director> repository) => _repository = repository;
 
         public async Task<DirectorInfoResponse> Handle(GetDirectorByIdQuery query, CancellationToken cancellationToken)
         {

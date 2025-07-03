@@ -8,10 +8,10 @@ namespace Application.UseCases.Studios.CreateStudio
 {
     public class CreateStudioUseCase : ICommandHandler<CreateStudioCommand, StudioInfoResponse>
     {
-        private readonly IStudioRepository _repository;
+        private readonly IRepository<Studio> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateStudioUseCase(IStudioRepository repository, IUnitOfWork unitOfWork)
+        public CreateStudioUseCase(IRepository<Studio> repository, IUnitOfWork unitOfWork)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;

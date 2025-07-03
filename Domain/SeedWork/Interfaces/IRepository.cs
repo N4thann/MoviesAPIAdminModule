@@ -13,7 +13,7 @@ namespace Domain.SeedWork.Interfaces
         /// </summary>
         /// <param name="id">Identificador da entidade.</param>
         /// <returns>Entidade correspondente ao ID informado.</returns>
-        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsync(Guid id);
         /// <summary>
         /// Obtém todas as entidades do repositório.
         /// </summary>

@@ -1,20 +1,15 @@
 ﻿using Application.DTOs.Response.Director;
 using Application.Interfaces;
-using Application.UseCases.Studios.GetStudio;
+using Domain.Entities;
 using Domain.SeedWork.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.UseCases.Directors.GetDirector
 {
     public  class ListDirectorsUseCase : IQueryHandler<ListDirectorsQuery, IEnumerable<DirectorInfoResponse>>
     {
-        private readonly IDirectorRepository _repository;
+        private readonly IRepository<Director> _repository;
 
-        public ListDirectorsUseCase(IDirectorRepository repository) => _repository = repository;
+        public ListDirectorsUseCase(IRepository<Director> repository) => _repository = repository;
 
         public async Task<IEnumerable<DirectorInfoResponse>> Handle(ListDirectorsQuery query, CancellationToken cancellationToken)
         {

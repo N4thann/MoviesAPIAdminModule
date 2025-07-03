@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Response.Studio;
 using Application.Interfaces;
+using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 using System.Data;
 
@@ -7,10 +8,10 @@ namespace Application.UseCases.Studios.UpdateStudio
 {
     public class UpdateBasicInfoStudioUseCase : ICommandHandler<UpdateBasicInfoStudioCommand,StudioInfoResponse>
     {
-        private readonly IStudioRepository _repository;
+        private readonly IRepository<Studio> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateBasicInfoStudioUseCase(IStudioRepository repository, IUnitOfWork unitOfWork)
+        public UpdateBasicInfoStudioUseCase(IRepository<Studio> repository, IUnitOfWork unitOfWork)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;

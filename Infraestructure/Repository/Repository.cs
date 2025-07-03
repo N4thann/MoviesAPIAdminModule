@@ -11,7 +11,7 @@ namespace Infraestructure.Repository
         private readonly ApplicationDbContext _context;
         public Repository(ApplicationDbContext context) => _context = context;
 
-        public async Task<T> GetByIdAsync(int id) => await _context.Set<T>().FindAsync(id);
+        public async Task<T> GetByIdAsync(Guid id) => await _context.Set<T>().FindAsync(id);
         public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>()
                 .AsNoTracking().ToListAsync();
         public IQueryable<T> GetAllQueryable() => _context.Set<T>().AsQueryable();

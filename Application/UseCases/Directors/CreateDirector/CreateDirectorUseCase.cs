@@ -8,12 +8,12 @@ namespace Application.UseCases.Directors.CreateDirector
 {
     public class CreateDirectorUseCase : ICommandHandler<CreateDirectorCommand, DirectorInfoResponse>
     {
-        private readonly IDirectorRepository _repository;
+        private readonly IRepository<Director> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateDirectorUseCase(IDirectorRepository directorRepository, IUnitOfWork unitOfWork)
+        public CreateDirectorUseCase(IRepository<Director> repository, IUnitOfWork unitOfWork)
         {
-            _repository = directorRepository;
+            _repository = repository;
             _unitOfWork = unitOfWork;
         }
 
