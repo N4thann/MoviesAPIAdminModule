@@ -3,6 +3,7 @@ using Application.DTOs.Request.Studio;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Application.UseCases.Studios.CreateStudio;
+using Application.UseCases.Studios.DeleteStudio;
 using Application.UseCases.Studios.GetStudio;
 using Application.UseCases.Studios.UpdateStudio;
 using Microsoft.AspNetCore.Mvc;
@@ -121,6 +122,21 @@ namespace MoviesAPIAdminModule.Controllers
             var response = await _mediator.Send<UpdateFoundationStudioCommand, StudioInfoResponse>(command, cancellationToken);
 
             return Ok(response);
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Exclui um estúdio por ID", Tags = new[] { "Studio Commands" })]
+        public async Task<IActionResult> DeleteStudio(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new DeleteStudioCommand(id);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return NoContent();
         }
     }
 }
