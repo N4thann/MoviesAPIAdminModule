@@ -2,6 +2,7 @@
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
 using Application.UseCases.Directors.CreateDirector;
+using Application.UseCases.Directors.DeleteDirector;
 using Application.UseCases.Directors.GetDirector;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
@@ -10,7 +11,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace MoviesAPIAdminModule.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     public class DirectorController : ControllerBase
     {
@@ -46,7 +47,7 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Obtém um diretor por ID", Tags = new[] { "Director Queries" })]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken) 
+        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var query = new GetDirectorByIdQuery(id);
 
@@ -65,6 +66,20 @@ namespace MoviesAPIAdminModule.Controllers
             var response = await _mediator.Query<ListDirectorsQuery, IEnumerable<DirectorInfoResponse>>(query, cancellationToken);
 
             return Ok(response);
+        }
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Exclui um diretor por ID", Tags = new[] { "Director Commands" })]
+        public async Task<IActionResult> DeleteDirector(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new DeleteDirectorCommand(id);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return NoContent();
         }
 
     }

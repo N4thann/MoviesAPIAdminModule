@@ -12,7 +12,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace MoviesAPIAdminModule.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     public class StudioController : ControllerBase
     {
@@ -67,7 +67,7 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{id}/update-basic-info")]
+        [HttpPut("{id}")]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]                   
         [ProducesResponseType(StatusCodes.Status404NotFound)]                   
@@ -86,7 +86,7 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{id}/update-country-studio")]
+        [HttpPut("{id}")]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -105,7 +105,7 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{id}/update-foundation-date")]
+        [HttpPut("{id}")]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
