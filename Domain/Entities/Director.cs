@@ -45,10 +45,13 @@ namespace Domain.Entities
         // Propriedades calculadas
         public int Age => CalculateAge(BirthDate);
 
-        public void UpdateBasicInfo(string name, string? biography = null, Gender gender = Gender.NotSpecified)
+        public void UpdateBasicInfo(string name, DateTime newBirthDate, Gender gender = Gender.NotSpecified, string? biography = null)
         {
             Validate.NotNullOrEmpty(name, nameof(name));
             Validate.MaxLength(name, 100, nameof(name));
+
+            Validate.IsPastDate(newBirthDate, nameof(newBirthDate), allowToday: false);
+
             if (!string.IsNullOrWhiteSpace(biography))
             {
                 Validate.MaxLength(biography, MAX_BIO_LENGTH, nameof(biography));
@@ -56,14 +59,8 @@ namespace Domain.Entities
 
             Name = name.Trim();
             Biography = biography?.Trim();
-            Gender = gender;
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void UpdateBirthDate(DateTime newBirthDate)
-        {
-            Validate.IsPastDate(newBirthDate, nameof(newBirthDate), allowToday: false); 
             BirthDate = newBirthDate.Date;
+            Gender = gender;
             UpdatedAt = DateTime.UtcNow;
         }
 

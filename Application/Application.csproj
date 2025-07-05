@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Directors\UpdateDirector\" />
     <Folder Include="UseCases\Movies\CreateMovie\" />
     <Folder Include="UseCases\Movies\UpdateMovieBasicInfo\" />
   </ItemGroup>

@@ -1,9 +1,13 @@
 ﻿using Application.DTOs.Request.Director;
+using Application.DTOs.Request.Studio;
 using Application.DTOs.Response.Director;
+using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Application.UseCases.Directors.CreateDirector;
 using Application.UseCases.Directors.DeleteDirector;
 using Application.UseCases.Directors.GetDirector;
+using Application.UseCases.Directors.UpdateDirector;
+using Application.UseCases.Studios.UpdateStudio;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Swashbuckle.AspNetCore.Annotations;
@@ -39,6 +43,27 @@ namespace MoviesAPIAdminModule.Controllers
             return CreatedAtAction(nameof(GetById),
                 new { id = response.Id },
                 response);
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Atualiza informações básicas do diretor", Tags = new[] { "Director Commands" })]
+        public async Task<IActionResult> UpdateBasicInfo(Guid id, [FromBody] UpdateBasicInfoDirectorRequest request, CancellationToken cancellationToken)
+        {
+            var command = new UpdateBasicInfoDirectorCommand(
+                id,
+                request.Name,
+                request.NewBirthDate,
+                request.Gender,
+                request.Biography
+                );
+
+            var response = await _mediator.Send<UpdateBasicInfoDirectorCommand, DirectorInfoResponse>(command, cancellationToken);
+
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
