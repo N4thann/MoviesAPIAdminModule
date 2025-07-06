@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Request.Director;
+﻿using Application.DTOs.Common;
+using Application.DTOs.Request.Director;
 using Application.DTOs.Request.Studio;
 using Application.DTOs.Response.Director;
 using Application.DTOs.Response.Studio;
@@ -62,6 +63,25 @@ namespace MoviesAPIAdminModule.Controllers
                 );
 
             var response = await _mediator.Send<UpdateBasicInfoDirectorCommand, DirectorInfoResponse>(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Atualiza o país de origem de um diretor", Tags = new[] { "Director Commands" })]
+        public async Task<IActionResult> UpdateCountry(Guid id, [FromBody] UpdateCountryRequest request, CancellationToken cancellationToken)
+        {
+            var command = new UpdateCountryDirectorCommand(
+                id,
+                request.CountryName,
+                request.CountryCode
+                );
+
+            var response = await _mediator.Send<UpdateCountryDirectorCommand, DirectorInfoResponse>(command, cancellationToken);
 
             return Ok(response);
         }

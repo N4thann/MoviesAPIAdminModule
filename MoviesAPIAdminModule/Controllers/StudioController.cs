@@ -92,7 +92,7 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Atualiza o país de origem do estúdio", Tags = new[] { "Studio Commands" })]
+        [SwaggerOperation(Summary = "Atualiza o país de origem de um estúdio", Tags = new[] { "Studio Commands" })]
         public async Task<IActionResult> UpdateCountry(Guid id, [FromBody] UpdateCountryRequest request, CancellationToken cancellationToken)
         {
             var command = new UpdateCountryStudioCommand(

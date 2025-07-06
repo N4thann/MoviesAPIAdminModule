@@ -64,6 +64,13 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void UpdateCountry(Country country)
+        {
+            Validate.NotNull(country, nameof(country));
+            Country = country;
+            UpdatedAt = DateTime.Now;
+        }
+
         public void Activate()
         {
             IsActive = true;
