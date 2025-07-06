@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Response.Studio;
+﻿using Application.DTOs.Mappings;
+using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
@@ -19,18 +20,7 @@ namespace Application.UseCases.Studios.GetStudio
                 throw new KeyNotFoundException($"Studio with ID {query.Id} not found.");
             try
             {
-                var response = new StudioInfoResponse(
-                    studio.Id,
-                    studio.Name,
-                    studio.Country.Name,
-                    studio.Country.Code,
-                    studio.FoundationDate,
-                    studio.History,
-                    studio.IsActive,
-                    studio.CreatedAt,
-                    studio.UpdatedAt,
-                    studio.YearsInOperation
-                );
+                var response = studio.ToStudioDTO();
 
                 return response;
             }

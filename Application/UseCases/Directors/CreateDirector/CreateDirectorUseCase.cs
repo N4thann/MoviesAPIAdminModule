@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Response.Director;
+﻿using Application.DTOs.Mappings;
+using Application.DTOs.Response.Director;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
@@ -32,18 +33,7 @@ namespace Application.UseCases.Directors.CreateDirector
             await _repository.AddAsync(director);
             await _unitOfWork.Commit(cancellationToken);
 
-            var response = new DirectorInfoResponse(
-                director.Id,
-                director.Name,
-                director.BirthDate,
-                director.Country.Name,
-                director.Country.Code,
-                director.Biography,
-                director.IsActive,
-                director.CreatedAt,
-                director.UpdatedAt,
-                director.Age
-                );
+            var response = director.ToDirectorDTO();
 
             return response;
         }

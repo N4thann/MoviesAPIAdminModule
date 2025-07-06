@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Response.Director;
+﻿using Application.DTOs.Mappings;
+using Application.DTOs.Response.Director;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
@@ -15,20 +16,8 @@ namespace Application.UseCases.Directors.GetDirector
         {
             var directors = await _repository.GetAllAsync();
 
-            var response = directors.Select(director => new DirectorInfoResponse(
-                director.Id,
-                director.Name,
-                director.BirthDate,
-                director.Country.Name,
-                director.Country.Code,
-                director.Biography,
-                director.IsActive,
-                director.CreatedAt,
-                director.UpdatedAt,
-                director.Age
-                )).ToList();
-
-                return response;
+            var response = directors.Select(director => director.ToDirectorDTO()); // IEnumberable, execução adiada
+            return response; // Serializador percorrerá 'response' e executará ToDirectorDTO para cada item
         }
     }
 }
