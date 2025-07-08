@@ -1,14 +1,11 @@
-﻿using Application.DTOs.Common;
+﻿using Application.Common.DTOs;
 using Application.DTOs.Request.Director;
-using Application.DTOs.Request.Studio;
 using Application.DTOs.Response.Director;
-using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Application.UseCases.Directors.CreateDirector;
 using Application.UseCases.Directors.DeleteDirector;
 using Application.UseCases.Directors.GetDirector;
 using Application.UseCases.Directors.UpdateDirector;
-using Application.UseCases.Studios.UpdateStudio;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Swashbuckle.AspNetCore.Annotations;
@@ -121,6 +118,36 @@ namespace MoviesAPIAdminModule.Controllers
         public async Task<IActionResult> DeleteDirector(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteDirectorCommand(id);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Ativa um diretor por ID", Tags = new[] { "Director Commands" })]
+        public async Task<IActionResult> ActivateDirector(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new ActivateDirectorCommand(id);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Desativa um diretor por ID", Tags = new[] { "Director Commands" })]
+        public async Task<IActionResult> DeactivateDirector(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new DeactivateDirectorCommand(id);
 
             await _mediator.Send(command, cancellationToken);
 

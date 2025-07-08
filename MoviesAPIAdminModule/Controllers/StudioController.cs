@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Common;
+﻿using Application.Common.DTOs;
 using Application.DTOs.Request.Studio;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
