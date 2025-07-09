@@ -3,6 +3,7 @@ using Application.DTOs.Response.Director;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
+using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 
 namespace Application.UseCases.Directors.CreateDirector
@@ -22,7 +23,9 @@ namespace Application.UseCases.Directors.CreateDirector
         {
             var country = new Country(command.CountryName, command.CountryCode);
 
-            var director = new Director(
+            try
+            {
+                var director = new Director(
                 command.Name,
                 command.BirthDate,
                 country,
@@ -30,12 +33,21 @@ namespace Application.UseCases.Directors.CreateDirector
                 command.Gender
                 );
 
-            await _repository.AddAsync(director);
-            await _unitOfWork.Commit(cancellationToken);
+                await _repository.AddAsync(director);
+                await _unitOfWork.Commit(cancellationToken);
 
-            var response = director.ToDirectorDTO();
+                var response = director.ToDirectorDTO();
 
-            return response;
+                return response;
+            }
+            catch (ValidationException)
+            {
+                throw;
+            }
+            catch (Exception ex) 
+            {
+                throw new InvalidOperationException($"An unexpected error occurred while creating Director. Details: {ex.Message}", ex);
+            }           
         }
     }
 }

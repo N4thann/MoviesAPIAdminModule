@@ -3,6 +3,7 @@ using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
+using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 
 namespace Application.UseCases.Studios.CreateStudio
@@ -37,6 +38,10 @@ namespace Application.UseCases.Studios.CreateStudio
                 var response = studio.ToStudioDTO();
 
                 return response;
+            }
+            catch (ValidationException)
+            {
+                throw;
             }
             catch (Exception ex) 
             {

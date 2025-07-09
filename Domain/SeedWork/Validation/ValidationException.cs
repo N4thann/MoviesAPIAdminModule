@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.SeedWork.Validation
+﻿namespace Domain.SeedWork.Validation
 {
     public class ValidationException : Exception
     {

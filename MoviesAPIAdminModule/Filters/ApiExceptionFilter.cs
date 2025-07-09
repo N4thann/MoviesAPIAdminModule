@@ -24,6 +24,7 @@ namespace MoviesAPIAdminModule.Filters
                 context.Result = new NotFoundObjectResult(new
                 {
                     statusCode = StatusCodes.Status404NotFound,
+                    typeException = (nameof(KeyNotFoundException)),
                     message = keyNotFoundException.Message 
                 });
                 context.ExceptionHandled = true;
@@ -33,7 +34,8 @@ namespace MoviesAPIAdminModule.Filters
             {
                 context.Result = new BadRequestObjectResult(new
                 {
-                    statusCode = StatusCodes.Status400BadRequest,
+                    statusCode = StatusCodes.Status406NotAcceptable,
+                    typeException = (nameof(ValidationException)),
                     message = validationException.Message
                 });
                 context.ExceptionHandled = true;
@@ -49,6 +51,7 @@ namespace MoviesAPIAdminModule.Filters
                 context.Result = new BadRequestObjectResult(new 
                 {
                     statusCode = StatusCodes.Status400BadRequest,
+                    typeException = (nameof(InvalidOperationException)),
                     message = invalidOperationException.Message
                 });
                 context.ExceptionHandled = true;
