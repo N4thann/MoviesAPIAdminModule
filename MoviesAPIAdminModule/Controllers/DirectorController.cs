@@ -1,11 +1,12 @@
-﻿using Application.Common.DTOs;
-using Application.DTOs.Request.Director;
+﻿using Application.DTOs.Request.Director;
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
 using Application.UseCases.Directors.CreateDirector;
 using Application.UseCases.Directors.DeleteDirector;
 using Application.UseCases.Directors.GetDirector;
 using Application.UseCases.Directors.UpdateDirector;
+using Domain.Entities;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Swashbuckle.AspNetCore.Annotations;
@@ -43,42 +44,30 @@ namespace MoviesAPIAdminModule.Controllers
                 response);
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Atualiza informações básicas do diretor", Tags = new[] { "Director Commands" })]
-        public async Task<IActionResult> UpdateBasicInfo(Guid id, [FromBody] UpdateBasicInfoDirectorRequest request, CancellationToken cancellationToken)
+        [SwaggerOperation(Summary = "Atualiza parcialmente um diretor com o JsonPatchDocument", Tags = new[] { "Director Commands" })]
+        public async Task<IActionResult> UpdatePatchDirector(
+            Guid id,
+            [FromBody] JsonPatchDocument<Director> patchDoc,
+            CancellationToken cancellationToken)
         {
-            var command = new UpdateBasicInfoDirectorCommand(
-                id,
-                request.Name,
-                request.NewBirthDate,
-                request.Gender,
-                request.Biography
-                );
+            if (patchDoc == null)
+            {
+                return BadRequest("Patch document cannot be null.");
+            }
 
-            var response = await _mediator.Send<UpdateBasicInfoDirectorCommand, DirectorInfoResponse>(command, cancellationToken);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok(response);
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Atualiza o país de origem de um diretor", Tags = new[] { "Director Commands" })]
-        public async Task<IActionResult> UpdateCountry(Guid id, [FromBody] UpdateCountryRequest request, CancellationToken cancellationToken)
-        {
-            var command = new UpdateCountryDirectorCommand(
-                id,
-                request.CountryName,
-                request.CountryCode
-                );
-
-            var response = await _mediator.Send<UpdateCountryDirectorCommand, DirectorInfoResponse>(command, cancellationToken);
+            var command = new PatchDirectorCommand(id, patchDoc);
+            var response = await _mediator.Send<PatchDirectorCommand, DirectorInfoResponse>(command, cancellationToken);
 
             return Ok(response);
         }
@@ -123,36 +112,5 @@ namespace MoviesAPIAdminModule.Controllers
 
             return NoContent();
         }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Ativa um diretor por ID", Tags = new[] { "Director Commands" })]
-        public async Task<IActionResult> ActivateDirector(Guid id, CancellationToken cancellationToken)
-        {
-            var command = new ActivateDirectorCommand(id);
-
-            await _mediator.Send(command, cancellationToken);
-
-            return NoContent();
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Desativa um diretor por ID", Tags = new[] { "Director Commands" })]
-        public async Task<IActionResult> DeactivateDirector(Guid id, CancellationToken cancellationToken)
-        {
-            var command = new DeactivateDirectorCommand(id);
-
-            await _mediator.Send(command, cancellationToken);
-
-            return NoContent();
-        }
-
     }
 }

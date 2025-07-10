@@ -77,7 +77,7 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Atualiza parcialmente um estúdio com o JsonPatchDocument", Tags = new[] { "Studio Commands" })]
-        public async Task<IActionResult> PatchStudio(
+        public async Task<IActionResult> UpdatePatchStudio(
             Guid id,
             [FromBody] JsonPatchDocument<Studio> patchDoc,
             CancellationToken cancellationToken)
@@ -107,36 +107,6 @@ namespace MoviesAPIAdminModule.Controllers
         public async Task<IActionResult> DeleteStudio(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteStudioCommand(id);
-
-            await _mediator.Send(command, cancellationToken);
-
-            return NoContent();
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Ativa um estúdio por ID", Tags = new[] { "Studio Commands" })]
-        public async Task<IActionResult> ActivateStudio(Guid id, CancellationToken cancellationToken)
-        {
-            var command = new ActivateStudioCommand(id);
-
-            await _mediator.Send(command, cancellationToken);
-
-            return NoContent();
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Desativa um estúdio por ID", Tags = new[] { "Studio Commands" })]
-        public async Task<IActionResult> DeactivateStudio(Guid id, CancellationToken cancellationToken)
-        {
-            var command = new DeactivateStudioCommand(id);
 
             await _mediator.Send(command, cancellationToken);
 

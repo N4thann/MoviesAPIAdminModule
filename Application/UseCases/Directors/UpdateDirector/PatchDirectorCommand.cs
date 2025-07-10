@@ -1,11 +1,12 @@
 ﻿using Application.DTOs.Response.Director;
 using Application.Interfaces;
+using Domain.Entities;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Application.UseCases.Directors.UpdateDirector
 {
-    public record class UpdateCountryDirectorCommand(
+    public record class PatchDirectorCommand(
         Guid Id,
-        string CountryName,
-        string CountryCode
+        JsonPatchDocument<Director> PatchDocument
         ) : ICommand<DirectorInfoResponse>;
 }

@@ -27,9 +27,7 @@ namespace Application.UseCases.Studios.PatchStudio
             var studio = await _repository.GetByIdAsync(command.Id);
 
             if (studio == null)
-            {
                 throw new KeyNotFoundException($"Studio with ID {command.Id} not found.");
-            }
 
             string? newName = null;
             string? newHistory = null;
@@ -45,9 +43,7 @@ namespace Application.UseCases.Studios.PatchStudio
                 string normalizedPath = op.path.Trim('/').ToLowerInvariant();
 
                 if (op.OperationType != OperationType.Replace)//Permitir apenas comandos replace do JsonPatch
-                {
                     throw new InvalidOperationException($"Patch operation '{op.OperationType}' for path '{op.path}' is not supported.");
-                }
 
                 switch (normalizedPath)
                 {
@@ -115,25 +111,17 @@ namespace Application.UseCases.Studios.PatchStudio
                 }
 
                 if (newCountry != null)
-                {
                     studio.UpdateCountry(newCountry);
-                }
 
                 if (newFoundationDate.HasValue)
-                {
                     studio.UpdateFoundationDate(newFoundationDate.Value);
-                }
 
                 if (newIsActiveState.HasValue)
                 {
                     if (newIsActiveState.Value)
-                    {
                         studio.Activate();
-                    }
                     else
-                    {
                         studio.Deactivate();
-                    }
                 }
 
                 await _unitOfWork.Commit(cancellationToken);
