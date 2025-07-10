@@ -6,6 +6,8 @@ using Application.UseCases.Studios.CreateStudio;
 using Application.UseCases.Studios.DeleteStudio;
 using Application.UseCases.Studios.GetStudio;
 using Application.UseCases.Studios.UpdateStudio;
+using Domain.Entities;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Swashbuckle.AspNetCore.Annotations;
@@ -68,59 +70,31 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)] 
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]                   
-        [ProducesResponseType(StatusCodes.Status404NotFound)]                   
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Atualiza informações básicas do estúdio", Tags = new[] { "Studio Commands" })]
-        public async Task<IActionResult> UpdateBasicInfo(Guid id, [FromBody] UpdateBasicInfoStudioRequest request, CancellationToken cancellationToken)
-        {
-            var command = new UpdateBasicInfoStudioCommand(
-                id,
-                request.Name,
-                request.History
-                );
-
-            var response = await _mediator.Send<UpdateBasicInfoStudioCommand,StudioInfoResponse>(command, cancellationToken);
-
-            return Ok(response);
-        }
-
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Atualiza o país de origem de um estúdio", Tags = new[] { "Studio Commands" })]
-        public async Task<IActionResult> UpdateCountry(Guid id, [FromBody] UpdateCountryRequest request, CancellationToken cancellationToken)
+        [SwaggerOperation(Summary = "Atualiza parcialmente um estúdio com o JsonPatchDocument", Tags = new[] { "Studio Commands" })]
+        public async Task<IActionResult> PatchStudio(
+            Guid id,
+            [FromBody] JsonPatchDocument<Studio> patchDoc,
+            CancellationToken cancellationToken)
         {
-            var command = new UpdateCountryStudioCommand(
-                id,
-                request.CountryName,
-                request.CountryCode
-                );
+            if (patchDoc == null)
+            {
+                return BadRequest("Patch document cannot be null.");
+            }
 
-            var response = await _mediator.Send<UpdateCountryStudioCommand, StudioInfoResponse>(command, cancellationToken);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok(response);
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Atualiza a data de fundação do estúdio", Tags = new[] { "Studio Commands" })]
-        public async Task<IActionResult> UpdateFoundationDate(Guid id, [FromBody] UpdateFoundationStudioRequest request, CancellationToken cancellationToken)
-        {
-            var command = new UpdateFoundationStudioCommand(
-                id,
-                request.FoundationDate
-                );
-
-            var response = await _mediator.Send<UpdateFoundationStudioCommand, StudioInfoResponse>(command, cancellationToken);
-
+            var command = new PatchStudioCommand(id, patchDoc);
+            var response = await _mediator.Send<PatchStudioCommand, StudioInfoResponse>(command, cancellationToken);
+            
             return Ok(response);
         }
 

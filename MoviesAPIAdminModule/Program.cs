@@ -8,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>{
     options.Filters.Add(typeof(ApiExceptionFilter));
-});
+}).AddNewtonsoftJson();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
