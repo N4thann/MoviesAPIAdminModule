@@ -42,10 +42,6 @@ namespace Application.UseCases.Studios.CreateStudio
             catch (ValidationException)
             {
                 throw;
-            }
-            catch (Exception ex) 
-            {
-                throw new InvalidOperationException($"An unexpected error occurred while creating Studio. Details: {ex.Message}", ex);
             }         
         }
 

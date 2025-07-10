@@ -169,11 +169,6 @@ namespace Application.UseCases.Directors.UpdateDirector
             {
                 throw;
             }
-            catch (Exception ex)
-            {
-                // Captura qualquer outra exceção inesperada
-                throw new InvalidOperationException($"An unexpected error occurred while applying patch to Director with ID {command.Id}. Details: {ex.Message}", ex);
-            }
         }
     }
 }

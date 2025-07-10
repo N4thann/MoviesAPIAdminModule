@@ -18,16 +18,10 @@ namespace Application.UseCases.Studios.GetStudio
 
             if (studio == null)
                 throw new KeyNotFoundException($"Studio with ID {query.Id} not found.");
-            try
-            {
-                var response = studio.ToStudioDTO();
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"An unexpected error occurred while updating Studio with ID {query.Id}. Details: {ex.Message}", ex);
-            }
+            var response = studio.ToStudioDTO();
+
+            return response;
         }
     }
 }

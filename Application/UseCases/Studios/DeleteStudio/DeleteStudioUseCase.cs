@@ -21,15 +21,9 @@ namespace Application.UseCases.Studios.DeleteStudio
 
             if (studio == null)
                 throw new KeyNotFoundException($"Director with ID {command.Id} not found.");
-            try
-            {
-                _repository.Delete(studio);
-                await _unitOfWork.Commit(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"An unexpected error occurred while delete studio with ID {command.Id}. Details: {ex.Message}", ex);
-            }
+
+            _repository.Delete(studio);
+            await _unitOfWork.Commit(cancellationToken);
         }
     }
 }

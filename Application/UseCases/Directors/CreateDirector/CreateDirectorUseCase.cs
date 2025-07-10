@@ -43,11 +43,7 @@ namespace Application.UseCases.Directors.CreateDirector
             catch (ValidationException)
             {
                 throw;
-            }
-            catch (Exception ex) 
-            {
-                throw new InvalidOperationException($"An unexpected error occurred while creating Director. Details: {ex.Message}", ex);
-            }           
+            }          
         }
     }
 }

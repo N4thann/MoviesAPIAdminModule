@@ -133,10 +133,6 @@ namespace Application.UseCases.Studios.PatchStudio
             {
                 throw;
             }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"An unexpected error occurred while applying patch to Studio with ID {command.Id}. Details: {ex.Message}", ex);
-            }
         }
     }
 }
