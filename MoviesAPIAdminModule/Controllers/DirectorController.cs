@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Request.Director;
+﻿using Application.Common;
+using Application.DTOs.Request.Director;
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
 using Application.UseCases.Directors.CreateDirector;
@@ -9,6 +10,7 @@ using Domain.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
@@ -23,6 +25,7 @@ namespace MoviesAPIAdminModule.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Cria um novo diretor", Tags = new[] { "Director Commands" })]
@@ -75,6 +78,7 @@ namespace MoviesAPIAdminModule.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Obtém um diretor por ID", Tags = new[] { "Director Queries" })]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
@@ -87,13 +91,26 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<DirectorInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedList<DirectorInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Lista todos os diretores", Tags = new[] { "Director Queries" })]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        [SwaggerOperation(Summary = "Lista todos os diretores aplicando paginação", Tags = new[] { "Director Queries" })]
+        public async Task<IActionResult> GetAllPagination([FromQuery] DirectorParameters parameters,CancellationToken cancellationToken)
         {
-            var query = new ListDirectorsQuery();
-            var response = await _mediator.Query<ListDirectorsQuery, IEnumerable<DirectorInfoResponse>>(query, cancellationToken);
+            var query = new ListDirectorsQuery(parameters);
+            var response = await _mediator.Query<ListDirectorsQuery, PagedList<DirectorInfoResponse>>(query, cancellationToken);
+
+            var metadata = new
+            {
+                response.TotalCount,
+                response.PageSize,
+                response.CurrentPage,
+                response.TotalPages,
+                response.HasNext,
+                response.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(response);
         }

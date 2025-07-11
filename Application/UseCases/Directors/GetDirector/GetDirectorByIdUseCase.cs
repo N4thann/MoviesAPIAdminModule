@@ -18,9 +18,15 @@ namespace Application.UseCases.Directors.GetDirector
 
             if (director == null)
                 throw new KeyNotFoundException($"Director with ID {query.Id} not found.");
-
-            var response = director.ToDirectorDTO();
-            return response;
+            try
+            {
+                var response = director.ToDirectorDTO();
+                return response;
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
         }
     }
 }

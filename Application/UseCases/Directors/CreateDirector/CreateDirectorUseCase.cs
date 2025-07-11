@@ -43,7 +43,11 @@ namespace Application.UseCases.Directors.CreateDirector
             catch (ValidationException)
             {
                 throw;
-            }          
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
         }
     }
 }

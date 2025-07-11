@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Mappings;
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
+using Azure;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
@@ -166,6 +167,10 @@ namespace Application.UseCases.Directors.UpdateDirector
                 return response;
             }
             catch (ValidationException)
+            {
+                throw;
+            }
+            catch (InvalidOperationException)
             {
                 throw;
             }
