@@ -20,9 +20,17 @@ namespace Application.UseCases.Directors.GetDirector
             var directorsPaged = PagedList<Director>.ToPagedList(directors, 
                 query.Parameters.PageNumber, query.Parameters.PageSize);
 
-            var responsePagedDto = directorsPaged.ToDirectorPagedListDTO();
+            try
+            {
+                var responsePagedDto = directorsPaged.ToDirectorPagedListDTO();
 
-            return responsePagedDto; 
+                return responsePagedDto;
+            }
+            catch(InvalidOperationException)
+            {
+                throw;
+            }
+             
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using Application.Common;
-using Application.Common.DTOs;
-using Application.Common.Parameters;
 using Application.DTOs.Request.Studio;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
@@ -68,7 +66,7 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista todos os estúdios", Tags = new[] { "Studio Queries" })]
-        public async Task<IActionResult> GetAllPagination([FromQuery] StudioParameters parameters, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllPagination([FromQuery] StudioParametersRequest parameters, CancellationToken cancellationToken)
         {
             var query = new ListStudiosQuery(parameters);
             var response = await _mediator.Query<ListStudiosQuery, PagedList<StudioInfoResponse>>(query, cancellationToken);
@@ -87,6 +85,8 @@ namespace MoviesAPIAdminModule.Controllers
 
             return Ok(response);
         }
+
+
 
         [HttpPatch("{id}")]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
