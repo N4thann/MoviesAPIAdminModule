@@ -1,4 +1,6 @@
-﻿using Application.Common.DTOs;
+﻿using Application.Common;
+using Application.Common.DTOs;
+using Application.Common.Parameters;
 using Application.DTOs.Request.Studio;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
@@ -10,6 +12,7 @@ using Domain.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
@@ -41,7 +44,8 @@ namespace MoviesAPIAdminModule.Controllers
             var response = await _mediator.Send<CreateStudioCommand, StudioInfoResponse>(command, cancellationToken);
 
             return CreatedAtAction(nameof(GetById),
-                new {id = response.Id });
+                new {id = response.Id },
+                response);
         }
 
         [HttpGet("{id}")]
@@ -58,13 +62,26 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<StudioInfoResponse>), StatusCodes.Status200OK)] 
+        [ProducesResponseType(typeof(PagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista todos os estúdios", Tags = new[] { "Studio Queries" })]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllPagination([FromQuery] StudioParameters parameters, CancellationToken cancellationToken)
         {
-            var query = new ListStudiosQuery();
-            var response = await _mediator.Query<ListStudiosQuery, IEnumerable<StudioInfoResponse>>(query, cancellationToken);
+            var query = new ListStudiosQuery(parameters);
+            var response = await _mediator.Query<ListStudiosQuery, PagedList<StudioInfoResponse>>(query, cancellationToken);
+
+            var metadata = new
+            {
+                response.TotalCount,
+                response.PageSize,
+                response.CurrentPage,
+                response.TotalPages,
+                response.HasNext,
+                response.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(response);
         }

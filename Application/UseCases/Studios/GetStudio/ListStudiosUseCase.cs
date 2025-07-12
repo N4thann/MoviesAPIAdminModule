@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Mappings;
+﻿using Application.Common;
+using Application.DTOs.Mappings;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Domain.Entities;
@@ -6,19 +7,22 @@ using Domain.SeedWork.Interfaces;
 
 namespace Application.UseCases.Studios.GetStudio
 {
-    public class ListStudiosUseCase : IQueryHandler<ListStudiosQuery, IEnumerable<StudioInfoResponse>>
+    public class ListStudiosUseCase : IQueryHandler<ListStudiosQuery, PagedList<StudioInfoResponse>>
     {
         private readonly IRepository<Studio> _repository;
 
         public ListStudiosUseCase(IRepository<Studio> repository) => _repository = repository;
 
-        public async Task<IEnumerable<StudioInfoResponse>> Handle(ListStudiosQuery query, CancellationToken cancellationToken)
+        public async Task<PagedList<StudioInfoResponse>> Handle(ListStudiosQuery query, CancellationToken cancellationToken)
         {
-            var studios = await _repository.GetAllAsync();
+            var studios = _repository.GetAllQueryable().OrderBy(p => p.Name);
 
-            var response = studios.Select(studio => studio.ToStudioDTO());
+            var studiosPaged = PagedList<Studio>.ToPagedList(studios,
+                query.Parameters.PageNumber, query.Parameters.PageSize);
 
-            return response;
+            var responsePagedDto = studiosPaged.ToStudioPagedListDTO();
+
+            return responsePagedDto;
         }
     }
 }
