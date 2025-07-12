@@ -133,6 +133,10 @@ namespace Application.UseCases.Studios.PatchStudio
             {
                 throw;
             }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
         }
     }
 }

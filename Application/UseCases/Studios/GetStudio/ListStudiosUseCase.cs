@@ -15,14 +15,21 @@ namespace Application.UseCases.Studios.GetStudio
 
         public async Task<PagedList<StudioInfoResponse>> Handle(ListStudiosQuery query, CancellationToken cancellationToken)
         {
-            var studios = _repository.GetAllQueryable().OrderBy(p => p.Name);
+            try
+            {
+                var studios = _repository.GetAllQueryable().OrderBy(p => p.Name);
 
-            var studiosPaged = PagedList<Studio>.ToPagedList(studios,
-                query.Parameters.PageNumber, query.Parameters.PageSize);
+                var studiosPaged = PagedList<Studio>.ToPagedList(studios,
+                    query.Parameters.PageNumber, query.Parameters.PageSize);
 
-            var responsePagedDto = studiosPaged.ToStudioPagedListDTO();
+                var responsePagedDto = studiosPaged.ToStudioPagedListDTO();
 
-            return responsePagedDto;
+                return responsePagedDto;
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
         }
     }
 }

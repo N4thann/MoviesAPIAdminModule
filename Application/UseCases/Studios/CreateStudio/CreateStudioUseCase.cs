@@ -42,7 +42,11 @@ namespace Application.UseCases.Studios.CreateStudio
             catch (ValidationException)
             {
                 throw;
-            }         
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
         }
 
     }
