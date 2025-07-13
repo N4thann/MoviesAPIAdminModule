@@ -1,10 +1,11 @@
 ﻿using Application.DTOs.Mappings;
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
+using Application.Queries.Director;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 
-namespace Application.UseCases.Directors.GetDirector
+namespace Application.UseCases.Directors
 {
     public class GetDirectorByIdUseCase : IQueryHandler<GetDirectorByIdQuery, DirectorInfoResponse>
     {

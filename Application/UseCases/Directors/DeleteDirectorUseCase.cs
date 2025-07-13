@@ -1,8 +1,9 @@
-﻿using Application.Interfaces;
+﻿using Application.Commands.Director;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 
-namespace Application.UseCases.Directors.DeleteDirector
+namespace Application.UseCases.Directors
 {
     public class DeleteDirectorUseCase : ICommandHandler<DeleteDirectorCommand>
     {

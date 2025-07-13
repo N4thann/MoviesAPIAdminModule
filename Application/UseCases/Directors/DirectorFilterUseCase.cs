@@ -2,10 +2,11 @@
 using Application.DTOs.Mappings;
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
+using Application.Queries.Director;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 
-namespace Application.UseCases.Directors.GetDirector
+namespace Application.UseCases.Directors
 {
     public class DirectorFilterUseCase : IQueryHandler<DirectorFilterQuery, PagedList<DirectorInfoResponse>>
     {
@@ -22,9 +23,15 @@ namespace Application.UseCases.Directors.GetDirector
             if (!string.IsNullOrEmpty(query.CountryName))
                 directors = directors.Where(d => d.Country.Name.Contains(query.CountryName));
             if (query.AgeBegin.HasValue)
-                directors = directors.Where(d => d.Age >= query.AgeBegin.Value);
+            {
+                var minBirthDateForAge = DateTime.Today.AddYears(-query.AgeBegin.Value);
+                directors = directors.Where(d => d.BirthDate <= minBirthDateForAge);
+            }
             if (query.AgeEnd.HasValue)
-                directors = directors.Where(d => d.Age <= query.AgeBegin.Value);
+            {
+                var maxBirthDateForAge = DateTime.Today.AddYears(-(query.AgeEnd.Value + 1)); 
+                directors = directors.Where(d => d.BirthDate >= maxBirthDateForAge);
+            }
 
             directors = directors.Where(d => d.IsActive == query.Active);
 

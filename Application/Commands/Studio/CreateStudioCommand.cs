@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 
-namespace Application.UseCases.Studios.CreateStudio
+namespace Application.Commands.Studio
 {
     public record class CreateStudioCommand(
         string Name,

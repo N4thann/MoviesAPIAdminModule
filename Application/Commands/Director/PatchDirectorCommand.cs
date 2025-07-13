@@ -1,12 +1,11 @@
 ﻿using Application.DTOs.Response.Director;
 using Application.Interfaces;
-using Domain.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 
-namespace Application.UseCases.Directors.UpdateDirector
+namespace Application.Commands.Director
 {
     public record class PatchDirectorCommand(
         Guid Id,
-        JsonPatchDocument<Director> PatchDocument
+        JsonPatchDocument<Domain.Entities.Director> PatchDocument
         ) : ICommand<DirectorInfoResponse>;
 }

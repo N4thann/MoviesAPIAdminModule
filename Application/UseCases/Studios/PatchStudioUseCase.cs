@@ -1,7 +1,7 @@
-﻿using Application.DTOs.Mappings;
+﻿using Application.Commands.Studio;
+using Application.DTOs.Mappings;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
-using Application.UseCases.Studios.UpdateStudio;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
@@ -9,7 +9,7 @@ using Domain.ValueObjects;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Newtonsoft.Json.Linq;
 
-namespace Application.UseCases.Studios.PatchStudio
+namespace Application.UseCases.Studios
 {
     public class PatchStudioCommandHandler : ICommandHandler<PatchStudioCommand, StudioInfoResponse>
     {

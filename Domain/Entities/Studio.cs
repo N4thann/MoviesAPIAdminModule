@@ -2,7 +2,6 @@
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
-using System.Xml.Linq;
 
 namespace Domain.Entities
 {

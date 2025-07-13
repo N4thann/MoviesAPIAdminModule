@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Mappings;
+﻿using Application.Commands.Director;
+using Application.DTOs.Mappings;
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
 using Domain.Entities;
@@ -6,7 +7,7 @@ using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 
-namespace Application.UseCases.Directors.CreateDirector
+namespace Application.UseCases.Directors
 {
     public class CreateDirectorUseCase : ICommandHandler<CreateDirectorCommand, DirectorInfoResponse>
     {

@@ -1,12 +1,11 @@
 ﻿using Application.DTOs.Response.Studio;
 using Application.Interfaces;
-using Domain.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 
-namespace Application.UseCases.Studios.UpdateStudio
+namespace Application.Commands.Studio
 {
     public record PatchStudioCommand(
         Guid Id,
-        JsonPatchDocument<Studio> PatchDocument
+        JsonPatchDocument<Domain.Entities.Studio> PatchDocument //Estava dando conflito com nome da Pasta, então tive que mapear colocando o namespace
     ) : ICommand<StudioInfoResponse>;
 }

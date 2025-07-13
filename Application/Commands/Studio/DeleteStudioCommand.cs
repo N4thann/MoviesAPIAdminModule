@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 
-namespace Application.UseCases.Studios.DeleteStudio
+namespace Application.Commands.Studio
 {
     public record class DeleteStudioCommand(
     Guid Id

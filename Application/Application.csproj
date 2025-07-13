@@ -24,8 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Movies\CreateMovie\" />
-    <Folder Include="UseCases\Movies\UpdateMovieBasicInfo\" />
+    <Folder Include="Commands\Movie\" />
+    <Folder Include="Queries\Movie\" />
+    <Folder Include="UseCases\Movies\" />
   </ItemGroup>
 
   <ItemGroup>

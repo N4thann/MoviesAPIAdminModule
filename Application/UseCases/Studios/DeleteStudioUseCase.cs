@@ -1,8 +1,9 @@
-﻿using Application.Interfaces;
+﻿using Application.Commands.Studio;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 
-namespace Application.UseCases.Studios.DeleteStudio
+namespace Application.UseCases.Studios
 {
     public class DeleteStudioUseCase : ICommandHandler<DeleteStudioCommand>
     {

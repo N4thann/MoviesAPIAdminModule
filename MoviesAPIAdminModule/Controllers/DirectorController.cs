@@ -1,12 +1,10 @@
-﻿using Application.Common;
+﻿using Application.Commands.Director;
+using Application.Common;
 using Application.Common.Parameters;
 using Application.DTOs.Request.Director;
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
-using Application.UseCases.Directors.CreateDirector;
-using Application.UseCases.Directors.DeleteDirector;
-using Application.UseCases.Directors.GetDirector;
-using Application.UseCases.Directors.UpdateDirector;
+using Application.Queries.Director;
 using Domain.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;

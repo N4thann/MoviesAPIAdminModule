@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 
-namespace Application.UseCases.Studios.GetStudio
+namespace Application.Queries.Studio
 {
     public record class GetStudioByIdQuery(
         Guid Id

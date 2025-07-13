@@ -1,10 +1,11 @@
 ﻿using Application.DTOs.Mappings;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
+using Application.Queries.Studio;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
 
-namespace Application.UseCases.Studios.GetStudio
+namespace Application.UseCases.Studios
 {
     public class GetStudioByIdUseCase : IQueryHandler<GetStudioByIdQuery, StudioInfoResponse>
     {

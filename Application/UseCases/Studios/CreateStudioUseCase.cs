@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Mappings;
+﻿using Application.Commands.Studio;
+using Application.DTOs.Mappings;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
 using Domain.Entities;
@@ -6,7 +7,7 @@ using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 
-namespace Application.UseCases.Studios.CreateStudio
+namespace Application.UseCases.Studios
 {
     public class CreateStudioUseCase : ICommandHandler<CreateStudioCommand, StudioInfoResponse>
     {

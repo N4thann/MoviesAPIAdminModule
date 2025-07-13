@@ -1,11 +1,9 @@
-﻿using Application.Common;
+﻿using Application.Commands.Studio;
+using Application.Common;
 using Application.DTOs.Request.Studio;
 using Application.DTOs.Response.Studio;
 using Application.Interfaces;
-using Application.UseCases.Studios.CreateStudio;
-using Application.UseCases.Studios.DeleteStudio;
-using Application.UseCases.Studios.GetStudio;
-using Application.UseCases.Studios.UpdateStudio;
+using Application.Queries.Studio;
 using Domain.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -86,7 +84,38 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(response);
         }
 
+        [HttpGet("filtered")]
+        [ProducesResponseType(typeof(IEnumerable<StudioInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Lista estúdios com filtros e paginação", Tags = new[] { "Studio Queries" })]
+        public async Task<IActionResult> GetFilteredStudios([FromQuery] StudioFilterRequest request, CancellationToken cancellationToken)
+        {
+            var query = new StudioFilterQuery(
+                request.Name,
+                request.CountryName,
+                request.FoundationYearBegin,
+                request.FoundationYearEnd,
+                request.Active,
+                request
+                );
 
+            var response = await _mediator.Query<StudioFilterQuery, PagedList<StudioInfoResponse>>(query, cancellationToken);
+
+            var metadata = new
+            {
+                response.TotalCount,
+                response.PageSize,
+                response.CurrentPage,
+                response.TotalPages,
+                response.HasNext,
+                response.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(response);
+        }
 
         [HttpPatch("{id}")]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]

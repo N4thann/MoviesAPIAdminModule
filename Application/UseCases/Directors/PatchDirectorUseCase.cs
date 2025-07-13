@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Mappings;
+﻿using Application.Commands.Director;
+using Application.DTOs.Mappings;
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
 using Azure;
@@ -9,7 +10,7 @@ using Domain.ValueObjects;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Newtonsoft.Json.Linq;
 
-namespace Application.UseCases.Directors.UpdateDirector
+namespace Application.UseCases.Directors
 {
     public class PatchDirectorUseCase : ICommandHandler<PatchDirectorCommand, DirectorInfoResponse>
     {

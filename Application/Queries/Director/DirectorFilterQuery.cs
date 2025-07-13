@@ -2,7 +2,7 @@
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
 
-namespace Application.UseCases.Directors.GetDirector
+namespace Application.Queries.Director
 {
     public record class DirectorFilterQuery(
         string? Name,
