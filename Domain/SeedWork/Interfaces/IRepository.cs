@@ -34,7 +34,7 @@ namespace Domain.SeedWork.Interfaces
         /// Adiciona uma nova entidade ao repositório. Método para o UnitOfWork
         /// </summary>
         /// <param name="entity">Entidade a ser adicionada.</param>
-        Task AddAsync(T entity);
+        void Add(T entity);
         /// <summary>
         /// Adiciona uma coleção de entidades ao banco de dados de forma assíncrona. Método para o UnitOfWork
         /// </summary>
@@ -44,12 +44,12 @@ namespace Domain.SeedWork.Interfaces
         /// Este método melhora a performance ao inserir múltiplas entidades em uma única transação,
         /// reduzindo o número de chamadas ao banco de dados.
         /// </remarks>
-        Task AddRangeAsync(IEnumerable<T> entities);
+        void AddRange(IEnumerable<T> entities);
         /// <summary>
         /// Remove uma entidade do repositório com base no ID informado. Método para o UnitOfWork
         /// </summary>
         /// <param name="entity">Identificador da entidade a ser removida.</param>
-        public void Delete(T entity);
+        void Delete(T entity);
     }
 }
 // Mesmo que esse método GetAllAsync() seja para uma listagem em uma tabela em que cada registro tenha uma opção

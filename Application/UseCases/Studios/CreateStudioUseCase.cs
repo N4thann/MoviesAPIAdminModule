@@ -33,7 +33,7 @@ namespace Application.UseCases.Studios
                     command.History
                     );
 
-                await _repository.AddAsync(studio);
+                _repository.Add(studio);
                 await _unitOfWork.Commit(cancellationToken);
 
                 var response = studio.ToStudioDTO();

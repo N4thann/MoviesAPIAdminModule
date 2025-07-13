@@ -34,7 +34,7 @@ namespace Application.UseCases.Directors
                 command.Gender
                 );
 
-                await _repository.AddAsync(director);
+                _repository.Add(director);
                 await _unitOfWork.Commit(cancellationToken);
 
                 var response = director.ToDirectorDTO();
