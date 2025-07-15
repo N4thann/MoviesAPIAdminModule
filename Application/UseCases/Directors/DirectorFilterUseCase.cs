@@ -5,16 +5,17 @@ using Application.Interfaces;
 using Application.Queries.Director;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
+using X.PagedList;
 
 namespace Application.UseCases.Directors
 {
-    public class DirectorFilterUseCase : IQueryHandler<DirectorFilterQuery, PagedList<DirectorInfoResponse>>
+    public class DirectorFilterUseCase : IQueryHandler<DirectorFilterQuery, IPagedList<DirectorInfoResponse>>
     {
         private readonly IRepository<Director> _repository;
 
         public DirectorFilterUseCase(IRepository<Director> repository) => _repository = repository;
 
-        public async Task<PagedList<DirectorInfoResponse>> Handle(DirectorFilterQuery query, CancellationToken cancellationToken)
+        public async Task<IPagedList<DirectorInfoResponse>> Handle(DirectorFilterQuery query, CancellationToken cancellationToken)
         {
             var directors = _repository.GetAllQueryable();
 
@@ -37,11 +38,15 @@ namespace Application.UseCases.Directors
 
             directors = directors.OrderBy(d => d.Name);
 
-            var directorsPaged = PagedList<Director>.ToPagedList(
-                directors,
-                query.Parameters.PageNumber,
-                query.Parameters.PageSize
-                );
+            //Implementação antiga antes de implementar o pacote X.PagedList para tornar o método de paginação assíncrona
+            //var directorsPaged = PagedList<Director>.ToPagedList(
+            //    directors,
+            //    query.Parameters.PageNumber,
+            //    query.Parameters.PageSize
+            //    );
+
+            var directorsPaged = await directors.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize);
+
             try
             {
                 var response = directorsPaged.ToDirectorPagedListDTO();

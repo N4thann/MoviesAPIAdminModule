@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.DTOs.Response.Director;
 using Domain.Entities;
+using X.PagedList;
 
 namespace Application.DTOs.Mappings
 {
@@ -24,18 +25,20 @@ namespace Application.DTOs.Mappings
                     );
         }
 
-        public static PagedList<DirectorInfoResponse> ToDirectorPagedListDTO(this PagedList<Director> directorsPagedList)
+        public static IPagedList<DirectorInfoResponse> ToDirectorPagedListDTO(this IPagedList<Director> directorsPagedList)
         {
             if (directorsPagedList == null)
                 throw new InvalidOperationException("Cannot map a null PagedList<Director> to PagedList<DirectorInfoResponse>. The provided 'directorsPagedList' object is null.");
 
             var directorInfoResponses = directorsPagedList.Select(d => d.ToDirectorDTO()).ToList();
 
-            return new PagedList<DirectorInfoResponse>(
-                directorInfoResponses!, // O ToDirectorDTO pode retornar null, então use ! se tiver certeza que não será null ou adicione tratamento
-                directorsPagedList.TotalCount,
-                directorsPagedList.CurrentPage,
-                directorsPagedList.PageSize
+            // Usa StaticPagedList para criar um IPagedList<DirectorInfoResponse>
+            // Ele recria a lista paginada com os metadados existentes e os novos itens mapeados.
+            return new StaticPagedList<DirectorInfoResponse>(
+                directorInfoResponses!,
+                directorsPagedList.PageNumber,
+                directorsPagedList.PageSize,
+                directorsPagedList.TotalItemCount
             );
         }
     }

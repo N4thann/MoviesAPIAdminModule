@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.DTOs.Response.Director;
 using Application.Interfaces;
+using X.PagedList;
 
 namespace Application.Queries.Director
 {
@@ -11,5 +12,5 @@ namespace Application.Queries.Director
         int? AgeEnd,
         bool Active,
         QueryStringParameters Parameters
-    ) : IQuery<PagedList<DirectorInfoResponse>>;
+    ) : IQuery<IPagedList<DirectorInfoResponse>>;
 }

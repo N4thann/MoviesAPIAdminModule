@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
+using X.PagedList;
 
 namespace MoviesAPIAdminModule.Controllers
 {
@@ -90,23 +91,23 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(PagedList<DirectorInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPagedList<DirectorInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista todos os diretores aplicando paginação", Tags = new[] { "Director Queries" })]
         public async Task<IActionResult> GetAllPagination([FromQuery] DirectorParametersRequest parameters,CancellationToken cancellationToken)
         {
             var query = new ListDirectorsQuery(parameters);
-            var response = await _mediator.Query<ListDirectorsQuery, PagedList<DirectorInfoResponse>>(query, cancellationToken);
+            var response = await _mediator.Query<ListDirectorsQuery, IPagedList<DirectorInfoResponse>>(query, cancellationToken);
 
             var metadata = new
             {
-                response.TotalCount,
+                response.Count,
                 response.PageSize,
-                response.CurrentPage,
-                response.TotalPages,
-                response.HasNext,
-                response.HasPrevious
+                response.PageCount,
+                response.TotalItemCount,
+                response.HasNextPage,
+                response.HasPreviousPage
             };
 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
@@ -114,7 +115,7 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(response);
         }
         [HttpGet("filtered")]
-        [ProducesResponseType(typeof(IEnumerable<DirectorInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPagedList<DirectorInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista diretores com filtros e paginação", Tags = new[] { "Director Queries" })]
@@ -129,16 +130,16 @@ namespace MoviesAPIAdminModule.Controllers
                 request
                 );
 
-            var response = await _mediator.Query<DirectorFilterQuery, PagedList<DirectorInfoResponse>>(query, cancellationToken);
+            var response = await _mediator.Query<DirectorFilterQuery, IPagedList<DirectorInfoResponse>>(query, cancellationToken);
 
             var metadata = new
             {
-                response.TotalCount,
+                response.Count,
                 response.PageSize,
-                response.CurrentPage,
-                response.TotalPages,
-                response.HasNext,
-                response.HasPrevious
+                response.PageCount,
+                response.TotalItemCount,
+                response.HasNextPage,
+                response.HasPreviousPage
             };
 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
