@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Response.Studio
+namespace Application.DTOs.Response
 {
     public record class StudioInfoResponse(
         Guid Id,

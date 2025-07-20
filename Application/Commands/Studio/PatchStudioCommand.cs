@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Response.Studio;
+﻿using Application.DTOs.Response;
 using Application.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 

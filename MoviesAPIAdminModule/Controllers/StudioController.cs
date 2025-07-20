@@ -1,7 +1,7 @@
 ﻿using Application.Commands.Studio;
 using Application.Common;
 using Application.DTOs.Request.Studio;
-using Application.DTOs.Response.Studio;
+using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Studio;
 using Domain.Entities;

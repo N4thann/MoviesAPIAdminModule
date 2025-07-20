@@ -1,6 +1,6 @@
 ﻿using Application.Commands.Director;
 using Application.DTOs.Mappings;
-using Application.DTOs.Response.Director;
+using Application.DTOs.Response;
 using Application.Interfaces;
 using Azure;
 using Domain.Entities;

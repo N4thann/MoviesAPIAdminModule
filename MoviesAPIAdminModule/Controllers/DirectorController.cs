@@ -1,8 +1,7 @@
 ﻿using Application.Commands.Director;
-using Application.Common;
 using Application.Common.Parameters;
 using Application.DTOs.Request.Director;
-using Application.DTOs.Response.Director;
+using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Director;
 using Domain.Entities;

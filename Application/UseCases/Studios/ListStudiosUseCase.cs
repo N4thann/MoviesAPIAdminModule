@@ -1,6 +1,6 @@
 ﻿using Application.Common;
 using Application.DTOs.Mappings;
-using Application.DTOs.Response.Studio;
+using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Studio;
 using Domain.Entities;

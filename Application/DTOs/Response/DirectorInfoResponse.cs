@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Response.Director
+﻿namespace Application.DTOs.Response
 {
     public record class DirectorInfoResponse(
         Guid Id,

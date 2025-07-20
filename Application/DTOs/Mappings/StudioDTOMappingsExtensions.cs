@@ -1,6 +1,6 @@
 ﻿using Application.Common;
+using Application.DTOs.Response;
 using Application.DTOs.Response.Director;
-using Application.DTOs.Response.Studio;
 using Domain.Entities;
 
 namespace Application.DTOs.Mappings

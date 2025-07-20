@@ -1,6 +1,6 @@
 ﻿using Application.Commands.Studio;
 using Application.DTOs.Mappings;
-using Application.DTOs.Response.Studio;
+using Application.DTOs.Response;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;

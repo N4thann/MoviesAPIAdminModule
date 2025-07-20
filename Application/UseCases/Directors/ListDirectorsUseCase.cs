@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Mappings;
-using Application.DTOs.Response.Director;
+using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Director;
 using Domain.Entities;

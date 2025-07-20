@@ -25,12 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Movie\" />
-    <Folder Include="Queries\Movie\" />
-    <Folder Include="UseCases\Movies\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 

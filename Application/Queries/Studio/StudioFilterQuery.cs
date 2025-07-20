@@ -1,5 +1,5 @@
 ﻿using Application.Common;
-using Application.DTOs.Response.Studio;
+using Application.DTOs.Response;
 using Application.Interfaces;
 
 namespace Application.Queries.Studio

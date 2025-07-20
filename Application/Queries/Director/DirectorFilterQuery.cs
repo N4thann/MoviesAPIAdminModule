@@ -1,5 +1,5 @@
 ﻿using Application.Common;
-using Application.DTOs.Response.Director;
+using Application.DTOs.Response;
 using Application.Interfaces;
 using X.PagedList;
 
