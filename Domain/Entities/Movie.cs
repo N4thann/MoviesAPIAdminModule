@@ -29,23 +29,30 @@ namespace Domain.Entities
             string originalTitle,
             string synopsis,
             int releaseYear,
-            int durationInMinutes,
+            Duration duration,
             Country country,
             Studio studio,
             Director director,
-            Genre genre) : this()
+            Genre genre,
+            Money? boxOffice = null,
+            Money? budget = null) : this()
         {
-            ValidateConstructorInputs(title ,originalTitle, synopsis, releaseYear, durationInMinutes, country, studio, director, genre);
+            ValidateConstructorInputs(title ,originalTitle, synopsis, releaseYear, duration, 
+                country, studio, director, genre);
+
 
             Name = title.Trim();
             OriginalTitle = string.IsNullOrWhiteSpace(originalTitle) ? title.Trim() : originalTitle.Trim();
             Synopsis = synopsis.Trim();
             ReleaseYear = releaseYear;
-            Duration = new Duration(durationInMinutes);
+            Duration = duration;
             Country = country;
 
             Studio = studio;
             StudioId = Studio.Id;
+
+            BoxOffice = boxOffice;
+            Budget = budget;
 
             Director = director;
             DirectorId = Director.Id;
@@ -98,7 +105,7 @@ namespace Domain.Entities
             string originalTitle,
             string synopsis,
             int releaseYear,
-            int duration,
+            Duration duration,
             Country country,
             Studio studio,
             Director director,
@@ -122,11 +129,9 @@ namespace Domain.Entities
             var maxYear = DateTime.UtcNow.Year + MAX_FUTURE_YEARS;
             Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear));
 
-            // Validação da duração
-            Validate.Range(duration, MIN_DURATION_MINUTES, MAX_DURATION_MINUTES, nameof(duration));
-
             // Validação de objetos obrigatórios
             Validate.NotNull(country, nameof(country));
+            Validate.NotNull(duration, nameof(duration));
             Validate.NotNull(studio, nameof(studio));
             Validate.NotNull(director, nameof(director));
             Validate.NotNull(genre, nameof(genre));

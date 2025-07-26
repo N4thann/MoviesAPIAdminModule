@@ -9,7 +9,7 @@ namespace Application.DTOs.Mappings
     {
         public static DirectorInfoResponse? ToDirectorDTO(this Director director)
         {
-            if (director == null) throw new InvalidOperationException("Cannot map a null Director entity to DirectorInfoResponse. The provided 'director' object is null.");
+            if (director == null) throw new InvalidOperationException($"Cannot map a null {typeof(Director)} entity to {typeof(DirectorInfoResponse)}. The provided 'director' object is null.");
 
             return new DirectorInfoResponse(
                     director.Id,

@@ -1,11 +1,11 @@
 ﻿namespace Application.DTOs.Request.Movie
 {
     public record class CreateMovieRequest(
-        string Name,
+        string Title,
         string OriginalTitle,
         string Synopsis,
         int ReleaseYear,
-        string DurationToString,
+        int DurationMinutes,
         string CountryName,
         string CountryCode,
         string GenreName,

@@ -1,11 +1,14 @@
-﻿namespace Application.Commands.Movie
+﻿using Application.DTOs.Response;
+using Application.Interfaces;
+
+namespace Application.Commands.Movie
 {
     public record class CreateMovieCommand(
-        string Name,
+        string Title,
         string OriginalTitle,
         string Synopsis,
         int ReleaseYear,
-        string DurationToString,
+        int DurationMinutes,
         string CountryName,
         string CountryCode,
         string GenreName,
@@ -17,5 +20,5 @@
         string BudgetCurrency,
         Guid DirectorId,
         Guid StudioId
-        );
+        ) : ICommand<MovieInfoBasicResponse>;
 }

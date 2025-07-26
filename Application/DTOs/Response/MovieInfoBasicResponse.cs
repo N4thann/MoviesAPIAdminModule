@@ -2,23 +2,23 @@
 {
     public record class MovieInfoBasicResponse(
         Guid Id,
-        string Name,
+        string Title,
         string OriginalTitle,
         string Synopsis,
         int ReleaseYear,
         string DurationToString,
-        string CountryName,
-        string CountryCode,
-        string GenreName,
-        string GenreDescription,
-        decimal TotalCount,
-        decimal BoxOfficeAmount,
+        string Country,
+        string Genre,//teste de genre e country com to string
+        decimal? BoxOfficeAmount,
         string BoxOfficeCurrency,
-        decimal BudgetAmount,
+        decimal? BudgetAmount,
         string BudgetCurrency,
         bool IsActive,
         DateTime CreatedAt,
         DateTime UpdatedAt,
+        bool HasPoster,
+        bool HasThumbnail,
+        int GelleryImagesCount,
         Guid DirectorId,
         Guid StudioId
         );

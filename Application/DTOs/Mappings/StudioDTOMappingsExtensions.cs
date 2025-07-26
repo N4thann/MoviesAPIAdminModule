@@ -1,6 +1,5 @@
 ﻿using Application.Common;
 using Application.DTOs.Response;
-using Application.DTOs.Response.Director;
 using Domain.Entities;
 
 namespace Application.DTOs.Mappings
@@ -9,7 +8,7 @@ namespace Application.DTOs.Mappings
     {
         public static StudioInfoResponse? ToStudioDTO(this Studio studio)
         {
-            if (studio == null) throw new InvalidOperationException(nameof(studio));
+            if (studio == null) throw new InvalidOperationException($"Cannot map a null {typeof(Studio)} entity to {typeof(StudioInfoResponse)}. The provided 'director' object is null.");
 
             return new StudioInfoResponse(
                     studio.Id,
