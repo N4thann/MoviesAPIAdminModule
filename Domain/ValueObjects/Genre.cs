@@ -7,7 +7,7 @@ namespace Domain.ValueObjects
     {
         public Genre() { }
 
-        public Genre(string name, string description = null)
+        public Genre(string name, string description)
         {
             Validate.NotNullOrEmpty(name, nameof(name));
             Validate.MaxLength(name, 50, nameof(name));
@@ -18,7 +18,7 @@ namespace Domain.ValueObjects
             }
 
             Name = name.Trim();
-
+            Description = description;
         }
 
         public string Name { get; private set; }

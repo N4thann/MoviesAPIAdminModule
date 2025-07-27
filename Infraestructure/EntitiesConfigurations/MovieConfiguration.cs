@@ -30,6 +30,12 @@ namespace Infraestructure.EntitiesConfigurations
             builder.Property(m => m.UpdatedAt)
                    .IsRequired();
 
+            builder.Property(m => m.StudioId)
+                   .IsRequired();
+
+            builder.Property(m => m.DirectorId)
+                   .IsRequired();
+
             builder.Ignore(m => m.Poster);
             builder.Ignore(m => m.Thumbnail);
             builder.Ignore(m => m.GalleryImages);
@@ -106,7 +112,8 @@ namespace Infraestructure.EntitiesConfigurations
 
                 genreBuilder.Property(c => c.Description)
                               .HasColumnName("GenreDescription")
-                              .HasMaxLength(500);
+                              .HasMaxLength(500)
+                              .IsRequired();
             });
 
             builder.OwnsMany(m => m.Awards, awardBuilder =>

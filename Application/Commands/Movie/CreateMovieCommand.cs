@@ -13,7 +13,6 @@ namespace Application.Commands.Movie
         string CountryCode,
         string GenreName,
         string GenreDescription,
-        decimal TotalCount,
         decimal BoxOfficeAmount,
         string BoxOfficeCurrency,
         decimal BudgetAmount,
