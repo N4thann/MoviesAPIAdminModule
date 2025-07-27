@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.DTOs.Response;
+using Application.Interfaces;
 
 namespace Application.Queries.Movie
 {
-    public class GetMovieByIdQuery
-    {
-
-    }
+    public record class GetMovieByIdQuery(
+        Guid Id
+        ) : IQuery<MovieInfoBasicResponse>;
 }
