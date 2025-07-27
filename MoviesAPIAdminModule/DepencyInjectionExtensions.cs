@@ -41,6 +41,7 @@ namespace MoviesAPIAdminModule
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IDirectorRepository, DirectorRepository>();
             services.AddScoped<IStudioRepository, StudioRepository>();
+            services.AddScoped<IMovieRepository, MovieRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
