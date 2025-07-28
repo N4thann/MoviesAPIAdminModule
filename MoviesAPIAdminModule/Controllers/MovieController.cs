@@ -1,4 +1,5 @@
-﻿using Application.Commands.Movie;
+﻿using Application.Commands.Director;
+using Application.Commands.Movie;
 using Application.DTOs.Request.Movie;
 using Application.DTOs.Response;
 using Application.Interfaces;
@@ -65,6 +66,20 @@ namespace MoviesAPIAdminModule.Controllers
             var response = await _mediator.Query<GetMovieByIdQuery, MovieInfoBasicResponse>(command, cancellationToken);
 
             return Ok(response);
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Exclui um filme por ID", Tags = new[] { "Movie Commands" })]
+        public async Task<IActionResult> DeleteMovie(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new DeleteMovieCommand(id);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return NoContent();
         }
     }
 }
