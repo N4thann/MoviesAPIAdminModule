@@ -2,6 +2,7 @@
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
+using System.Diagnostics.Metrics;
 
 namespace Domain.Entities
 {
@@ -137,10 +138,16 @@ namespace Domain.Entities
             Validate.NotNull(genre, nameof(genre));
         }
 
-        private static void ValidateBasicInfoUpdate(string title, string originalTitle, string synopsis)
+        private static void ValidateBasicInfoUpdate(string title, string originalTitle, string synopsis, int durationInMinutes, int releaseYear)
         {
+            var maxYear = DateTime.UtcNow.Year + MAX_FUTURE_YEARS;
+
             Validate.NotNullOrEmpty(title, nameof(title));
             Validate.MaxLength(title, MAX_TITLE_LENGTH, nameof(title));
+
+            Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear));
+
+            Validate.Range(durationInMinutes, MIN_DURATION_MINUTES, MAX_DURATION_MINUTES, nameof(durationInMinutes));
 
             if (!string.IsNullOrWhiteSpace(originalTitle))
             {
@@ -155,43 +162,27 @@ namespace Domain.Entities
 
         #region Métodos de Negócio - Informações Básicas
 
-        public void UpdateBasicInfo(string title, string originalTitle, string synopsis)
+        public void UpdateBasicInfo(string title, string originalTitle, string synopsis, int durationInMinutes, int releaseYear)
         {
-            ValidateBasicInfoUpdate(title, originalTitle, synopsis);
+            ValidateBasicInfoUpdate(title, originalTitle, synopsis, durationInMinutes, releaseYear);
 
             Name = title.Trim(); // Atualiza BaseEntity.Name
             OriginalTitle = string.IsNullOrWhiteSpace(originalTitle) ? title.Trim() : originalTitle.Trim();
             Synopsis = synopsis.Trim();
-            UpdatedAt = DateTime.UtcNow;
+            Duration = new Duration(durationInMinutes);
+            ReleaseYear = releaseYear;
+            UpdatedAt = DateTime.UtcNow;     
         }
 
-        public void UpdateProductionInfo(Studio studio, Money? budget = null, Money? boxOffice = null)
+        public void UpdateProductionInfo(Money budget, Money boxOffice)
         {
-            Validate.NotNull(studio, nameof(studio));
+            Validate.NotNull(budget, nameof(budget));
+            Validate.NotNull(boxOffice, nameof(boxOffice));
 
-            Studio = studio;
             Budget = budget;
             BoxOffice = boxOffice;
             UpdatedAt = DateTime.UtcNow;
         }
-
-        public void UpdateDuration(int durationInMinutes)
-        {
-            Validate.Range(durationInMinutes, MIN_DURATION_MINUTES, MAX_DURATION_MINUTES, nameof(durationInMinutes));
-
-            Duration = new Duration(durationInMinutes);
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void UpdateReleaseYear(int releaseYear)
-        {
-            var maxYear = DateTime.UtcNow.Year + MAX_FUTURE_YEARS;
-            Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear));
-
-            ReleaseYear = releaseYear;
-            UpdatedAt = DateTime.UtcNow;
-        }
-
         #endregion
 
         #region Métodos de Negócio - Prêmios
@@ -222,7 +213,6 @@ namespace Domain.Entities
             Validate.NotNullOrEmpty(institution, nameof(institution));
             return _awards.Any(a => a.Institution.Equals(institution, StringComparison.OrdinalIgnoreCase));
         }
-
         #endregion
 
         #region Métodos de Negócio - Imagens
@@ -399,11 +389,12 @@ namespace Domain.Entities
             return Duration.Minutes > 150;
         }
 
-        #endregion
-
         public override string ToString()
         {
             return $"{Name} ({ReleaseYear}) - {Duration.ToString} - {Rating}";
         }
+        #endregion
+
+
     }
 }

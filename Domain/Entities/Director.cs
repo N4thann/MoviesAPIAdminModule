@@ -45,6 +45,29 @@ namespace Domain.Entities
         // Propriedades calculadas
         public int Age => CalculateAge(BirthDate);
 
+        #region Métodos de Validação
+
+        private static void ValidateConstructorInputs(
+            string name,
+            DateTime birthDate,
+            Country country,
+            string? biography)
+        {
+            Validate.NotNullOrEmpty(name, nameof(name));
+            Validate.MaxLength(name, 50, nameof(name));
+
+            Validate.IsPastDate(birthDate, nameof(birthDate), allowToday: false);
+
+            Validate.NotNull(country, nameof(country));
+
+            if (!string.IsNullOrWhiteSpace(biography))
+            {
+                Validate.MaxLength(biography, MAX_BIO_LENGTH, nameof(biography));
+            }
+        }
+        #endregion
+
+        #region Métodos de Negócio - Informações Básicas
         public void UpdateBasicInfo(string name, DateTime newBirthDate, Gender gender = Gender.NotSpecified, string? biography = null)
         {
             Validate.NotNullOrEmpty(name, nameof(name));
@@ -82,30 +105,9 @@ namespace Domain.Entities
             IsActive = false;
             UpdatedAt = DateTime.UtcNow;
         }
-
-        #region Métodos de Validação Interna
-
-        private static void ValidateConstructorInputs(
-            string name,
-            DateTime birthDate,
-            Country country,
-            string? biography)
-        {
-            Validate.NotNullOrEmpty(name, nameof(name));
-            Validate.MaxLength(name, 50, nameof(name));
-
-            Validate.IsPastDate(birthDate, nameof(birthDate), allowToday: false); 
-
-            Validate.NotNull(country, nameof(country));
-
-            if (!string.IsNullOrWhiteSpace(biography))
-            {
-                Validate.MaxLength(biography, MAX_BIO_LENGTH, nameof(biography));
-            }
-        }
-
         #endregion
 
+        #region Métodos de Negócio - Regras Calculadas
         private static int CalculateAge(DateTime birthDate)
         {
             var today = DateTime.Today;
@@ -118,6 +120,7 @@ namespace Domain.Entities
         {
             return $"{Name} ({Age} anos) - {Country.Name}";
         }
+        #endregion
     }
 
     public enum Gender

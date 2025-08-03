@@ -38,7 +38,6 @@ namespace Domain.Entities
         public int YearsInOperation => CalculateYearsInOperation(FoundationDate);
 
         #region Métodos de Validação
-
         private static void ValidateConstructorInputs(
             string name,           
             Country country,
@@ -71,8 +70,7 @@ namespace Domain.Entities
         }
         #endregion
 
-        #region Métodos de Negócio
-
+        #region Métodos de Negócio - Informações Básiscas
         public void UpdateBasicInfo(string name, string? history = null)
         {
             ValidateBasicInfoUpdate(name, history);
@@ -110,6 +108,7 @@ namespace Domain.Entities
         }
         #endregion
 
+        #region Métodos de Negócio - Regras Calculadas
         private static int CalculateYearsInOperation(DateTime foundationDate)
         {
             var today = DateTime.Today;
@@ -122,5 +121,6 @@ namespace Domain.Entities
         {
             return $"{Name} (Fundado em {FoundationDate.Year}) - {Country.Name}";
         }
+        #endregion
     }
 }
