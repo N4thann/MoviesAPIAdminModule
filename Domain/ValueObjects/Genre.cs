@@ -29,7 +29,7 @@ namespace Domain.ValueObjects
             yield return Name.ToLowerInvariant();
         }
 
-        public override string ToString() => Name;
+        public override string ToString() => $"Name: {Name} / Description: {Description}";
 
         // Factory methods
         public static Genre Action => new("Action", "Fast-paced films with physical stunts and challenges");

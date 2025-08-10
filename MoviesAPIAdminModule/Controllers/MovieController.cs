@@ -5,6 +5,8 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Movie;
 using Application.Queries.Studio;
+using Domain.Entities;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Swashbuckle.AspNetCore.Annotations;
@@ -51,6 +53,28 @@ namespace MoviesAPIAdminModule.Controllers
             return CreatedAtAction(nameof(GetByIdBasicInformation),
                 new { id = response.Id },
                 response);
+        }
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(typeof(MovieInfoBasicResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Atualiza parcialmente um filme com o JsonPatchDocument", Tags = new[] { "Movie Commands" })]
+        public async Task<IActionResult> UpdatePatchMovie(Guid id, [FromBody] JsonPatchDocument<Movie> patchDoc, CancellationToken cancellationToken)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest("Patch document cannot be null.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var command = new PatchMovieCommand(id, patchDoc);
+            var response = await _mediator.Send<PatchMovieCommand, MovieInfoBasicResponse>(command, cancellationToken);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]

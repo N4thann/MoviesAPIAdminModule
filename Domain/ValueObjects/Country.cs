@@ -27,7 +27,7 @@ namespace Domain.ValueObjects
             yield return Code;
         }
 
-        public override string ToString() => Name;
+        public override string ToString() => $"Name: {Name} / Code: {Code}";
 
         //Factory Methods
         public static Country Brazil => new("Brazil", "BR");

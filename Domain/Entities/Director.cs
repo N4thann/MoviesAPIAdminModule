@@ -93,6 +93,9 @@ namespace Domain.Entities
             Country = country;
             UpdatedAt = DateTime.Now;
         }
+        #endregion
+
+        #region Métodos de Negócio - Status
 
         public void Activate()
         {
@@ -105,6 +108,7 @@ namespace Domain.Entities
             IsActive = false;
             UpdatedAt = DateTime.UtcNow;
         }
+
         #endregion
 
         #region Métodos de Negócio - Regras Calculadas

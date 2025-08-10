@@ -36,10 +36,10 @@ namespace Domain.ValueObjects
         {
             return Currency switch
             {
-                "USD" => $"${Amount:N2}",
-                "BRL" => $"R${Amount:N2}",
-                "EUR" => $"€{Amount:N2}",
-                "GBP" => $"£{Amount:N2}",
+                "USD" => $"${Amount:N2} {Currency}",
+                "BRL" => $"R${Amount:N2} {Currency}",
+                "EUR" => $"€{Amount:N2} {Currency}",
+                "GBP" => $"£{Amount:N2} {Currency}",
                 _ => $"{Amount:N2} {Currency}"
             };
         }

@@ -94,7 +94,9 @@ namespace Domain.Entities
             FoundationDate = foundationDate.Date;
             UpdatedAt = DateTime.UtcNow;
         }
+        #endregion
 
+        #region Métodos de Negócio - Status
         public void Activate()
         {
             IsActive = true;

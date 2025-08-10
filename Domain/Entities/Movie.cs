@@ -183,6 +183,29 @@ namespace Domain.Entities
             BoxOffice = boxOffice;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public void UpdateGenreInfo(Genre genre)
+        {
+            Validate.NotNull(genre, nameof(genre));
+
+            Genre = genre;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateDirectorAndStudioInfo(Guid directorId, Guid studioId)
+        {
+            StudioId = studioId;
+            DirectorId = directorId;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateCountry(Country country)
+        {
+            Validate.NotNull(country, nameof(country));
+            Country = country;
+            UpdatedAt = DateTime.Now;
+        }
+
         #endregion
 
         #region Métodos de Negócio - Prêmios
