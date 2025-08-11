@@ -62,7 +62,6 @@ namespace Domain.Entities
             Rating = Rating.CreateEmpty(10);
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
-            IsActive = true;
         }
 
         // Propriedades principais
@@ -85,7 +84,6 @@ namespace Domain.Entities
         // Propriedades de controle
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
-        public bool IsActive { get; private set; }
 
         public IReadOnlyCollection<Award> Awards => _awards.AsReadOnly();
         public IReadOnlyCollection<MovieImage> Images => _images.AsReadOnly();
@@ -355,22 +353,6 @@ namespace Domain.Entities
             Validate.GreaterThan((int)totalSum, -1, nameof(totalSum));
 
             Rating = new Rating(totalSum, votesCount, 10);
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        #endregion
-
-        #region Métodos de Negócio - Status
-
-        public void Activate()
-        {
-            IsActive = true;
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void Deactivate()
-        {
-            IsActive = false;
             UpdatedAt = DateTime.UtcNow;
         }
 

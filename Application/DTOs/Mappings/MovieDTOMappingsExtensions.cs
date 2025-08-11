@@ -5,11 +5,11 @@ namespace Application.DTOs.Mappings
 {
     public static class MovieDTOMappingsExtensions
     {
-        public static MovieInfoBasicResponse? ToMovieDTO(this Movie movie)
+        public static MovieBasicInfoResponse? ToMovieDTO(this Movie movie)
         {
             if (movie == null) throw new InvalidOperationException($"Cannot map a null {typeof(Movie)} entity to {typeof(DirectorInfoResponse)}. The provided 'director' object is null.");
 
-            return new MovieInfoBasicResponse(
+            return new MovieBasicInfoResponse(
                 movie.Id,
                 movie.Name,
                 movie.OriginalTitle,
@@ -20,7 +20,6 @@ namespace Application.DTOs.Mappings
                 movie.Genre.ToString(),
                 movie.BoxOffice.ToString(),
                 movie.Budget.ToString(),
-                movie.IsActive,
                 movie.CreatedAt,
                 movie.UpdatedAt,
                 movie.HasPoster,

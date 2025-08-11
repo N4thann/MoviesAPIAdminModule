@@ -21,9 +21,6 @@ namespace Infraestructure.EntitiesConfigurations
             builder.Property(m => m.ReleaseYear)
                    .IsRequired();
 
-            builder.Property(m => m.IsActive)
-                   .IsRequired();
-
             builder.Property(m => m.CreatedAt)
                    .IsRequired();
 

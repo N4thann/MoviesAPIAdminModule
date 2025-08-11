@@ -7,5 +7,5 @@ namespace Application.Commands.Movie
     public record PatchMovieCommand(
         Guid Id,
         JsonPatchDocument<Domain.Entities.Movie> PatchDocument
-        ) : ICommand<MovieInfoBasicResponse>;
+        ) : ICommand<MovieBasicInfoResponse>;
 }

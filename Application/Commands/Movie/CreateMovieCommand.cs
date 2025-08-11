@@ -19,5 +19,5 @@ namespace Application.Commands.Movie
         string BudgetCurrency,
         Guid DirectorId,
         Guid StudioId
-        ) : ICommand<MovieInfoBasicResponse>;
+        ) : ICommand<MovieBasicInfoResponse>;
 }

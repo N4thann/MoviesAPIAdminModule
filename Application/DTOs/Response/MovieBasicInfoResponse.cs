@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs.Response
 {
-    public record class MovieInfoBasicResponse(
+    public record class MovieBasicInfoResponse(
         Guid Id,
         string Title,
         string OriginalTitle,
@@ -11,7 +11,6 @@
         string GenreToString,
         string BoxOfficeToString,
         string BudgetToString,
-        bool IsActive,
         DateTime CreatedAt,
         DateTime UpdatedAt,
         bool HasPoster,

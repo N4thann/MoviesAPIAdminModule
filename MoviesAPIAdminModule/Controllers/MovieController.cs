@@ -1,10 +1,8 @@
-﻿using Application.Commands.Director;
-using Application.Commands.Movie;
+﻿using Application.Commands.Movie;
 using Application.DTOs.Request.Movie;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Movie;
-using Application.Queries.Studio;
 using Domain.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +21,7 @@ namespace MoviesAPIAdminModule.Controllers
         public MovieController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
-        [ProducesResponseType(typeof(MovieInfoBasicResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(MovieBasicInfoResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -48,7 +46,7 @@ namespace MoviesAPIAdminModule.Controllers
                 request.StudioId
                 );
 
-            var response = await _mediator.Send<CreateMovieCommand, MovieInfoBasicResponse>(command, cancellationToken);
+            var response = await _mediator.Send<CreateMovieCommand, MovieBasicInfoResponse>(command, cancellationToken);
 
             return CreatedAtAction(nameof(GetByIdBasicInformation),
                 new { id = response.Id },
@@ -56,7 +54,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(MovieInfoBasicResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MovieBasicInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -73,12 +71,12 @@ namespace MoviesAPIAdminModule.Controllers
                 return BadRequest(ModelState);
             }
             var command = new PatchMovieCommand(id, patchDoc);
-            var response = await _mediator.Send<PatchMovieCommand, MovieInfoBasicResponse>(command, cancellationToken);
+            var response = await _mediator.Send<PatchMovieCommand, MovieBasicInfoResponse>(command, cancellationToken);
             return Ok(response);
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(MovieInfoBasicResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MovieBasicInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -87,7 +85,7 @@ namespace MoviesAPIAdminModule.Controllers
         {
 
             var command = new GetMovieByIdQuery(id);
-            var response = await _mediator.Query<GetMovieByIdQuery, MovieInfoBasicResponse>(command, cancellationToken);
+            var response = await _mediator.Query<GetMovieByIdQuery, MovieBasicInfoResponse>(command, cancellationToken);
 
             return Ok(response);
         }
