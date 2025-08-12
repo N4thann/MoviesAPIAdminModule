@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
+using Pandorax.PagedList;
 using Swashbuckle.AspNetCore.Annotations;
-using X.PagedList;
 
 namespace MoviesAPIAdminModule.Controllers
 {
@@ -103,7 +103,7 @@ namespace MoviesAPIAdminModule.Controllers
             {
                 response.Count,
                 response.PageSize,
-                response.PageCount,
+                response.PageIndex,
                 response.TotalItemCount,
                 response.HasNextPage,
                 response.HasPreviousPage
@@ -113,6 +113,7 @@ namespace MoviesAPIAdminModule.Controllers
 
             return Ok(response);
         }
+
         [HttpGet("filtered")]
         [ProducesResponseType(typeof(IPagedList<DirectorInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -135,7 +136,8 @@ namespace MoviesAPIAdminModule.Controllers
             {
                 response.Count,
                 response.PageSize,
-                response.PageCount,
+                response.PageIndex,
+                response.TotalPageCount,
                 response.TotalItemCount,
                 response.HasNextPage,
                 response.HasPreviousPage

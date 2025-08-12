@@ -1,11 +1,11 @@
-﻿using Application.Common;
-using Application.DTOs.Mappings;
+﻿using Application.DTOs.Mappings;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Director;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
-using X.PagedList;
+using Pandorax.PagedList;
+using Pandorax.PagedList.EntityFrameworkCore;
 
 namespace Application.UseCases.Directors
 {
@@ -20,7 +20,7 @@ namespace Application.UseCases.Directors
             var directors = _repository.GetAllQueryable();
 
             if (!string.IsNullOrEmpty(query.Name))
-                directors = directors.Where(d => d.Name.Contains(query.Name));//Não precise de StringComparison.OrdinalIgnoreCase nem nada do tipo, o banco de dados já aborda case-insensitive
+                directors = directors.Where(d => d.Name.Contains(query.Name));
             if (!string.IsNullOrEmpty(query.CountryName))
                 directors = directors.Where(d => d.Country.Name.Contains(query.CountryName));
             if (query.AgeBegin.HasValue)
@@ -38,14 +38,7 @@ namespace Application.UseCases.Directors
 
             directors = directors.OrderBy(d => d.Name);
 
-            //Implementação antiga antes de implementar o pacote X.PagedList para tornar o método de paginação assíncrona
-            //var directorsPaged = PagedList<Director>.ToPagedList(
-            //    directors,
-            //    query.Parameters.PageNumber,
-            //    query.Parameters.PageSize
-            //    );
-
-            var directorsPaged = await directors.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize);
+            var directorsPaged = await directors.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize, cancellationToken);
 
             try
             {

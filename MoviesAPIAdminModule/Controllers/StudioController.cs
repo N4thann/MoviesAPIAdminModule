@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
+using Pandorax.PagedList;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
@@ -60,23 +61,24 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(PagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista todos os estúdios", Tags = new[] { "Studio Queries" })]
         public async Task<IActionResult> GetAllPagination([FromQuery] StudioParametersRequest parameters, CancellationToken cancellationToken)
         {
             var query = new ListStudiosQuery(parameters);
-            var response = await _mediator.Query<ListStudiosQuery, PagedList<StudioInfoResponse>>(query, cancellationToken);
+            var response = await _mediator.Query<ListStudiosQuery, IPagedList<StudioInfoResponse>>(query, cancellationToken);
 
             var metadata = new
             {
-                response.TotalCount,
+                response.Count,
                 response.PageSize,
-                response.CurrentPage,
-                response.TotalPages,
-                response.HasNext,
-                response.HasPrevious
+                response.PageIndex,
+                response.TotalPageCount,
+                response.TotalItemCount,
+                response.HasNextPage,
+                response.HasPreviousPage
             };
 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
@@ -85,7 +87,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet("filtered")]
-        [ProducesResponseType(typeof(IEnumerable<StudioInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista estúdios com filtros e paginação", Tags = new[] { "Studio Queries" })]
@@ -100,16 +102,17 @@ namespace MoviesAPIAdminModule.Controllers
                 request
                 );
 
-            var response = await _mediator.Query<StudioFilterQuery, PagedList<StudioInfoResponse>>(query, cancellationToken);
+            var response = await _mediator.Query<StudioFilterQuery, IPagedList<StudioInfoResponse>>(query, cancellationToken);
 
             var metadata = new
             {
-                response.TotalCount,
+                response.Count,
                 response.PageSize,
-                response.CurrentPage,
-                response.TotalPages,
-                response.HasNext,
-                response.HasPrevious
+                response.PageIndex,
+                response.TotalPageCount,
+                response.TotalItemCount,
+                response.HasNextPage,
+                response.HasPreviousPage
             };
 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));

@@ -1,6 +1,6 @@
-﻿using Application.Common;
-using Application.DTOs.Response;
+﻿using Application.DTOs.Response;
 using Domain.Entities;
+using Pandorax.PagedList;
 
 namespace Application.DTOs.Mappings
 {
@@ -24,7 +24,7 @@ namespace Application.DTOs.Mappings
                 );
         }
 
-        public static PagedList<StudioInfoResponse> ToStudioPagedListDTO(this PagedList<Studio> studiosPagedList)
+        public static IPagedList<StudioInfoResponse> ToStudioPagedListDTO(this IPagedList<Studio> studiosPagedList)
         {
             if (studiosPagedList == null)
                 throw new InvalidOperationException("Cannot map a null PagedList<Studio> to PagedList<StudioInfoResponse>. The provided 'studiosPagedList' object is null.");
@@ -32,10 +32,10 @@ namespace Application.DTOs.Mappings
             var studiosInfoResponses = studiosPagedList.Select(d => d.ToStudioDTO()).ToList();
 
             return new PagedList<StudioInfoResponse>(
-                studiosInfoResponses!, // O ToStudioDTO pode retornar null, então use ! se tiver certeza que não será null ou adicione tratamento
-                studiosPagedList.TotalCount,
-                studiosPagedList.CurrentPage,
-                studiosPagedList.PageSize
+                studiosInfoResponses!, 
+                studiosPagedList.PageIndex,
+                studiosPagedList.PageSize,
+                studiosPagedList.TotalItemCount
             );
         }
     }

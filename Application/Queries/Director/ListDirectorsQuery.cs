@@ -1,8 +1,7 @@
-﻿using Application.Common;
-using Application.Common.Parameters;
+﻿using Application.Common.Parameters;
 using Application.DTOs.Response;
 using Application.Interfaces;
-using X.PagedList;
+using Pandorax.PagedList;
 
 namespace Application.Queries.Director
 {

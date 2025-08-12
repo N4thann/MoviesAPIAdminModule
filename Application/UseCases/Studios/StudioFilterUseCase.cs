@@ -5,16 +5,18 @@ using Application.Interfaces;
 using Application.Queries.Studio;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
+using Pandorax.PagedList;
+using Pandorax.PagedList.EntityFrameworkCore;
 
 namespace Application.UseCases.Studios
 {
-    public class StudioFilterUseCase : IQueryHandler<StudioFilterQuery, PagedList<StudioInfoResponse>>
+    public class StudioFilterUseCase : IQueryHandler<StudioFilterQuery, IPagedList<StudioInfoResponse>>
     {
         private readonly IRepository<Studio> _repository;
 
         public StudioFilterUseCase(IRepository<Studio> repository) => _repository = repository;
 
-        public async Task<PagedList<StudioInfoResponse>> Handle(StudioFilterQuery query, CancellationToken cancellationToken)
+        public async Task<IPagedList<StudioInfoResponse>> Handle(StudioFilterQuery query, CancellationToken cancellationToken)
         {
             var studios = _repository.GetAllQueryable();
 
@@ -31,15 +33,18 @@ namespace Application.UseCases.Studios
 
             studios = studios.OrderBy(s => s.Name);
 
-            var studiosPaged = PagedList<Studio>.ToPagedList(
-                studios,
-                query.Parameters.PageNumber,
-                query.Parameters.PageSize
-            );
+            var studiosPaged = await studios.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize, cancellationToken);
 
-            var response = studiosPaged.ToStudioPagedListDTO();
+            try
+            {
+                var response = studiosPaged.ToStudioPagedListDTO();
 
-            return response;
+                return response;
+            }
+            catch(InvalidOperationException)
+            {
+                throw;
+            }           
         }
     }
 }

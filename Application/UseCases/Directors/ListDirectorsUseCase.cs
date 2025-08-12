@@ -4,7 +4,8 @@ using Application.Interfaces;
 using Application.Queries.Director;
 using Domain.Entities;
 using Domain.SeedWork.Interfaces;
-using X.PagedList;
+using Pandorax.PagedList;
+using Pandorax.PagedList.EntityFrameworkCore;
 
 namespace Application.UseCases.Directors
 {
@@ -22,7 +23,7 @@ namespace Application.UseCases.Directors
             //var directorsPaged = PagedList<Director>.ToPagedList(directors, 
             //    query.Parameters.PageNumber, query.Parameters.PageSize);
 
-            var directorsPaged = await directors.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize);
+            var directorsPaged = await directors.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize, cancellationToken);
 
             try
             {

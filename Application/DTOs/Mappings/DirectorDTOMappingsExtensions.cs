@@ -1,7 +1,7 @@
-﻿using Application.Common;
-using Application.DTOs.Response;
+﻿using Application.DTOs.Response;
 using Domain.Entities;
-using X.PagedList;
+using Pandorax.PagedList;
+
 
 namespace Application.DTOs.Mappings
 {
@@ -32,11 +32,9 @@ namespace Application.DTOs.Mappings
 
             var directorInfoResponses = directorsPagedList.Select(d => d.ToDirectorDTO()).ToList();
 
-            // Usa StaticPagedList para criar um IPagedList<DirectorInfoResponse>
-            // Ele recria a lista paginada com os metadados existentes e os novos itens mapeados.
-            return new StaticPagedList<DirectorInfoResponse>(
+            return new PagedList<DirectorInfoResponse>(
                 directorInfoResponses!,
-                directorsPagedList.PageNumber,
+                directorsPagedList.PageIndex,
                 directorsPagedList.PageSize,
                 directorsPagedList.TotalItemCount
             );

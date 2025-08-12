@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.DTOs.Response;
 using Application.Interfaces;
+using Pandorax.PagedList;
 
 namespace Application.Queries.Studio
 {
@@ -11,5 +12,5 @@ namespace Application.Queries.Studio
         int? FoundationYearEnd,
         bool Active,
         QueryStringParameters Parameters
-    ) : IQuery<PagedList<StudioInfoResponse>>;
+    ) : IQuery<IPagedList<StudioInfoResponse>>;
 }
