@@ -9,7 +9,7 @@ using Domain.ValueObjects;
 
 namespace Application.UseCases.Movies
 {
-    public class CreateMovieUseCase : ICommandHandler<CreateMovieCommand, MovieInfoBasicResponse>
+    public class CreateMovieUseCase : ICommandHandler<CreateMovieCommand, MovieBasicInfoResponse>
     {
         private readonly IRepository<Movie> _repositoryMovie;
         private readonly IRepository<Studio> _repositoryStudio;
@@ -27,7 +27,7 @@ namespace Application.UseCases.Movies
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<MovieInfoBasicResponse> Handle(CreateMovieCommand command, CancellationToken cancellationToken)
+        public async Task<MovieBasicInfoResponse> Handle(CreateMovieCommand command, CancellationToken cancellationToken)
         {
             try
             {

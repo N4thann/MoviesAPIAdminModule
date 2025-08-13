@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Application.UseCases.Movies
 {
-    public class PatchMovieUseCase : ICommandHandler<PatchMovieCommand, MovieInfoBasicResponse>
+    public class PatchMovieUseCase : ICommandHandler<PatchMovieCommand, MovieBasicInfoResponse>
     {
         private readonly IRepository<Movie> _repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,7 +22,7 @@ namespace Application.UseCases.Movies
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<MovieInfoBasicResponse> Handle(PatchMovieCommand command, CancellationToken cancellationToken)
+        public async Task<MovieBasicInfoResponse> Handle(PatchMovieCommand command, CancellationToken cancellationToken)
         {
             var movie = await _repository.GetByIdAsync(command.Id);
 
@@ -41,7 +41,6 @@ namespace Application.UseCases.Movies
             Country? newCountry = null;
             Guid? newDirectorId = null;
             Guid? newStudioId = null;
-            bool? newIsActiveState = null;
 
             // Flags para controlar quais campos foram explicitamente alterados no patch
             bool basicInfoPatched = false;
@@ -208,12 +207,6 @@ namespace Application.UseCases.Movies
                             throw new ValidationException("studioId", "Patch value for 'studioId' must be a valid Guid.");
                         }
                         break;
-                    case "isactive":
-                        if (op.value is bool isActiveBool)
-                            newIsActiveState = isActiveBool;
-                        else
-                            throw new ValidationException("isActive", "Patch value for 'isActive' must be a boolean (true/false).");
-                        break;
                     default:
                         throw new InvalidOperationException($"Patch operation for path '{op.path}' is not supported.");
                 }
@@ -252,14 +245,6 @@ namespace Application.UseCases.Movies
                     var directorIdToUse = newDirectorId ?? movie.DirectorId;
                     var studioIdToUse = newStudioId ?? movie.StudioId;
                     movie.UpdateDirectorAndStudioInfo(directorIdToUse, studioIdToUse);
-                }
-
-                if (newIsActiveState.HasValue)
-                {
-                    if (newIsActiveState.Value)
-                        movie.Activate();
-                    else
-                        movie.Deactivate();
                 }
 
                 await _unitOfWork.Commit(cancellationToken);

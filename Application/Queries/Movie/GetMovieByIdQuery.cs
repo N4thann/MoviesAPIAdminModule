@@ -5,5 +5,5 @@ namespace Application.Queries.Movie
 {
     public record class GetMovieByIdQuery(
         Guid Id
-        ) : IQuery<MovieInfoBasicResponse>;
+        ) : IQuery<MovieBasicInfoResponse>;
 }

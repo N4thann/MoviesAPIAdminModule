@@ -1,12 +1,16 @@
 ﻿using Application.Commands.Movie;
 using Application.DTOs.Request.Movie;
+using Application.DTOs.Request.Studio;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Movie;
+using Application.Queries.Studio;
 using Domain.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
+using Newtonsoft.Json;
+using Pandorax.PagedList;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
@@ -86,6 +90,69 @@ namespace MoviesAPIAdminModule.Controllers
 
             var command = new GetMovieByIdQuery(id);
             var response = await _mediator.Query<GetMovieByIdQuery, MovieBasicInfoResponse>(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Lista todos os filmes", Tags = new[] { "Movie Queries" })]
+        public async Task<IActionResult> GetAllPagination([FromQuery] MovieParametersRequest parameters, CancellationToken cancellationToken)
+        {
+            var query = new ListMoviesQuery(parameters);
+            var response = await _mediator.Query<ListMoviesQuery, IPagedList<MovieBasicInfoResponse>>(query, cancellationToken);
+
+            var metadata = new
+            {
+                response.Count,
+                response.PageSize,
+                response.PageIndex,
+                response.TotalPageCount,
+                response.TotalItemCount,
+                response.HasNextPage,
+                response.HasPreviousPage
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(response);
+        }
+
+        [HttpGet("filtered")]
+        [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Lista filmes com filtros e paginação", Tags = new[] { "Movie Queries" })]
+        public async Task<IActionResult> GetFilteredMovies([FromQuery] MovieBasicFilterRequest request, CancellationToken cancellationToken)
+        {
+            var query = new MovieBasicFilterQuery(
+                request.Title,
+                request.OriginalTitle,
+                request.CountryName,
+                request.ReleaseYearBegin,
+                request.ReleaseYearEnd,
+                request.DirectorName,
+                request.StudioName,
+                request.GenreName,
+                request
+                );
+
+            var response = await _mediator.Query<MovieBasicFilterQuery, IPagedList<MovieBasicInfoResponse>>(query, cancellationToken);
+
+            var metadata = new
+            {
+                response.Count,
+                response.PageSize,
+                response.PageIndex,
+                response.TotalPageCount,
+                response.TotalItemCount,
+                response.HasNextPage,
+                response.HasPreviousPage
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(response);
         }

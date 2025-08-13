@@ -7,13 +7,13 @@ using Domain.SeedWork.Interfaces;
 
 namespace Application.UseCases.Movies
 {
-    public class GetMovieByIdUseCase : IQueryHandler<GetMovieByIdQuery, MovieInfoBasicResponse>
+    public class GetMovieByIdUseCase : IQueryHandler<GetMovieByIdQuery, MovieBasicInfoResponse>
     {
         private readonly IRepository<Movie> _repository;
 
         public GetMovieByIdUseCase(IRepository<Movie> repository) => _repository = repository;
 
-        public async Task<MovieInfoBasicResponse> Handle(GetMovieByIdQuery query, CancellationToken cancellationToken)
+        public async Task<MovieBasicInfoResponse> Handle(GetMovieByIdQuery query, CancellationToken cancellationToken)
         {
             try
             {
