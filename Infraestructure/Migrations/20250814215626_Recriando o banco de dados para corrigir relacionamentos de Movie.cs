@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class RecriandoobancodedadosparacorrigirrelacionamentosdeMovie : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,7 +39,7 @@ namespace Infraestructure.Migrations
                     CountryName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CountryCode = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
                     FoundationDate = table.Column<DateTime>(type: "date", nullable: false),
-                    History = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    History = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -74,7 +74,6 @@ namespace Infraestructure.Migrations
                     StudioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -120,8 +119,7 @@ namespace Infraestructure.Migrations
                 name: "MovieImages",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AltText = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),

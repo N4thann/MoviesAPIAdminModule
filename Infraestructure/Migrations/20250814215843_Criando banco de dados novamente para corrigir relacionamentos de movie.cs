@@ -5,7 +5,7 @@
 namespace Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class CorringindoaentideGenre : Migration
+    public partial class Criandobancodedadosnovamenteparacorrigirrelacionamentosdemovie : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

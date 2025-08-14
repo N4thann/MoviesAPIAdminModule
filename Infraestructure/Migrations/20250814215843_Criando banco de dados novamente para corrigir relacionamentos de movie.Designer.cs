@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250630122615_Correção no atributo History de Studio")]
-    partial class CorreçãonoatributoHistorydeStudio
+    [Migration("20250814215843_Criando banco de dados novamente para corrigir relacionamentos de movie")]
+    partial class Criandobancodedadosnovamenteparacorrigirrelacionamentosdemovie
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -72,9 +72,6 @@ namespace Infraestructure.Migrations
 
                     b.Property<Guid>("DirectorId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -334,11 +331,9 @@ namespace Infraestructure.Migrations
 
                     b.OwnsMany("Domain.ValueObjects.MovieImage", "Images", b1 =>
                         {
-                            b1.Property<int>("Id")
+                            b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("AltText")
                                 .IsRequired()

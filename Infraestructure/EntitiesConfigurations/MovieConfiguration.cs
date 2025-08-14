@@ -113,46 +113,43 @@ namespace Infraestructure.EntitiesConfigurations
                               .IsRequired();
             });
 
+            // Owned Collections
             builder.OwnsMany(m => m.Awards, awardBuilder =>
             {
-                awardBuilder.ToTable("MovieAwards"); // Tabela para a coleção de Awards
-                awardBuilder.Property(a => a.Name)
-                            .HasMaxLength(200)
-                            .IsRequired();
+                awardBuilder.ToTable("MovieAwards"); // Define o nome da tabela
 
-                awardBuilder.Property(a => a.Institution)
-                            .HasMaxLength(200)
-                            .IsRequired();
+                // Define a chave primária da tabela de junção. Essencial para EF Core.
+                awardBuilder.WithOwner().HasForeignKey("MovieId");
+                awardBuilder.HasKey("Id"); // Chave primária da própria linha de prêmio
+                awardBuilder.Property<int>("Id").ValueGeneratedOnAdd();
 
-                awardBuilder.Property(a => a.Year)
-                            .IsRequired();
-
-                awardBuilder.HasKey("Id"); // Chave primária interna para a Owned Entity Type
-                awardBuilder.Property("Id").ValueGeneratedOnAdd(); // Id será gerado para cada item da coleção
-                awardBuilder.WithOwner().HasForeignKey("MovieId"); // Chave estrangeira de volta para Movie
+                // Configura as propriedades do Value Object
+                awardBuilder.Property(a => a.Name).HasMaxLength(200).IsRequired();
+                awardBuilder.Property(a => a.Institution).HasMaxLength(200).IsRequired();
+                awardBuilder.Property(a => a.Year).IsRequired();
             });
 
             builder.OwnsMany(m => m.Images, imageBuilder =>
             {
-            imageBuilder.ToTable("MovieImages"); // Tabela para a coleção de MovieImages
-            imageBuilder.Property(i => i.Url)
-                        .IsRequired();
-            imageBuilder.Property(i => i.AltText)
-                        .HasMaxLength(200);
-                imageBuilder.Property(i => i.Type)
-                            .HasConversion<string>() // Armazena o enum como string
-                            .IsRequired();
-            imageBuilder.HasKey("Id"); // Chave primária interna para a Owned Entity Type
-            imageBuilder.Property("Id").ValueGeneratedOnAdd(); // Id será gerado para cada item da coleção
-            imageBuilder.WithOwner().HasForeignKey("MovieId"); // Chave estrangeira de volta para Movie
-        });
+                imageBuilder.ToTable("MovieImages"); // Define o nome da tabela
 
-        builder.HasOne(m => m.Director)
+                imageBuilder.WithOwner().HasForeignKey("MovieId");
+                imageBuilder.HasKey("Id"); // Chave primária da própria linha de imagem
+                imageBuilder.Property<Guid>("Id").ValueGeneratedOnAdd();
+
+                imageBuilder.Property(i => i.Url).IsRequired();
+                imageBuilder.Property(i => i.AltText).HasMaxLength(200);
+                imageBuilder.Property(i => i.Type)
+                            .HasConversion<string>() // Boa prática para armazenar enums
+                            .IsRequired();
+            });
+
+            builder.HasOne(m => m.Director)
                    .WithMany()
                    .HasForeignKey(m => m.DirectorId)
                    .IsRequired();
 
-        builder.HasOne(m => m.Studio)
+            builder.HasOne(m => m.Studio)
                    .WithMany()
                    .HasForeignKey(m => m.StudioId)
                    .IsRequired();
