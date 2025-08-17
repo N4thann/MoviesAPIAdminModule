@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -116,16 +117,41 @@ namespace Infraestructure.EntitiesConfigurations
             // Owned Collections
             builder.OwnsMany(m => m.Awards, awardBuilder =>
             {
-                awardBuilder.ToTable("MovieAwards"); // Define o nome da tabela
+                awardBuilder.ToTable("MovieAwards");
 
-                // Define a chave primária da tabela de junção. Essencial para EF Core.
                 awardBuilder.WithOwner().HasForeignKey("MovieId");
-                awardBuilder.HasKey("Id"); // Chave primária da própria linha de prêmio
+                awardBuilder.HasKey("Id");
                 awardBuilder.Property<int>("Id").ValueGeneratedOnAdd();
 
-                // Configura as propriedades do Value Object
-                awardBuilder.Property(a => a.Name).HasMaxLength(200).IsRequired();
-                awardBuilder.Property(a => a.Institution).HasMaxLength(200).IsRequired();
+                // --- INÍCIO DA MUDANÇA ---
+
+                // Mapeia a propriedade 'Category' (que é um objeto AwardCategory)
+                awardBuilder.Property(a => a.Category)
+                    .HasColumnName("AwardCategoryId") // Nome da coluna no banco
+                    .IsRequired()
+                    .HasConversion(
+                        // Função para converter o objeto (AwardCategory) para o valor do banco (int)
+                        category => category.Id,
+
+                        // Função para converter o valor do banco (int) de volta para o objeto (AwardCategory)
+                        id => AwardCategory.FromValue<AwardCategory>(id)
+                    );
+
+                // Mapeia a propriedade 'Institution' (que é um objeto Institution)
+                awardBuilder.Property(a => a.Institution)
+                    .HasColumnName("InstitutionId") // Nome da coluna no banco
+                    .IsRequired()
+                    .HasConversion(
+                        // Objeto -> Banco
+                        institution => institution.Id,
+
+                        // Banco -> Objeto
+                        id => Institution.FromValue<Institution>(id)
+                    );
+
+                // --- FIM DA MUDANÇA ---
+
+                // A propriedade 'Year' continua sendo um tipo primitivo, então o mapeamento é o mesmo
                 awardBuilder.Property(a => a.Year).IsRequired();
             });
 

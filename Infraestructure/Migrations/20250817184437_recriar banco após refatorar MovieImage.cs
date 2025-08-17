@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RecriandoobancodedadosparacorrigirrelacionamentosdeMovie : Migration
+    public partial class recriarbancoapósrefatorarMovieImage : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -99,8 +99,8 @@ namespace Infraestructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Institution = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    AwardCategoryId = table.Column<int>(type: "int", nullable: false),
+                    InstitutionId = table.Column<int>(type: "int", nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
                     MovieId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },

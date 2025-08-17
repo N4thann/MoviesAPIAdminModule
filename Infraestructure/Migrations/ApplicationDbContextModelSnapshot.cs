@@ -258,18 +258,16 @@ namespace Infraestructure.Migrations
 
                             SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
 
-                            b1.Property<string>("Institution")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)");
+                            b1.Property<int>("Category")
+                                .HasColumnType("int")
+                                .HasColumnName("AwardCategoryId");
+
+                            b1.Property<int>("Institution")
+                                .HasColumnType("int")
+                                .HasColumnName("InstitutionId");
 
                             b1.Property<Guid>("MovieId")
                                 .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)");
 
                             b1.Property<int>("Year")
                                 .HasColumnType("int");

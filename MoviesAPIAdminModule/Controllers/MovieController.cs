@@ -169,7 +169,7 @@ namespace MoviesAPIAdminModule.Controllers
             return NoContent();
         }
 
-        [HttpPost("add-award/{Id}")]
+        [HttpPost("{Id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
@@ -179,8 +179,8 @@ namespace MoviesAPIAdminModule.Controllers
         {
             var command = new AddAwardCommand(
                 Id,
-                request.Name,
-                request.Institution,
+                request.CategoryId,
+                request.InstitutionId,
                 request.Year
                 );
 
@@ -189,7 +189,8 @@ namespace MoviesAPIAdminModule.Controllers
             return NoContent();
         }
 
-        [HttpPost("upload-image/{Id}")]
+
+        [HttpPost("{Id}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status406NotAcceptable)]

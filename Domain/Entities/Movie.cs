@@ -227,12 +227,6 @@ namespace Domain.Entities
 
             UpdatedAt = DateTime.UtcNow;
         }
-
-        public bool HasAwardFromInstitution(string institution)
-        {
-            Validate.NotNullOrEmpty(institution, nameof(institution));
-            return _awards.Any(a => a.Institution.Equals(institution, StringComparison.OrdinalIgnoreCase));
-        }
         #endregion
 
         #region Métodos de Negócio - Imagens

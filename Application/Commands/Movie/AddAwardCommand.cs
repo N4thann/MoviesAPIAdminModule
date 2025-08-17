@@ -4,8 +4,8 @@ namespace Application.Commands.Movie
 {
     public record class AddAwardCommand(
         Guid Id,
-        string Name,
-        string Institution,
+        int CategoryId,   
+        int InstitutionId, 
         int Year
     ) : ICommand;
 }

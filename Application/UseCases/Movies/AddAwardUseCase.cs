@@ -28,10 +28,12 @@ namespace Application.UseCases.Movies
                 throw new KeyNotFoundException($"Movie with ID {command.Id} not found.");
             }
 
-            var award = new Award(command.Name, command.Institution, command.Year);
+            var category = AwardCategory.FromValue<AwardCategory>(command.CategoryId);
+            var institution = Institution.FromValue<Institution>(command.InstitutionId);
+
+            var award = new Award(category, institution, command.Year);
 
             movie.AddAward(award);
-
             await _unitOfWork.Commit(cancellationToken);
         }
     }
