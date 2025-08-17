@@ -4,6 +4,7 @@ using Infraestructure.Context;
 using Infraestructure.Mediator;
 using Infraestructure.Persistence;
 using Infraestructure.Repository;
+using Infraestructure.Service;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -37,6 +38,15 @@ namespace MoviesAPIAdminModule
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+            // Deixe o código do S3 comentado para o futuro
+            /* 
+            services.AddAWSService<Amazon.S3.IAmazonS3>();
+            services.AddTransient<IFileStorageService, S3StorageService>();
+            */
+
+            // Ative a implementação local para desenvolvimento
+            services.AddTransient<IFileStorageService, LocalStorageService>();
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IDirectorRepository, DirectorRepository>();

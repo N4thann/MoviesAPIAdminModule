@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using MoviesAPIAdminModule;
 using MoviesAPIAdminModule.Extensions;
 using MoviesAPIAdminModule.Filters;
@@ -10,23 +11,22 @@ builder.Services.AddControllers(options =>{
     options.Filters.Add(typeof(ApiExceptionFilter));
 }).AddNewtonsoftJson();
 
+builder.Services.AddHttpContextAccessor(); // Necessário para o LocalStorageService
+
+//builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    // Esta linha é crucial para que o Swagger UI saiba qual versão da API ele deve exibir
-    // e para satisfazer a validação de "valid version field".
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "Movies API Admin Module", // Título da sua API
-        Version = "v1", // A versão da sua API, que resolve o erro "valid version field"
-        Description = "API para administração de filmes, diretores e estúdios.", // Descrição opcional
-        // Outras propriedades como Contact, License, etc., são opcionais
+        Title = "Movies API Admin Module",
+        Version = "v1",
+        Description = "API para administração de filmes, diretores e estúdios.",
     });
 
-    // Certifique-se de que esta linha esteja presente para habilitar os atributos [SwaggerOperation]
     c.EnableAnnotations();
 
-    // Verifique se a configuração para incluir os XML Comments também está lá e correta
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (System.IO.File.Exists(xmlPath))
@@ -54,7 +54,34 @@ if (app.Environment.IsDevelopment())
     app.ConfigureExceptionHandler();
 }
 
-app.UseHttpsRedirection();
+// ===== CONFIGURAÇÃO CORRIGIDA DE ARQUIVOS ESTÁTICOS =====
+
+// 1. Pega o caminho relativo do appsettings.json
+var staticFilesPath = builder.Configuration.GetValue<string>("FileStorageSettings:LocalUploadPath");
+
+if (string.IsNullOrEmpty(staticFilesPath))
+{
+    throw new InvalidOperationException("A chave 'FileStorageSettings:LocalUploadPath' não está configurada no appsettings.json.");
+}
+
+// 2. Monta o caminho físico completo usando a raiz do projeto (não a pasta bin)
+var physicalPath = Path.Combine(builder.Environment.ContentRootPath, staticFilesPath);
+
+// 3. Garante que o diretório exista no disco
+if (!Directory.Exists(physicalPath))
+{
+    Directory.CreateDirectory(physicalPath);
+}
+
+// 4. Configura o middleware para servir arquivos da pasta correta
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(physicalPath),
+    RequestPath = $"/{staticFilesPath.Replace("\\", "/")}"
+});
+
+
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
