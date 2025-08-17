@@ -18,5 +18,12 @@ namespace Infraestructure.Repository
                                  .Include(m => m.Images)
                                  .FirstOrDefaultAsync(m => m.Id == movieId);
         }
+
+        public async Task<Movie?> GetByIdWithAwardAsync(Guid movieId)
+        {
+            return await _context.Set<Movie>()
+                                 .Include(m => m.Awards)
+                                 .FirstOrDefaultAsync(m => m.Id == movieId);
+        }
     }
 }

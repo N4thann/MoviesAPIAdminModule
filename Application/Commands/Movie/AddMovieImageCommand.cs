@@ -14,7 +14,7 @@ namespace Application.Commands.Movie
     /// <param name="AltText">O texto alternativo para a imagem.</param>
     /// <returns>A URL pública da imagem salva.</returns>
     public record AddMovieImageCommand(
-        Guid MovieId,
+        Guid Id,
         Stream FileStream,
         string OriginalFileName,
         string ContentType,

@@ -22,11 +22,11 @@ public class AddMovieImageUseCase : ICommandHandler<AddMovieImageCommand, string
 
     public async Task<string> Handle(AddMovieImageCommand command, CancellationToken cancellationToken)
     {
-        var movie = await _movieRepository.GetByIdWithImagesAsync(command.MovieId);
+        var movie = await _movieRepository.GetByIdWithImagesAsync(command.Id);
 
         if (movie is null)
         {
-            throw new KeyNotFoundException($"Movie with ID {command.MovieId} not found.");
+            throw new KeyNotFoundException($"Movie with ID {command.Id} not found.");
         }
 
         var imageUrl = await _fileStorageService.SaveFileAsync(

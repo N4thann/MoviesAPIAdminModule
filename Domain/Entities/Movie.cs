@@ -398,7 +398,5 @@ namespace Domain.Entities
             return $"{Name} ({ReleaseYear}) - {Duration.ToString} - {Rating}";
         }
         #endregion
-
-
     }
 }

@@ -1,7 +1,5 @@
-﻿using Domain.Entities;
-using Domain.SeedWork;
+﻿using Domain.SeedWork;
 using Domain.SeedWork.Validation;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Domain.ValueObjects
 {
