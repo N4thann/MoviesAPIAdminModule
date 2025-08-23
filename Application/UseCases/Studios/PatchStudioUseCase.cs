@@ -100,43 +100,32 @@ namespace Application.UseCases.Studios
                 }
             }
 
-            try
+            if (namePatched || historyPatched)
             {
-                if (namePatched || historyPatched)
-                {
-                    studio.UpdateBasicInfo(
-                        newName ?? studio.Name,
-                        historyPatched ? newHistory : studio.History
-                    );
-                }
-
-                if (newCountry != null)
-                    studio.UpdateCountry(newCountry);
-
-                if (newFoundationDate.HasValue)
-                    studio.UpdateFoundationDate(newFoundationDate.Value);
-
-                if (newIsActiveState.HasValue)
-                {
-                    if (newIsActiveState.Value)
-                        studio.Activate();
-                    else
-                        studio.Deactivate();
-                }
-
-                await _unitOfWork.Commit(cancellationToken);
-
-                var response = studio.ToStudioDTO();
-                return response;
+                studio.UpdateBasicInfo(
+                    newName ?? studio.Name,
+                    historyPatched ? newHistory : studio.History
+                );
             }
-            catch (ValidationException)
+
+            if (newCountry != null)
+                studio.UpdateCountry(newCountry);
+
+            if (newFoundationDate.HasValue)
+                studio.UpdateFoundationDate(newFoundationDate.Value);
+
+            if (newIsActiveState.HasValue)
             {
-                throw;
+                if (newIsActiveState.Value)
+                    studio.Activate();
+                else
+                    studio.Deactivate();
             }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+
+            await _unitOfWork.Commit(cancellationToken);
+
+            var response = studio.ToStudioDTO();
+            return response;
         }
     }
 }

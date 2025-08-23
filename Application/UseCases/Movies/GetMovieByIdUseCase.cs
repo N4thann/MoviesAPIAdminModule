@@ -15,22 +15,14 @@ namespace Application.UseCases.Movies
 
         public async Task<MovieBasicInfoResponse> Handle(GetMovieByIdQuery query, CancellationToken cancellationToken)
         {
-            try
-            {
-                var movie = await _repository.GetByIdAsync(query.Id);
+            var movie = await _repository.GetByIdAsync(query.Id);
 
-                if (movie == null)
-                    throw new KeyNotFoundException($"Movie with ID {query.Id} not found.");
+            if (movie == null)
+                throw new KeyNotFoundException($"Movie with ID {query.Id} not found.");
 
-                var response = movie.ToMovieDTO();
+            var response = movie.ToMovieDTO();
 
-                return response;
-
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            return response;
         }
     }
 }

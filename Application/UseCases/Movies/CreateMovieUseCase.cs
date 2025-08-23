@@ -29,53 +29,42 @@ namespace Application.UseCases.Movies
 
         public async Task<MovieBasicInfoResponse> Handle(CreateMovieCommand command, CancellationToken cancellationToken)
         {
-            try
-            {
-                var country = new Country(command.CountryName, command.CountryCode);
-                var boxOffice = new Money(command.BoxOfficeAmount, command.BoxOfficeCurrency);
-                var budget = new Money(command.BudgetAmount, command.BudgetCurrency);
-                var genre = new Genre(command.GenreName, command.GenreDescription);
-                var duration = new Duration(command.DurationMinutes);
+            var country = new Country(command.CountryName, command.CountryCode);
+            var boxOffice = new Money(command.BoxOfficeAmount, command.BoxOfficeCurrency);
+            var budget = new Money(command.BudgetAmount, command.BudgetCurrency);
+            var genre = new Genre(command.GenreName, command.GenreDescription);
+            var duration = new Duration(command.DurationMinutes);
 
-                var studio = await _repositoryStudio.GetByIdAsync(command.StudioId);
-                var director = await _repositoryDirector.GetByIdAsync(command.DirectorId);
+            var studio = await _repositoryStudio.GetByIdAsync(command.StudioId);
+            var director = await _repositoryDirector.GetByIdAsync(command.DirectorId);
 
-                if (studio == null)
-                    throw new KeyNotFoundException($"Studio with ID {command.StudioId} not found.");
+            if (studio == null)
+                throw new KeyNotFoundException($"Studio with ID {command.StudioId} not found.");
 
-                if (director == null)
-                    throw new KeyNotFoundException($"Director with ID {command.DirectorId} not found.");
+            if (director == null)
+                throw new KeyNotFoundException($"Director with ID {command.DirectorId} not found.");
 
 
-                var movie = new Movie(
-                    command.Title,
-                    command.OriginalTitle,
-                    command.Synopsis,
-                    command.ReleaseYear,
-                    duration,
-                    country,
-                    studio,
-                    director,
-                    genre,
-                    boxOffice,
-                    budget
-                    );
+            var movie = new Movie(
+                command.Title,
+                command.OriginalTitle,
+                command.Synopsis,
+                command.ReleaseYear,
+                duration,
+                country,
+                studio,
+                director,
+                genre,
+                boxOffice,
+                budget
+                );
 
-                _repositoryMovie.Add(movie);
-                await _unitOfWork.Commit(cancellationToken);
+            _repositoryMovie.Add(movie);
+            await _unitOfWork.Commit(cancellationToken);
 
-                var response = movie.ToMovieDTO();
+            var response = movie.ToMovieDTO();
 
-                return response;
-            }
-            catch (ValidationException ex) 
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            return response;
         }
     }
 }

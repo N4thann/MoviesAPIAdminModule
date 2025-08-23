@@ -22,32 +22,21 @@ namespace Application.UseCases.Studios
 
         public async Task<StudioInfoResponse> Handle(CreateStudioCommand command, CancellationToken cancellationToken)
         {
-            try
-            {
-                var country = new Country(command.CountryName, command.CountryCode);
+            var country = new Country(command.CountryName, command.CountryCode);
 
-                var studio = new Studio(
-                    command.Name,
-                    country,
-                    command.FoundationDate,
-                    command.History
-                    );
+            var studio = new Studio(
+                command.Name,
+                country,
+                command.FoundationDate,
+                command.History
+                );
 
-                _repository.Add(studio);
-                await _unitOfWork.Commit(cancellationToken);
+            _repository.Add(studio);
+            await _unitOfWork.Commit(cancellationToken);
 
-                var response = studio.ToStudioDTO();
+            var response = studio.ToStudioDTO();
 
-                return response;
-            }
-            catch (ValidationException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            return response;
         }
 
     }

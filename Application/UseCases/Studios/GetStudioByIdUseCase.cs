@@ -15,21 +15,14 @@ namespace Application.UseCases.Studios
 
         public async Task<StudioInfoResponse> Handle(GetStudioByIdQuery query, CancellationToken cancellationToken)
         {
-            try
-            {
-                var studio = await _repository.GetByIdAsync(query.Id);
+            var studio = await _repository.GetByIdAsync(query.Id);
 
-                if (studio == null)
-                    throw new KeyNotFoundException($"Studio with ID {query.Id} not found.");
+            if (studio == null)
+                throw new KeyNotFoundException($"Studio with ID {query.Id} not found.");
 
-                var response = studio.ToStudioDTO();
+            var response = studio.ToStudioDTO();
 
-                return response;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            return response;
         }
     }
 }

@@ -21,15 +21,8 @@ namespace Application.UseCases.Movies
 
             var moviesPaged = await movies.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize, cancellationToken);
 
-            try
-            {
-                var response = moviesPaged.ToMoviePagedListDTO();
-                return response;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            var response = moviesPaged.ToMoviePagedListDTO();
+            return response;
         }
     }
 }

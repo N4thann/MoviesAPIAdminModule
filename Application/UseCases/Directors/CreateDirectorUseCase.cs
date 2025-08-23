@@ -24,31 +24,20 @@ namespace Application.UseCases.Directors
         {
             var country = new Country(command.CountryName, command.CountryCode);
 
-            try
-            {
-                var director = new Director(
-                command.Name,
-                command.BirthDate,
-                country,
-                command.Biography,
-                command.Gender
-                );
+            var director = new Director(
+            command.Name,
+            command.BirthDate,
+            country,
+            command.Biography,
+            command.Gender
+            );
 
-                _repository.Add(director);
-                await _unitOfWork.Commit(cancellationToken);
+            _repository.Add(director);
+            await _unitOfWork.Commit(cancellationToken);
 
-                var response = director.ToDirectorDTO();
+            var response = director.ToDirectorDTO();
 
-                return response;
-            }
-            catch (ValidationException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            return response;
         }
     }
 }

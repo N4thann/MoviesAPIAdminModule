@@ -212,54 +212,43 @@ namespace Application.UseCases.Movies
                 }
             }
 
-            try
+            if (basicInfoPatched)
             {
-                if (basicInfoPatched)
-                {
-                    movie.UpdateBasicInfo(
-                        title: newTitle ?? movie.Name, // Name é herdado de BaseEntity e representa o título
-                        originalTitle: newOriginalTitle ?? movie.OriginalTitle,
-                        synopsis: newSynopsis ?? movie.Synopsis,
-                        durationInMinutes: newDurationInMinutes ?? movie.Duration.Minutes,
-                        releaseYear: newReleaseYear ?? movie.ReleaseYear
-                    );
-                }
-
-                if (newCountry != null)
-                    movie.UpdateCountry(newCountry);
-
-                // Lógica para chamar UpdateProductionInfo
-                // Ambos budget e boxOffice devem estar presentes para chamar este método
-                if (productionInfoPatched)
-                {
-                    var budgetToUse = newBudget ?? movie.Budget;
-                    var boxOfficeToUse = newBoxOffice ?? movie.BoxOffice;
-                    movie.UpdateProductionInfo(budgetToUse, boxOfficeToUse);
-                }
-
-                if (genrePatched && newGenre != null)
-                    movie.UpdateGenreInfo(newGenre);
-
-                if (directorStudioPatched)
-                {
-                    var directorIdToUse = newDirectorId ?? movie.DirectorId;
-                    var studioIdToUse = newStudioId ?? movie.StudioId;
-                    movie.UpdateDirectorAndStudioInfo(directorIdToUse, studioIdToUse);
-                }
-
-                await _unitOfWork.Commit(cancellationToken);
-
-                var response = movie.ToMovieDTO();
-                return response;
+                movie.UpdateBasicInfo(
+                    title: newTitle ?? movie.Name, // Name é herdado de BaseEntity e representa o título
+                    originalTitle: newOriginalTitle ?? movie.OriginalTitle,
+                    synopsis: newSynopsis ?? movie.Synopsis,
+                    durationInMinutes: newDurationInMinutes ?? movie.Duration.Minutes,
+                    releaseYear: newReleaseYear ?? movie.ReleaseYear
+                );
             }
-            catch (ValidationException)
+
+            if (newCountry != null)
+                movie.UpdateCountry(newCountry);
+
+            // Lógica para chamar UpdateProductionInfo
+            // Ambos budget e boxOffice devem estar presentes para chamar este método
+            if (productionInfoPatched)
             {
-                throw;
+                var budgetToUse = newBudget ?? movie.Budget;
+                var boxOfficeToUse = newBoxOffice ?? movie.BoxOffice;
+                movie.UpdateProductionInfo(budgetToUse, boxOfficeToUse);
             }
-            catch (InvalidOperationException)
+
+            if (genrePatched && newGenre != null)
+                movie.UpdateGenreInfo(newGenre);
+
+            if (directorStudioPatched)
             {
-                throw;
+                var directorIdToUse = newDirectorId ?? movie.DirectorId;
+                var studioIdToUse = newStudioId ?? movie.StudioId;
+                movie.UpdateDirectorAndStudioInfo(directorIdToUse, studioIdToUse);
             }
+
+            await _unitOfWork.Commit(cancellationToken);
+
+            var response = movie.ToMovieDTO();
+            return response;
         }
     }
 }

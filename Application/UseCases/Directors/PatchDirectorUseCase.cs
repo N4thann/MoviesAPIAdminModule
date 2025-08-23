@@ -136,45 +136,34 @@ namespace Application.UseCases.Directors
                 }
             }
 
-            try
+            // Lógica para chamar UpdateBasicInfo
+            // Este método requer 'name', 'newBirthDate', 'gender' (obrigatórios) e 'biography' (opcional).
+            // Devemos usar os valores do patch, ou os valores atuais do diretor se não estiverem no patch.
+            if (namePatched || birthDatePatched || genderPatched || biographyPatched)
             {
-                // Lógica para chamar UpdateBasicInfo
-                // Este método requer 'name', 'newBirthDate', 'gender' (obrigatórios) e 'biography' (opcional).
-                // Devemos usar os valores do patch, ou os valores atuais do diretor se não estiverem no patch.
-                if (namePatched || birthDatePatched || genderPatched || biographyPatched)
-                {
-                    director.UpdateBasicInfo(
-                        name: newName ?? director.Name,
-                        newBirthDate: newBirthDate.HasValue ? newBirthDate.Value : director.BirthDate,
-                        gender: newGender.HasValue ? newGender.Value : director.Gender,
-                        biography: biographyPatched ? newBiography : director.Biography
-                    );
-                }
-
-                if (newCountry != null)
-                    director.UpdateCountry(newCountry);
-
-                if (newIsActiveState.HasValue)
-                {
-                    if (newIsActiveState.Value)
-                        director.Activate();
-                    else
-                        director.Deactivate();
-                }
-
-                await _unitOfWork.Commit(cancellationToken);
-
-                var response = director.ToDirectorDTO();
-                return response;
+                director.UpdateBasicInfo(
+                    name: newName ?? director.Name,
+                    newBirthDate: newBirthDate.HasValue ? newBirthDate.Value : director.BirthDate,
+                    gender: newGender.HasValue ? newGender.Value : director.Gender,
+                    biography: biographyPatched ? newBiography : director.Biography
+                );
             }
-            catch (ValidationException)
+
+            if (newCountry != null)
+                director.UpdateCountry(newCountry);
+
+            if (newIsActiveState.HasValue)
             {
-                throw;
+                if (newIsActiveState.Value)
+                    director.Activate();
+                else
+                    director.Deactivate();
             }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+
+            await _unitOfWork.Commit(cancellationToken);
+
+            var response = director.ToDirectorDTO();
+            return response;
         }
     }
 }

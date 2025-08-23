@@ -25,17 +25,9 @@ namespace Application.UseCases.Directors
 
             var directorsPaged = await directors.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize, cancellationToken);
 
-            try
-            {
-                var responsePagedDto = directorsPaged.ToDirectorPagedListDTO();
+            var responsePagedDto = directorsPaged.ToDirectorPagedListDTO();
 
-                return responsePagedDto;
-            }
-            catch(InvalidOperationException)
-            {
-                throw;
-            }
-             
+            return responsePagedDto;  
         }
     }
 }

@@ -21,16 +21,9 @@ namespace Application.UseCases.Studios
 
             var studiosPaged = await studios.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize, cancellationToken);
 
-            try
-            {
-                var responsePagedDto = studiosPaged.ToStudioPagedListDTO();
+            var responsePagedDto = studiosPaged.ToStudioPagedListDTO();
 
-                return responsePagedDto;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
+            return responsePagedDto;
         }
     }
 }
