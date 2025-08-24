@@ -1,6 +1,7 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Text.RegularExpressions;
@@ -23,22 +24,29 @@ namespace Infraestructure.Service
                 ?? throw new InvalidOperationException("AWS:Region is not configured.");
         }
 
-        public async Task<string> SaveFileAsync(Stream fileStream, string originalFileName, string contentType, Movie movie, ImageType imageType)
+        public async Task<Result<string>> SaveFileAsync(Stream fileStream, string originalFileName, string contentType, Movie movie, ImageType imageType)
         {
-            var fileKey = await GenerateFileKeyAsync(originalFileName, movie, imageType);
-
-            var putRequest = new PutObjectRequest
+            try
             {
-                BucketName = _bucketName,
-                Key = fileKey,
-                InputStream = fileStream,
-                ContentType = contentType,
-                CannedACL = S3CannedACL.PublicRead 
-            };
+                var fileKey = await GenerateFileKeyAsync(originalFileName, movie, imageType);
 
-            await _s3Client.PutObjectAsync(putRequest);
+                var putRequest = new PutObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = fileKey,
+                    InputStream = fileStream,
+                    ContentType = contentType,
+                    CannedACL = S3CannedACL.PublicRead
+                };
 
-            return $"https://{_bucketName}.s3.{_region}.amazonaws.com/{fileKey}";
+                await _s3Client.PutObjectAsync(putRequest);
+
+                return Result<string>.AsSuccess($"https://{_bucketName}.s3.{_region}.amazonaws.com/{fileKey}");
+            }
+            catch
+            {
+                return Result<string>.AsFailure(Failure.InfrastructureError("Failed to save file to the Amazon S3 bucket."));
+            }         
         }
 
         private async Task<string> GenerateFileKeyAsync(string originalFileName, Movie movie, ImageType imageType)

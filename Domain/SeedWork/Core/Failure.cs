@@ -10,10 +10,9 @@
         public static readonly Failure TokenExpired = new(401, "The provided token has expired.");
         public static readonly Failure Forbidden = new(403, "You do not have permission to access this resource.");
 
+        public static Failure InfrastructureError(string message) => new(500, message);
         public static Failure Validation(string message) => new(400, message);
-
         public static Failure NotFound(string entityName, object key) => new(404, $"The {entityName} with key '{key}' was not found.");
-
         public static Failure Conflict(string message) => new(409, message);
     }
 }

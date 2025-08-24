@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
 using Domain.ValueObjects;
 using Microsoft.AspNetCore.Hosting;
@@ -25,28 +26,35 @@ namespace Infraestructure.Service
             _storagePath = Path.Combine(env.ContentRootPath, _requestPath);
         }
 
-        public async Task<string> SaveFileAsync(Stream fileStream, string originalFileName, string contentType, Movie movie, MovieImage.ImageType imageType)
+        public async Task<Result<string>> SaveFileAsync(Stream fileStream, string originalFileName, string contentType, Movie movie, MovieImage.ImageType imageType)
         {
-            var movieDirectorySlug = $"{Slugify(movie.OriginalTitle)}-{movie.Id}";
-            var movieDirectoryPath = Path.Combine(_storagePath, movieDirectorySlug);
-
-            if (!Directory.Exists(movieDirectoryPath))
+            try
             {
-                Directory.CreateDirectory(movieDirectoryPath);
+                var movieDirectorySlug = $"{Slugify(movie.OriginalTitle)}-{movie.Id}";
+                var movieDirectoryPath = Path.Combine(_storagePath, movieDirectorySlug);
+
+                if (!Directory.Exists(movieDirectoryPath))
+                {
+                    Directory.CreateDirectory(movieDirectoryPath);
+                }
+
+                var fileName = GenerateFileName(originalFileName, movie, imageType, movieDirectoryPath);
+                var absolutePath = Path.Combine(movieDirectoryPath, fileName);
+
+                await using var stream = new FileStream(absolutePath, FileMode.Create);
+                await fileStream.CopyToAsync(stream);
+
+                var request = _httpContextAccessor.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}";
+
+                var finalUrlPath = $"{_requestPath}/{movieDirectorySlug}/{fileName}".Replace("\\", "/");
+
+                return Result<string>.AsSuccess($"{baseUrl}/{finalUrlPath}");
             }
-
-            var fileName = GenerateFileName(originalFileName, movie, imageType, movieDirectoryPath);
-            var absolutePath = Path.Combine(movieDirectoryPath, fileName);
-
-            await using var stream = new FileStream(absolutePath, FileMode.Create);
-            await fileStream.CopyToAsync(stream);
-
-            var request = _httpContextAccessor.HttpContext.Request;
-            var baseUrl = $"{request.Scheme}://{request.Host}";
-
-            var finalUrlPath = $"{_requestPath}/{movieDirectorySlug}/{fileName}".Replace("\\", "/");
-
-            return $"{baseUrl}/{finalUrlPath}";
+            catch
+            {
+                return Result<string>.AsFailure(Failure.InfrastructureError("Failed to save file to local storage."));
+            }       
         }
 
         private string GenerateFileName(string originalFileName, Movie movie, MovieImage.ImageType imageType, string movieDirectoryPath)

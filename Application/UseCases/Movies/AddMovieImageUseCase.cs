@@ -28,7 +28,7 @@ public class AddMovieImageUseCase : ICommandHandler<AddMovieImageCommand, Result
         if (movie is null)
             return Result<string>.AsFailure(Failure.NotFound("Filme", command.Id));
 
-        var imageUrl = await _fileStorageService.SaveFileAsync(
+        var imageResult = await _fileStorageService.SaveFileAsync(
             command.FileStream,
             command.OriginalFileName,
             command.ContentType,
@@ -36,7 +36,12 @@ public class AddMovieImageUseCase : ICommandHandler<AddMovieImageCommand, Result
             command.ImageType
         );
 
-        var movieImageResult = MovieImage.Create(imageUrl, command.AltText, command.ImageType);
+        if (imageResult.IsFailure)
+            return Result<string>.AsFailure(imageResult.Failure!);
+
+        var image = imageResult.Success!;
+
+        var movieImageResult = MovieImage.Create(image, command.AltText, command.ImageType);
 
         if (movieImageResult.IsFailure)
             return Result<string>.AsFailure(movieImageResult.Failure!);
@@ -64,6 +69,6 @@ public class AddMovieImageUseCase : ICommandHandler<AddMovieImageCommand, Result
 
         await _unitOfWork.Commit(cancellationToken);
 
-        return Result<string>.AsSuccess(imageUrl);
+        return Result<string>.AsSuccess(image);
     }
 }
