@@ -118,56 +118,47 @@ namespace Infraestructure.EntitiesConfigurations
             builder.OwnsMany(m => m.Awards, awardBuilder =>
             {
                 awardBuilder.ToTable("MovieAwards");
-
                 awardBuilder.WithOwner().HasForeignKey("MovieId");
-                awardBuilder.HasKey("Id");
-                awardBuilder.Property<int>("Id").ValueGeneratedOnAdd();
 
-                // --- INÍCIO DA MUDANÇA ---
+                awardBuilder.HasKey(a => a.Id);
 
-                // Mapeia a propriedade 'Category' (que é um objeto AwardCategory)
+                awardBuilder.Property(a => a.Id).ValueGeneratedNever();
+
+                // O mapeamento dos Smart Enums
                 awardBuilder.Property(a => a.Category)
-                    .HasColumnName("AwardCategoryId") // Nome da coluna no banco
+                    .HasColumnName("AwardCategoryId")
                     .IsRequired()
                     .HasConversion(
-                        // Função para converter o objeto (AwardCategory) para o valor do banco (int)
                         category => category.Id,
-
-                        // Função para converter o valor do banco (int) de volta para o objeto (AwardCategory)
                         id => AwardCategory.FromValue<AwardCategory>(id)
                     );
 
-                // Mapeia a propriedade 'Institution' (que é um objeto Institution)
                 awardBuilder.Property(a => a.Institution)
-                    .HasColumnName("InstitutionId") // Nome da coluna no banco
+                    .HasColumnName("InstitutionId")
                     .IsRequired()
                     .HasConversion(
-                        // Objeto -> Banco
                         institution => institution.Id,
-
-                        // Banco -> Objeto
                         id => Institution.FromValue<Institution>(id)
                     );
 
-                // --- FIM DA MUDANÇA ---
-
-                // A propriedade 'Year' continua sendo um tipo primitivo, então o mapeamento é o mesmo
                 awardBuilder.Property(a => a.Year).IsRequired();
             });
 
+
             builder.OwnsMany(m => m.Images, imageBuilder =>
             {
-                imageBuilder.ToTable("MovieImages"); // Define o nome da tabela
-
+                imageBuilder.ToTable("MovieImages");
                 imageBuilder.WithOwner().HasForeignKey("MovieId");
-                imageBuilder.HasKey("Id"); // Chave primária da própria linha de imagem
-                imageBuilder.Property<Guid>("Id").ValueGeneratedOnAdd();
+                imageBuilder.HasKey(i => i.Id);
+
+                //especificando para que trate o Id como Id de identificação e não usar o do banco, ele é gerado no C#
+                imageBuilder.Property(i => i.Id).ValueGeneratedNever();
 
                 imageBuilder.Property(i => i.Url).IsRequired();
                 imageBuilder.Property(i => i.AltText).HasMaxLength(200);
                 imageBuilder.Property(i => i.Type)
-                            .HasConversion<string>() // Boa prática para armazenar enums
-                            .IsRequired();
+                    .HasConversion<string>()
+                    .IsRequired();
             });
 
             builder.HasOne(m => m.Director)

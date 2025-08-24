@@ -1,4 +1,5 @@
-﻿using Domain.SeedWork.Interfaces;
+﻿using Domain.SeedWork.Core;
+using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
@@ -207,107 +208,107 @@ namespace Domain.Entities
 
         #region Métodos de Negócio - Prêmios
 
-        public void AddAward(Award award)
+        public Result<bool> AddAward(Award award)
         {
-            Validate.NotNull(award, nameof(award));
+            var validation = Validate.NotNull(award, nameof(award));
+
+            if (validation.IsFailure)
+                return Result<bool>.AsFailure(validation.Failure!);
 
             if (_awards.Contains(award))
-                throw new InvalidOperationException("Filme já possui este prêmio neste ano");
+                return Result<bool>.AsFailure(Failure.Conflict("Filme já possui este prêmio neste ano"));
 
             _awards.Add(award);
             UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
 
-        public void RemoveAward(Award award)
+        public Result<bool> RemoveAward(Award award)
         {
-            Validate.NotNull(award, nameof(award));
+            var validate = Validate.NotNull(award, nameof(award));
+
+            if (validate.IsFailure) 
+                return Result<bool>.AsFailure(validate.Failure!);
 
             if (!_awards.Remove(award))
-                throw new InvalidOperationException("Prêmio não encontrado para esse filme");
+                return Result<bool>.AsFailure(Failure.Validation("Prêmio não encontrado para este filme."));
 
             UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
         #endregion
 
         #region Métodos de Negócio - Imagens
 
-        public void SetPoster(MovieImage poster)
+        public Result<bool> SetPoster(MovieImage poster)
         {
-            Validate.NotNull(poster, nameof(poster));
+            var validate = Validate.NotNull(poster, nameof(poster));
+
+            if (validate.IsFailure)
+                return Result<bool>.AsFailure(validate.Failure!);
 
             if (poster.Type != MovieImage.ImageType.Poster)
-                throw new InvalidOperationException("Imagem deve ser do tipo Poster");
+                return Result<bool>.AsFailure(Failure.Validation("Imagem deve ser do tipo Poster"));
 
-            // Remove poster existente
             var existingPoster = Poster;
+
             if (existingPoster != null)
                 _images.Remove(existingPoster);
 
-            // Adiciona novo poster
             _images.Add(poster);
             UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
 
-        public void SetThumbnail(MovieImage thumbnail)
+        public Result<bool> SetThumbnail(MovieImage thumbnail)
         {
             Validate.NotNull(thumbnail, nameof(thumbnail));
 
             if (thumbnail.Type != MovieImage.ImageType.Thumbnail)
-                throw new InvalidOperationException("Imagem deve ser do tipo Thumbnail");
+                return Result<bool>.AsFailure(Failure.Validation("Imagem deve ser do tipo Thumbnail"));
 
-            // Remove thumbnail existente
             var existingThumbnail = Thumbnail;
             if (existingThumbnail != null)
                 _images.Remove(existingThumbnail);
 
-            // Adiciona novo thumbnail
             _images.Add(thumbnail);
             UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
 
-        public void AddGalleryImage(MovieImage galleryImage)
+        public Result<bool> AddGalleryImage(MovieImage galleryImage)
         {
-            Validate.NotNull(galleryImage, nameof(galleryImage));
+            var validation = Validate.NotNull(galleryImage, nameof(galleryImage));
+            if (validation.IsFailure)
+                return Result<bool>.AsFailure(validation.Failure!);
 
             if (galleryImage.Type != MovieImage.ImageType.Gallery)
-                throw new InvalidOperationException("Imagem deve ser do tipo Gallery");
+                return Result<bool>.AsFailure(Failure.Validation("Image must be of type Gallery."));
 
             if (GalleryImagesCount >= MAX_GALLERY_IMAGES)
-                throw new InvalidOperationException($"Máximo de {MAX_GALLERY_IMAGES} imagens na galeria permitido");
+                return Result<bool>.AsFailure(Failure.Conflict($"Maximum of {MAX_GALLERY_IMAGES} gallery images allowed."));
 
             _images.Add(galleryImage);
             UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
 
-        public void RemoveGalleryImage(MovieImage galleryImage)
+        public Result<bool> RemoveImage(Guid imageId)
         {
-            Validate.NotNull(galleryImage, nameof(galleryImage));
+            var imageToRemove = _images.FirstOrDefault(i => i.Id == imageId);
 
-            if (galleryImage.Type != MovieImage.ImageType.Gallery)
-                throw new InvalidOperationException("Apenas imagens de galeria podem ser removidas por este método");
+            if (imageToRemove is null)
+                return Result<bool>.AsFailure(Failure.NotFound("Image", imageId));
 
-            _images.Remove(galleryImage);
+            _images.Remove(imageToRemove);
             UpdatedAt = DateTime.UtcNow;
-        }
 
-        public void RemovePoster()
-        {
-            var poster = Poster;
-            if (poster != null)
-            {
-                _images.Remove(poster);
-                UpdatedAt = DateTime.UtcNow;
-            }
-        }
-
-        public void RemoveThumbnail()
-        {
-            var thumbnail = Thumbnail;
-            if (thumbnail != null)
-            {
-                _images.Remove(thumbnail);
-                UpdatedAt = DateTime.UtcNow;
-            }
+            return Result<bool>.AsSuccess(true);
         }
 
         #endregion

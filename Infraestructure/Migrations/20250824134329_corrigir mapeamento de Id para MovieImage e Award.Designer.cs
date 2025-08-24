@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250817184437_recriar banco após refatorar MovieImage")]
-    partial class recriarbancoapósrefatorarMovieImage
+    [Migration("20250824134329_corrigir mapeamento de Id para MovieImage e Award")]
+    partial class corrigirmapeamentodeIdparaMovieImageeAward
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -255,11 +255,8 @@ namespace Infraestructure.Migrations
 
                     b.OwnsMany("Domain.ValueObjects.Award", "Awards", b1 =>
                         {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<int>("Category")
                                 .HasColumnType("int")
@@ -330,7 +327,6 @@ namespace Infraestructure.Migrations
                     b.OwnsMany("Domain.ValueObjects.MovieImage", "Images", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("AltText")

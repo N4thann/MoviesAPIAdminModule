@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Domain.SeedWork.Core;
 
 namespace Application.Commands.Movie
 {
@@ -7,5 +8,5 @@ namespace Application.Commands.Movie
         int CategoryId,   
         int InstitutionId, 
         int Year
-    ) : ICommand;
+    ) : ICommand<Result<bool>>;
 }

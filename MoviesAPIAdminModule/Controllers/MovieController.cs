@@ -4,6 +4,7 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Movie;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
@@ -171,8 +172,9 @@ namespace MoviesAPIAdminModule.Controllers
 
         [HttpPost("{Id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Adiciona um prêmio ao filme", Tags = new[] { "Movie Commands" })]
         public async Task<IActionResult> AddAwardToMovie(Guid Id, [FromBody] AwardRequest request, CancellationToken cancellationToken)
@@ -184,23 +186,34 @@ namespace MoviesAPIAdminModule.Controllers
                 request.Year
                 );
 
-            await _mediator.Send(command, cancellationToken);
+            var result = await _mediator.Send<AddAwardCommand, Result<bool>>(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return result.Failure.Code switch
+                {
+                    404 => NotFound(result.Failure),
+                    409 => Conflict(result.Failure),
+                    _ => BadRequest(result.Failure)
+                };
+            }
 
             return NoContent();
         }
 
 
         [HttpPost("{Id}")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Adiciona uma imagem que pode ser do tipo Poster, Thumbnail ou Gallery ao filme", Tags = new[] { "Movie Commands" })]
         public async Task<IActionResult> UploadImage(Guid Id, [FromForm] UploadImageRequest request, CancellationToken cancellationToken)
         {
             if (request.ImageFile == null || request.ImageFile.Length == 0)
             {
-                return BadRequest("Nenhum arquivo foi enviado.");
+                return BadRequest(Failure.Validation("Nenhum arquivo de imagem foi enviado."));
             }
 
             var command = new AddMovieImageCommand(
@@ -212,7 +225,19 @@ namespace MoviesAPIAdminModule.Controllers
                 request.AltText
             );
 
-            var response = await _mediator.Send<AddMovieImageCommand, string>(command, cancellationToken);
+            var result = await _mediator.Send<AddMovieImageCommand, Result<string>>(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return result.Failure.Code switch
+                {
+                    404 => NotFound(result.Failure),
+                    409 => Conflict(result.Failure),
+                    _ => BadRequest(result.Failure)
+                };
+            }
+
+            var response = new { imageUrl = result.Success };
 
             return Ok(response);
         }

@@ -1,4 +1,5 @@
 ﻿using Domain.SeedWork;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Validation;
 
 namespace Domain.ValueObjects
@@ -10,25 +11,38 @@ namespace Domain.ValueObjects
 
         private Award() { }
 
-        public Award(AwardCategory category, Institution institution, int year)
+        private Award(AwardCategory category, Institution institution, int year)
         {
-            ValidateInputs(category, institution, year);
-
+            Id = Guid.NewGuid();
             Category = category;
             Institution = institution;
             Year = year;
         }
 
+        public static Result<Award> Create(AwardCategory category, Institution institution, int year)
+        {
+            var validation1 = Validate.NotNull(category, nameof(category));
+
+            var validation2 = Validate.NotNull(institution, nameof(institution));
+
+            var validation3 = Validate.Range(year, MIN_YEAR, MAX_YEAR, nameof(year));
+
+            if (validation1.IsFailure)
+                return Result<Award>.AsFailure(validation1.Failure!);
+            if (validation2.IsFailure)
+                return Result<Award>.AsFailure(validation2.Failure!);
+            if (validation3.IsFailure)
+                return Result<Award>.AsFailure(validation3.Failure!);
+
+            var award = new Award(category, institution, year);
+
+            return Result<Award>.AsSuccess(award);
+        }
+
+        public Guid Id { get; private set; }
         public AwardCategory Category { get; private set; }
         public Institution Institution { get; private set; }
         public int Year { get; private set; }
-
-        private static void ValidateInputs(AwardCategory category, Institution institution, int year)
-        {
-            Validate.NotNull(category, nameof(category));
-            Validate.NotNull(institution, nameof(institution));
-            Validate.Range(year, MIN_YEAR, MAX_YEAR, nameof(year));
-        }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {

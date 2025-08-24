@@ -1,10 +1,11 @@
 ﻿using Application.Commands.Movie;
 using Application.Interfaces;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
 using Domain.ValueObjects;
 using static Domain.ValueObjects.MovieImage;
 
-public class AddMovieImageUseCase : ICommandHandler<AddMovieImageCommand, string>
+public class AddMovieImageUseCase : ICommandHandler<AddMovieImageCommand, Result<string>>
 {
     private readonly IMovieRepository _movieRepository;
     private readonly IFileStorageService _fileStorageService;
@@ -20,14 +21,12 @@ public class AddMovieImageUseCase : ICommandHandler<AddMovieImageCommand, string
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<string> Handle(AddMovieImageCommand command, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(AddMovieImageCommand command, CancellationToken cancellationToken)
     {
         var movie = await _movieRepository.GetByIdWithImagesAsync(command.Id);
 
         if (movie is null)
-        {
-            throw new KeyNotFoundException($"Movie with ID {command.Id} not found.");
-        }
+            return Result<string>.AsFailure(Failure.NotFound("Filme", command.Id));
 
         var imageUrl = await _fileStorageService.SaveFileAsync(
             command.FileStream,
@@ -37,25 +36,34 @@ public class AddMovieImageUseCase : ICommandHandler<AddMovieImageCommand, string
             command.ImageType
         );
 
-        var newMovieImage = new MovieImage(imageUrl, command.AltText, command.ImageType);
+        var movieImageResult = MovieImage.Create(imageUrl, command.AltText, command.ImageType);
+
+        if (movieImageResult.IsFailure)
+            return Result<string>.AsFailure(movieImageResult.Failure!);
+
+        var newMovieImage = movieImageResult.Success!;
+        Result<bool> domainResult;
 
         switch (command.ImageType)
         {
             case ImageType.Poster:
-                movie.SetPoster(newMovieImage);
+                domainResult = movie.SetPoster(newMovieImage);
                 break;
             case ImageType.Thumbnail:
-                movie.SetThumbnail(newMovieImage);
+                domainResult = movie.SetThumbnail(newMovieImage);
                 break;
             case ImageType.Gallery:
-                movie.AddGalleryImage(newMovieImage);
+                domainResult = movie.AddGalleryImage(newMovieImage);
                 break;
             default:
-                throw new InvalidOperationException("Unknown image type specified.");
+                return Result<string>.AsFailure(Failure.Validation("Unknown image type specified."));
         }
+
+        if (domainResult.IsFailure)
+            return Result<string>.AsFailure(domainResult.Failure!);
 
         await _unitOfWork.Commit(cancellationToken);
 
-        return imageUrl;
+        return Result<string>.AsSuccess(imageUrl);
     }
 }
