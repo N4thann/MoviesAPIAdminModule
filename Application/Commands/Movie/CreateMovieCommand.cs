@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Response;
 using Application.Interfaces;
+using Domain.SeedWork.Core;
 
 namespace Application.Commands.Movie
 {
@@ -19,5 +20,5 @@ namespace Application.Commands.Movie
         string BudgetCurrency,
         Guid DirectorId,
         Guid StudioId
-        ) : ICommand<MovieBasicInfoResponse>;
+        ) : ICommand<Result<MovieBasicInfoResponse>>;
 }

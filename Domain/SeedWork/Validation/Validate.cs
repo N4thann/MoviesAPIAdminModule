@@ -39,6 +39,15 @@ namespace Domain.SeedWork.Validation
             }
         }
 
+        public static Result<bool> IsDefinedEnum<TEnum>(TEnum value, string parameterName) where TEnum : Enum
+        {
+            if (!Enum.IsDefined(typeof(TEnum), value))
+            {
+                return Result<bool>.AsFailure(Failure.Validation($"The value for '{parameterName}' is not a valid {typeof(TEnum).Name}."));
+            }
+            return Result<bool>.AsSuccess(true);
+        }
+
         public static Result<bool> GreaterThan(int value, int minimum, string parameterName)
         {
             if (value <= minimum)

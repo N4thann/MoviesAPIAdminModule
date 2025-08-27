@@ -26,7 +26,7 @@ public class AddMovieImageUseCase : ICommandHandler<AddMovieImageCommand, Result
         var movie = await _movieRepository.GetByIdWithImagesAsync(command.Id);
 
         if (movie is null)
-            return Result<string>.AsFailure(Failure.NotFound("Filme", command.Id));
+            return Result<string>.AsFailure(Failure.NotFound("Movie", command.Id));
 
         var imageResult = await _fileStorageService.SaveFileAsync(
             command.FileStream,

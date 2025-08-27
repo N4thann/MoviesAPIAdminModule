@@ -3,13 +3,13 @@ using Application.DTOs.Mappings;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
-using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 
 namespace Application.UseCases.Directors
 {
-    public class CreateDirectorUseCase : ICommandHandler<CreateDirectorCommand, DirectorInfoResponse>
+    public class CreateDirectorUseCase : ICommandHandler<CreateDirectorCommand, Result<DirectorInfoResponse>>
     {
         private readonly IRepository<Director> _repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -20,24 +20,30 @@ namespace Application.UseCases.Directors
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<DirectorInfoResponse> Handle(CreateDirectorCommand command, CancellationToken cancellationToken)
+        public async Task<Result<DirectorInfoResponse>> Handle(CreateDirectorCommand command, CancellationToken cancellationToken)
         {
-            var country = new Country(command.CountryName, command.CountryCode);
+            var countryResult = Country.Create(command.CountryName, command.CountryCode);
 
-            var director = new Director(
-            command.Name,
-            command.BirthDate,
-            country,
-            command.Biography,
-            command.Gender
-            );
+            if (countryResult.IsFailure)
+                return Result<DirectorInfoResponse>.AsFailure(countryResult.Failure!);
 
-            _repository.Add(director);
+            var directorResult = Director.Create(
+                command.Name,
+                command.BirthDate,
+                countryResult.Success!,
+                command.Biography,
+                command.Gender
+                );
+
+            if (directorResult.IsFailure)
+                return Result<DirectorInfoResponse>.AsFailure(directorResult.Failure!);
+
+            var director = directorResult.Success!;
+
+            _repository.Add(director!);
             await _unitOfWork.Commit(cancellationToken);
 
-            var response = director.ToDirectorDTO();
-
-            return response;
+            return director.ToDirectorDTO();
         }
     }
 }

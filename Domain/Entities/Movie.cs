@@ -3,6 +3,7 @@ using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Domain.Entities
 {
@@ -10,8 +11,6 @@ namespace Domain.Entities
     {
         private const int MIN_RELEASE_YEAR = 1888;
         private const int MAX_FUTURE_YEARS = 5;
-        private const int MIN_DURATION_MINUTES = 1;
-        private const int MAX_DURATION_MINUTES = 600;
         private const int MAX_TITLE_LENGTH = 100;
         private const int MAX_SYNOPSIS_LENGTH = 2000;
         private const int MAX_GALLERY_IMAGES = 4;
@@ -25,7 +24,7 @@ namespace Domain.Entities
             _images = new List<MovieImage>();
         }
 
-        public Movie(
+        private Movie(
             string title,
             string originalTitle,
             string synopsis,
@@ -35,33 +34,61 @@ namespace Domain.Entities
             Studio studio,
             Director director,
             Genre genre,
-            Money? boxOffice = null,
-            Money? budget = null) : this()
+            Money? boxOffice,
+            Money? budget) : this()
         {
-            ValidateConstructorInputs(title ,originalTitle, synopsis, releaseYear, duration, 
-                country, studio, director, genre);
-
-
             Name = title.Trim();
             OriginalTitle = string.IsNullOrWhiteSpace(originalTitle) ? title.Trim() : originalTitle.Trim();
             Synopsis = synopsis.Trim();
             ReleaseYear = releaseYear;
             Duration = duration;
             Country = country;
-
             Studio = studio;
             StudioId = Studio.Id;
-
             BoxOffice = boxOffice;
             Budget = budget;
-
             Director = director;
             DirectorId = Director.Id;
-
             Genre = genre;
             Rating = Rating.CreateEmpty(10);
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
+        }
+
+        public static Result<Movie> Create(string title,
+            string originalTitle,
+            string synopsis,
+            int releaseYear,
+            Duration duration,
+            Country country,
+            Studio studio,
+            Director director,
+            Genre genre,
+            Money? boxOffice = null,
+            Money? budget = null)
+        {
+            var maxYear = DateTime.UtcNow.Year + MAX_FUTURE_YEARS;
+
+            var validationResult = Validate.NotNullOrEmpty(title, nameof(title))
+                .Combine(
+                Validate.MaxLength(title, MAX_TITLE_LENGTH, nameof(title)),
+                Validate.MaxLength(originalTitle, MAX_TITLE_LENGTH, nameof(originalTitle)),
+                Validate.NotNullOrEmpty(synopsis, nameof(synopsis)),
+                Validate.MaxLength(synopsis, MAX_SYNOPSIS_LENGTH, nameof(synopsis)),
+                Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear)),
+                Validate.NotNull(country, nameof(country)),
+                Validate.NotNull(duration, nameof(duration)),
+                Validate.NotNull(studio, nameof(studio)),
+                Validate.NotNull(director, nameof(director)),
+                Validate.NotNull(genre, nameof(genre)));
+
+            if (validationResult.IsFailure)
+                return Result<Movie>.AsFailure(validationResult.Failure!);
+
+            var movie = new Movie(title, originalTitle, synopsis, releaseYear, duration,
+                    country, studio, director, genre, boxOffice, budget);
+
+            return Result<Movie>.AsSuccess(movie);
         }
 
         // Propriedades principais
@@ -98,78 +125,34 @@ namespace Domain.Entities
         public bool HasThumbnail => Thumbnail != null;
         public int GalleryImagesCount => GalleryImages.Count();
 
-        #region Métodos de Validação
-        private static void ValidateConstructorInputs(
-            string title,
-            string originalTitle,
-            string synopsis,
-            int releaseYear,
-            Duration duration,
-            Country country,
-            Studio studio,
-            Director director,
-            Genre genre)
-        {
-            // Validação do título
-            Validate.NotNullOrEmpty(title, nameof(title));
-            Validate.MaxLength(title, MAX_TITLE_LENGTH, nameof(title));
-
-            // Validação do título original
-            if (!string.IsNullOrWhiteSpace(originalTitle))
-            {
-                Validate.MaxLength(originalTitle, MAX_TITLE_LENGTH, nameof(originalTitle));
-            }
-
-            // Validação da sinopse
-            Validate.NotNullOrEmpty(synopsis, nameof(synopsis));
-            Validate.MaxLength(synopsis, MAX_SYNOPSIS_LENGTH, nameof(synopsis));
-
-            // Validação do ano de lançamento
-            var maxYear = DateTime.UtcNow.Year + MAX_FUTURE_YEARS;
-            Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear));
-
-            // Validação de objetos obrigatórios
-            Validate.NotNull(country, nameof(country));
-            Validate.NotNull(duration, nameof(duration));
-            Validate.NotNull(studio, nameof(studio));
-            Validate.NotNull(director, nameof(director));
-            Validate.NotNull(genre, nameof(genre));
-        }
-
-        private static void ValidateBasicInfoUpdate(string title, string originalTitle, string synopsis, int durationInMinutes, int releaseYear)
-        {
-            var maxYear = DateTime.UtcNow.Year + MAX_FUTURE_YEARS;
-
-            Validate.NotNullOrEmpty(title, nameof(title));
-            Validate.MaxLength(title, MAX_TITLE_LENGTH, nameof(title));
-
-            Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear));
-
-            Validate.Range(durationInMinutes, MIN_DURATION_MINUTES, MAX_DURATION_MINUTES, nameof(durationInMinutes));
-
-            if (!string.IsNullOrWhiteSpace(originalTitle))
-            {
-                Validate.MaxLength(originalTitle, MAX_TITLE_LENGTH, nameof(originalTitle));
-            }
-
-            Validate.NotNullOrEmpty(synopsis, nameof(synopsis));
-            Validate.MaxLength(synopsis, MAX_SYNOPSIS_LENGTH, nameof(synopsis));
-        }
-
-        #endregion
-
         #region Métodos de Negócio - Informações Básicas
 
-        public void UpdateBasicInfo(string title, string originalTitle, string synopsis, int durationInMinutes, int releaseYear)
+        public Result<bool> UpdateBasicInfo(string title, string originalTitle, string synopsis, Duration durationInMinutes, int releaseYear)
         {
-            ValidateBasicInfoUpdate(title, originalTitle, synopsis, durationInMinutes, releaseYear);
+            var maxYear = DateTime.UtcNow.Year + MAX_FUTURE_YEARS;
 
-            Name = title.Trim(); // Atualiza BaseEntity.Name
+            var validationResult = Validate.NotNullOrEmpty(title, nameof(title))
+                .Combine(
+                    Validate.MaxLength(title, MAX_TITLE_LENGTH, nameof(title)),
+                    Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear)),
+                    Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear)),
+                    Validate.NotNull(durationInMinutes, nameof(durationInMinutes)),
+                    Validate.MaxLength(originalTitle, MAX_TITLE_LENGTH, nameof(originalTitle)),
+                    Validate.NotNullOrEmpty(synopsis, nameof(synopsis)),
+                    Validate.MaxLength(synopsis, MAX_SYNOPSIS_LENGTH, nameof(synopsis))
+                    );
+
+            if (validationResult.IsFailure)
+                return Result<bool>.AsFailure(validationResult.Failure!);
+
+            Name = title.Trim();
             OriginalTitle = string.IsNullOrWhiteSpace(originalTitle) ? title.Trim() : originalTitle.Trim();
             Synopsis = synopsis.Trim();
-            Duration = new Duration(durationInMinutes);
+            Duration = durationInMinutes;
             ReleaseYear = releaseYear;
-            UpdatedAt = DateTime.UtcNow;     
+            UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
 
         public void UpdateProductionInfo(Money budget, Money boxOffice)
@@ -197,11 +180,18 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void UpdateCountry(Country country)
+        public Result<bool> UpdateCountry(Country country)
         {
-            Validate.NotNull(country, nameof(country));
+            var validationResult = Validate.NotNull(country, nameof(country));
+            if (validationResult.IsFailure)
+            {
+                return Result<bool>.AsFailure(validationResult.Failure!);
+            }
+
             Country = country;
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
 
         #endregion
@@ -313,44 +303,6 @@ namespace Domain.Entities
 
         #endregion
 
-        #region Métodos de Negócio - Sistema de Avaliação (Rating)
-
-        public void ProcessRatingFromCatalog(decimal voteValue)
-        {
-            // Validação adicional no Admin por segurança
-            Validate.Range((int)voteValue, 1, 10, nameof(voteValue));
-
-            Rating = Rating.AddVote(voteValue);
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void RemoveRating(decimal voteValue)
-        {
-            Validate.Range((int)voteValue, 1, 10, nameof(voteValue));
-
-            if (!Rating.HasVotes)
-                throw new InvalidOperationException("Cannot remove rating from movie with no ratings");
-
-            Rating = Rating.RemoveVote(voteValue);
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void ResetRatings()
-        {
-            Rating = Rating.CreateEmpty(10);
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void UpdateRatingDirectly(decimal totalSum, int votesCount)
-        {
-            Validate.GreaterThan(votesCount, -1, nameof(votesCount));
-            Validate.GreaterThan((int)totalSum, -1, nameof(totalSum));
-
-            Rating = new Rating(totalSum, votesCount, 10);
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        #endregion
 
         #region Métodos de Negócio - Regras Calculadas
 

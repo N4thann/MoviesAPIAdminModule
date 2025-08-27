@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.DTOs.Response;
 using Application.Interfaces;
+using Domain.SeedWork.Core;
 using Pandorax.PagedList;
 
 namespace Application.Queries.Director
@@ -12,5 +13,5 @@ namespace Application.Queries.Director
         int? AgeEnd,
         bool Active,
         QueryStringParameters Parameters
-    ) : IQuery<IPagedList<DirectorInfoResponse>>;
+    ) : IQuery<Result<IPagedList<DirectorInfoResponse>>>;
 }

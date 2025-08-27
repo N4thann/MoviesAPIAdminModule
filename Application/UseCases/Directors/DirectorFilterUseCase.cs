@@ -3,19 +3,20 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Director;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
 using Pandorax.PagedList;
 using Pandorax.PagedList.EntityFrameworkCore;
 
 namespace Application.UseCases.Directors
 {
-    public class DirectorFilterUseCase : IQueryHandler<DirectorFilterQuery, IPagedList<DirectorInfoResponse>>
+    public class DirectorFilterUseCase : IQueryHandler<DirectorFilterQuery, Result<IPagedList<DirectorInfoResponse>>>
     {
         private readonly IRepository<Director> _repository;
 
         public DirectorFilterUseCase(IRepository<Director> repository) => _repository = repository;
 
-        public async Task<IPagedList<DirectorInfoResponse>> Handle(DirectorFilterQuery query, CancellationToken cancellationToken)
+        public async Task<Result<IPagedList<DirectorInfoResponse>>> Handle(DirectorFilterQuery query, CancellationToken cancellationToken)
         {
             var directors = _repository.GetAllQueryable();
 
@@ -40,9 +41,7 @@ namespace Application.UseCases.Directors
 
             var directorsPaged = await directors.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize, cancellationToken);
 
-            var response = directorsPaged.ToDirectorPagedListDTO();
-
-            return response;           
+            return directorsPaged.ToDirectorPagedListDTO();
         }
     }
 }

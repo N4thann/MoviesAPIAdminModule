@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Response;
 using Application.Interfaces;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 
 namespace Application.Commands.Director
 {
@@ -11,5 +12,5 @@ namespace Application.Commands.Director
         string CountryCode,
         string? Biography = null,
         Gender Gender = Gender.NotSpecified
-    ) : ICommand<DirectorInfoResponse>;
+    ) : ICommand<Result<DirectorInfoResponse>>;
 }

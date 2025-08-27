@@ -1,16 +1,21 @@
 ﻿using Application.DTOs.Response;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Pandorax.PagedList;
 
 namespace Application.DTOs.Mappings
 {
     public static class MovieDTOMappingsExtensions
     {
-        public static MovieBasicInfoResponse? ToMovieDTO(this Movie movie)
+        public static Result<MovieBasicInfoResponse>? ToMovieDTO(this Movie movie)
         {
-            if (movie == null) throw new InvalidOperationException($"Cannot map a null {typeof(Movie)} entity to {typeof(DirectorInfoResponse)}. The provided 'director' object is null.");
+            if (movie == null)
+            {
+                return Result<MovieBasicInfoResponse>.AsFailure(
+                    Failure.InfrastructureError("Attempted to map a null Movie entity. This indicates an unexpected error in the application logic."));
+            }
 
-            return new MovieBasicInfoResponse(
+            var response = new MovieBasicInfoResponse(
                 movie.Id,
                 movie.Name,
                 movie.OriginalTitle,
@@ -29,22 +34,39 @@ namespace Application.DTOs.Mappings
                 movie.DirectorId,
                 movie.StudioId
                 );
+
+            return Result<MovieBasicInfoResponse>.AsSuccess(response);
         }
 
-        public static IPagedList<MovieBasicInfoResponse> ToMoviePagedListDTO(this IPagedList<Movie> moviesPagedList) 
+        public static Result<IPagedList<MovieBasicInfoResponse>> ToMoviePagedListDTO(this IPagedList<Movie> moviesPagedList) 
         {
-            if (moviesPagedList == null) throw new InvalidOperationException("Cannot map a null PagedList<Movie> to PagedList<MovieBasicInfoResponse>. The provided 'moviesPagedList' object is null.");
+            if (moviesPagedList == null)
+            {
+                return Result<IPagedList<MovieBasicInfoResponse>>.AsFailure(
+                    Failure.InfrastructureError("Cannot map a null PagedList<Movie> to PagedList<MovieInfoResponse>. The provided 'moviesPagedList' object is null."));
+            }
 
-            var movieBasicInfoResponses = moviesPagedList.Select(m => m.ToMovieDTO()).ToList();
+            var movieBasicInfoResponses = new List<MovieBasicInfoResponse>();
+            foreach (var movie in moviesPagedList)
+            {
+                var mappingResult = movie.ToMovieDTO();
+                if (mappingResult.IsFailure)
+                {
+                    return Result<IPagedList<MovieBasicInfoResponse>>.AsFailure(mappingResult.Failure!);
+                }
+                movieBasicInfoResponses.Add(mappingResult.Success!);
+            }
 
             // Usa StaticPagedList para criar um IPagedList<DirectorInfoResponse>
             // Ele recria a lista paginada com os metadados existentes e os novos itens mapeados.
-            return new PagedList<MovieBasicInfoResponse>(
+            var response = new PagedList<MovieBasicInfoResponse>(
                 movieBasicInfoResponses!, // O ToMovieDTO pode retornar null, então use ! se tiver certeza que não será null ou adicione tratamento
                 moviesPagedList.PageIndex,
                 moviesPagedList.PageSize,
                 moviesPagedList.TotalItemCount
             );
+
+            return Result<IPagedList<MovieBasicInfoResponse>>.AsSuccess(response);
         }
 
     }

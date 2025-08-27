@@ -1,17 +1,21 @@
 ﻿using Application.DTOs.Response;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Pandorax.PagedList;
-
 
 namespace Application.DTOs.Mappings
 {
     public static class DirectorDTOMappingsExtensions
     {
-        public static DirectorInfoResponse? ToDirectorDTO(this Director director)
+        public static Result<DirectorInfoResponse>? ToDirectorDTO(this Director director)
         {
-            if (director == null) throw new InvalidOperationException($"Cannot map a null {typeof(Director)} entity to {typeof(DirectorInfoResponse)}. The provided 'director' object is null.");
+            if (director == null)
+            {
+                return Result<DirectorInfoResponse>.AsFailure(
+                    Failure.InfrastructureError("Attempted to map a null Director entity. This indicates an unexpected error in the application logic."));
+            }
 
-            return new DirectorInfoResponse(
+            var response = new DirectorInfoResponse(
                     director.Id,
                     director.Name,
                     director.BirthDate,
@@ -23,21 +27,38 @@ namespace Application.DTOs.Mappings
                     director.UpdatedAt,
                     director.Age
                     );
+            return Result<DirectorInfoResponse>.AsSuccess(response);
         }
 
-        public static IPagedList<DirectorInfoResponse> ToDirectorPagedListDTO(this IPagedList<Director> directorsPagedList)
+        public static Result<IPagedList<DirectorInfoResponse>> ToDirectorPagedListDTO(this IPagedList<Director> directorsPagedList)
         {
             if (directorsPagedList == null)
-                throw new InvalidOperationException("Cannot map a null PagedList<Director> to PagedList<DirectorInfoResponse>. The provided 'directorsPagedList' object is null.");
+            {
+                return Result<IPagedList<DirectorInfoResponse>>.AsFailure(
+                    Failure.InfrastructureError("Cannot map a null PagedList<Director> to PagedList<DirectorInfoResponse>. The provided 'directorsPagedList' object is null."));
+            }
 
-            var directorInfoResponses = directorsPagedList.Select(d => d.ToDirectorDTO()).ToList();
+            var directorInfoResponses = new List<DirectorInfoResponse>();
 
-            return new PagedList<DirectorInfoResponse>(
+            foreach (var director in directorsPagedList)
+            {
+                var mappingResult = director.ToDirectorDTO();
+
+                if (mappingResult.IsFailure)
+                {
+                    return Result<IPagedList<DirectorInfoResponse>>.AsFailure(mappingResult.Failure!);
+                }
+                directorInfoResponses.Add(mappingResult.Success!);
+            }
+
+            var response = new PagedList<DirectorInfoResponse>(
                 directorInfoResponses!,
                 directorsPagedList.PageIndex,
                 directorsPagedList.PageSize,
                 directorsPagedList.TotalItemCount
             );
+
+            return Result<IPagedList<DirectorInfoResponse>>.AsSuccess(response);
         }
     }
 }

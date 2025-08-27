@@ -3,13 +3,13 @@ using Application.DTOs.Mappings;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
-using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 
 namespace Application.UseCases.Movies
 {
-    public class CreateMovieUseCase : ICommandHandler<CreateMovieCommand, MovieBasicInfoResponse>
+    public class CreateMovieUseCase : ICommandHandler<CreateMovieCommand, Result<MovieBasicInfoResponse>>
     {
         private readonly IRepository<Movie> _repositoryMovie;
         private readonly IRepository<Studio> _repositoryStudio;
@@ -27,44 +27,52 @@ namespace Application.UseCases.Movies
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<MovieBasicInfoResponse> Handle(CreateMovieCommand command, CancellationToken cancellationToken)
+        public async Task<Result<MovieBasicInfoResponse>> Handle(CreateMovieCommand command, CancellationToken cancellationToken)
         {
-            var country = new Country(command.CountryName, command.CountryCode);
-            var boxOffice = new Money(command.BoxOfficeAmount, command.BoxOfficeCurrency);
-            var budget = new Money(command.BudgetAmount, command.BudgetCurrency);
-            var genre = new Genre(command.GenreName, command.GenreDescription);
-            var duration = new Duration(command.DurationMinutes);
+            var countryResult = Country.Create(command.CountryName, command.CountryCode);
+            var boxOfficeResult = Money.Create(command.BoxOfficeAmount, command.BoxOfficeCurrency);
+            var budgetResult = Money.Create(command.BudgetAmount, command.BudgetCurrency);
+            var genreResult = Genre.Create(command.GenreName, command.GenreDescription);
+            var durationResult = Duration.Create(command.DurationMinutes);
+
+            var voValidationResult = countryResult.Combine(boxOfficeResult, budgetResult, genreResult, durationResult);
+
+            if (voValidationResult.IsFailure)
+                return Result<MovieBasicInfoResponse>.AsFailure(voValidationResult.Failure!);
 
             var studio = await _repositoryStudio.GetByIdAsync(command.StudioId);
             var director = await _repositoryDirector.GetByIdAsync(command.DirectorId);
 
             if (studio == null)
-                throw new KeyNotFoundException($"Studio with ID {command.StudioId} not found.");
+                return Result<MovieBasicInfoResponse>.AsFailure(Failure.NotFound("Studio", command.StudioId));
 
             if (director == null)
-                throw new KeyNotFoundException($"Director with ID {command.DirectorId} not found.");
+                return Result<MovieBasicInfoResponse>.AsFailure(Failure.NotFound("Director", command.DirectorId));
 
 
-            var movie = new Movie(
+            var movieCreateResult = Movie.Create(
                 command.Title,
                 command.OriginalTitle,
                 command.Synopsis,
                 command.ReleaseYear,
-                duration,
-                country,
+                durationResult.Success!, 
+                countryResult.Success!,
                 studio,
                 director,
-                genre,
-                boxOffice,
-                budget
-                );
+                genreResult.Success!,
+                boxOfficeResult.Success,
+                budgetResult.Success
+            );
+
+            if (movieCreateResult.IsFailure)
+                return Result<MovieBasicInfoResponse>.AsFailure(movieCreateResult.Failure!);
+
+            var movie = movieCreateResult.Success!;
 
             _repositoryMovie.Add(movie);
             await _unitOfWork.Commit(cancellationToken);
 
-            var response = movie.ToMovieDTO();
-
-            return response;
+            return movie.ToMovieDTO()!;
         }
     }
 }

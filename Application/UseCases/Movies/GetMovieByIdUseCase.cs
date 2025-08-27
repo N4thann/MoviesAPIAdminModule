@@ -3,26 +3,25 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Movie;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
 
 namespace Application.UseCases.Movies
 {
-    public class GetMovieByIdUseCase : IQueryHandler<GetMovieByIdQuery, MovieBasicInfoResponse>
+    public class GetMovieByIdUseCase : IQueryHandler<GetMovieByIdQuery, Result<MovieBasicInfoResponse>>
     {
         private readonly IRepository<Movie> _repository;
 
         public GetMovieByIdUseCase(IRepository<Movie> repository) => _repository = repository;
 
-        public async Task<MovieBasicInfoResponse> Handle(GetMovieByIdQuery query, CancellationToken cancellationToken)
+        public async Task<Result<MovieBasicInfoResponse>> Handle(GetMovieByIdQuery query, CancellationToken cancellationToken)
         {
             var movie = await _repository.GetByIdAsync(query.Id);
 
             if (movie == null)
-                throw new KeyNotFoundException($"Movie with ID {query.Id} not found.");
+                return Result<MovieBasicInfoResponse>.AsFailure(Failure.NotFound("Movie", query.Id));
 
-            var response = movie.ToMovieDTO();
-
-            return response;
+            return movie.ToMovieDTO()!;
         }
     }
 }

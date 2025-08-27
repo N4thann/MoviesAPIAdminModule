@@ -1,26 +1,24 @@
-﻿using Domain.SeedWork.Interfaces;
+﻿using Domain.SeedWork.Core;
+using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
 
 namespace Domain.Entities
 {
-
     public class Director : BaseEntity, IAggregateRoot
     {
         private const int MAX_BIO_LENGTH = 1000;
 
         protected Director() { }
 
-        public Director(
+        private Director(
             string name,
             DateTime birthDate,
             Country country,
-            string? biography = null,
-            Gender gender = Gender.NotSpecified) : this() 
+            string? biography,
+            Gender gender) : this() 
         {
-            ValidateConstructorInputs(name, birthDate, country, biography);
-
             Name = name.Trim();
             BirthDate = birthDate.Date;
             Country = country;
@@ -29,6 +27,30 @@ namespace Domain.Entities
             IsActive = true;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
+        }
+
+        public static Result<Director> Create(string name,
+            DateTime birthDate,
+            Country country,
+            string? biography = null,
+            Gender gender = Gender.NotSpecified)
+        {
+            var validationResult = Validate.NotNullOrEmpty(name, nameof(name))
+                .Combine(
+                Validate.MaxLength(name, 50, nameof(name)),
+                Validate.IsPastDate(birthDate, nameof(birthDate), allowToday: false),
+                Validate.NotNull(country, nameof(country))
+                );
+
+            if (validationResult.IsSuccess && !string.IsNullOrWhiteSpace(biography))
+                validationResult = validationResult.Combine(Validate.MaxLength(biography, MAX_BIO_LENGTH, nameof(biography)));
+
+            if (validationResult.IsFailure)
+                return Result<Director>.AsFailure(validationResult.Failure!);
+
+            var director = new Director(name, birthDate, country, biography, gender);
+
+            return Result<Director>.AsSuccess(director);
         }
 
         // Propriedades específicas do Diretor
@@ -45,70 +67,44 @@ namespace Domain.Entities
         // Propriedades calculadas
         public int Age => CalculateAge(BirthDate);
 
-        #region Métodos de Validação
-
-        private static void ValidateConstructorInputs(
-            string name,
-            DateTime birthDate,
-            Country country,
-            string? biography)
-        {
-            Validate.NotNullOrEmpty(name, nameof(name));
-            Validate.MaxLength(name, 50, nameof(name));
-
-            Validate.IsPastDate(birthDate, nameof(birthDate), allowToday: false);
-
-            Validate.NotNull(country, nameof(country));
-
-            if (!string.IsNullOrWhiteSpace(biography))
-            {
-                Validate.MaxLength(biography, MAX_BIO_LENGTH, nameof(biography));
-            }
-        }
-        #endregion
-
         #region Métodos de Negócio - Informações Básicas
-        public void UpdateBasicInfo(string name, DateTime newBirthDate, Gender gender = Gender.NotSpecified, string? biography = null)
+        public Result<bool> UpdateBasicInfo(string name, DateTime newBirthDate, Gender gender = Gender.NotSpecified, string? biography = null)
         {
-            Validate.NotNullOrEmpty(name, nameof(name));
-            Validate.MaxLength(name, 100, nameof(name));
+            var validationResult = Validate.NotNullOrEmpty(name, nameof(name))
+                .Combine(
+                    Validate.MaxLength(name, 50, nameof(name)),
+                    Validate.IsPastDate(newBirthDate, nameof(newBirthDate), allowToday: false),
+                    Validate.IsDefinedEnum(gender, nameof(gender)) // <-- Nova validação adicionada!
+                );
 
-            Validate.IsPastDate(newBirthDate, nameof(newBirthDate), allowToday: false);
+            if (validationResult.IsSuccess && !string.IsNullOrWhiteSpace(biography))
+                validationResult = validationResult.Combine(Validate.MaxLength(biography, MAX_BIO_LENGTH, nameof(biography)));
 
-            if (!string.IsNullOrWhiteSpace(biography))
-            {
-                Validate.MaxLength(biography, MAX_BIO_LENGTH, nameof(biography));
-            }
+            if (validationResult.IsFailure)
+                return Result<bool>.AsFailure(validationResult.Failure!);
 
             Name = name.Trim();
             Biography = biography?.Trim();
             BirthDate = newBirthDate.Date;
             Gender = gender;
             UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
 
-        public void UpdateCountry(Country country)
+        public Result<bool> UpdateCountry(Country country)
         {
-            Validate.NotNull(country, nameof(country));
+            var validationResult = Validate.NotNull(country, nameof(country));
+            if (validationResult.IsFailure)
+            {
+                return Result<bool>.AsFailure(validationResult.Failure!);
+            }
+
             Country = country;
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow; // Corrigido para UtcNow para consistência
+
+            return Result<bool>.AsSuccess(true);
         }
-        #endregion
-
-        #region Métodos de Negócio - Status
-
-        public void Activate()
-        {
-            IsActive = true;
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void Deactivate()
-        {
-            IsActive = false;
-            UpdatedAt = DateTime.UtcNow;
-        }
-
         #endregion
 
         #region Métodos de Negócio - Regras Calculadas

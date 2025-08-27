@@ -3,19 +3,20 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Movie;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
 using Pandorax.PagedList;
 using Pandorax.PagedList.EntityFrameworkCore;
 
 namespace Application.UseCases.Movies
 {
-    public class MovieBasicFilterUseCase : IQueryHandler<MovieBasicFilterQuery, IPagedList<MovieBasicInfoResponse>>
+    public class MovieBasicFilterUseCase : IQueryHandler<MovieBasicFilterQuery, Result<IPagedList<MovieBasicInfoResponse>>>
     {
         private readonly IRepository<Movie> _repository;
 
         public MovieBasicFilterUseCase(IRepository<Movie> repository) => _repository = repository;
 
-        public async Task<IPagedList<MovieBasicInfoResponse>> Handle(MovieBasicFilterQuery query, CancellationToken cancellationToken)
+        public async Task<Result<IPagedList<MovieBasicInfoResponse>>> Handle(MovieBasicFilterQuery query, CancellationToken cancellationToken)
         {
             var movies = _repository.GetAllQueryable();
 
@@ -47,8 +48,7 @@ namespace Application.UseCases.Movies
 
             var moviesPaged = await movies.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize, cancellationToken);
 
-            var response = moviesPaged.ToMoviePagedListDTO();
-            return response;
+            return moviesPaged.ToMoviePagedListDTO();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.DTOs.Response;
 using Application.Interfaces;
+using Domain.SeedWork.Core;
 using Pandorax.PagedList;
 
 namespace Application.Queries.Movie
@@ -15,5 +16,5 @@ namespace Application.Queries.Movie
     string? StudioName,
     string? GenreName,
     QueryStringParameters Parameters
-    ) : IQuery<IPagedList<MovieBasicInfoResponse>>;
+    ) : IQuery<Result<IPagedList<MovieBasicInfoResponse>>>;
 }

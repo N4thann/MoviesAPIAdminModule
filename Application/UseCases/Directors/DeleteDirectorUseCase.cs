@@ -1,11 +1,12 @@
 ﻿using Application.Commands.Director;
 using Application.Interfaces;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
 
 namespace Application.UseCases.Directors
 {
-    public class DeleteDirectorUseCase : ICommandHandler<DeleteDirectorCommand>
+    public class DeleteDirectorUseCase : ICommandHandler<DeleteDirectorCommand, Result<bool>>
     {
         private readonly IRepository<Director> _repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -16,15 +17,17 @@ namespace Application.UseCases.Directors
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(DeleteDirectorCommand command, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(DeleteDirectorCommand command, CancellationToken cancellationToken)
         {
             var director = await _repository.GetByIdAsync(command.Id);
 
             if (director == null)
-                throw new KeyNotFoundException($"Director with ID {command.Id} not found.");
+                return Result<bool>.AsFailure(Failure.NotFound("Director", command.Id));
 
             _repository.Delete(director);
-            await _unitOfWork.Commit(cancellationToken);      
+            await _unitOfWork.Commit(cancellationToken);
+
+            return Result<bool>.AsSuccess(true);
         }
     }
 }

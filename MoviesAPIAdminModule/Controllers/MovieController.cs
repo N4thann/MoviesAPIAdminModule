@@ -3,9 +3,7 @@ using Application.DTOs.Request.Movie;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Movie;
-using Domain.Entities;
 using Domain.SeedWork.Core;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
@@ -25,9 +23,9 @@ namespace MoviesAPIAdminModule.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(MovieBasicInfoResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [SwaggerOperation(Summary = "Cria um novo filme", Tags = new[] { "Movie Commands" })]
         public async Task<IActionResult> CreateMovie([FromBody] CreateMovieRequest request, CancellationToken cancellationToken)
         {
@@ -49,59 +47,95 @@ namespace MoviesAPIAdminModule.Controllers
                 request.StudioId
                 );
 
-            var response = await _mediator.Send<CreateMovieCommand, MovieBasicInfoResponse>(command, cancellationToken);
+            var result = await _mediator.Send<CreateMovieCommand, Result<MovieBasicInfoResponse>>(command, cancellationToken);
 
-            return CreatedAtAction(nameof(GetByIdBasicInformation),
-                new { id = response.Id },
+            if (result.IsFailure)
+            {
+                // O switch agora mapeia cada código de erro para o helper method correto.
+                return result.Failure.Code switch
+                {
+                    404 => NotFound(result.Failure),
+                    409 => Conflict(result.Failure),
+                    400 => BadRequest(result.Failure),
+                    _ => StatusCode(500, result.Failure)
+                };
+            }
+
+            var response = result.Success;
+
+            return CreatedAtAction(nameof(GetMovieById),
+                new { id = response!.Id },
                 response);
         }
 
-        [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(MovieBasicInfoResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Atualiza parcialmente um filme com o JsonPatchDocument", Tags = new[] { "Movie Commands" })]
-        public async Task<IActionResult> UpdatePatchMovie(Guid id, [FromBody] JsonPatchDocument<Movie> patchDoc, CancellationToken cancellationToken)
-        {
-            if (patchDoc == null)
-            {
-                return BadRequest("Patch document cannot be null.");
-            }
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var command = new PatchMovieCommand(id, patchDoc);
-            var response = await _mediator.Send<PatchMovieCommand, MovieBasicInfoResponse>(command, cancellationToken);
-            return Ok(response);
-        }
+        //[HttpPatch("{id}")]
+        //[ProducesResponseType(typeof(MovieBasicInfoResponse), StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //[SwaggerOperation(Summary = "Atualiza parcialmente um filme com o JsonPatchDocument", Tags = new[] { "Movie Commands" })]
+        //public async Task<IActionResult> UpdatePatchMovie(Guid id, [FromBody] JsonPatchDocument<Movie> patchDoc, CancellationToken cancellationToken)
+        //{
+        //    if (patchDoc == null)
+        //    {
+        //        return BadRequest("Patch document cannot be null.");
+        //    }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var command = new PatchMovieCommand(id, patchDoc);
+        //    var response = await _mediator.Send<PatchMovieCommand, MovieBasicInfoResponse>(command, cancellationToken);
+        //    return Ok(response);
+        //}
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(MovieBasicInfoResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Obtém um filme por ID", Tags = new[] { "Movie Queries" })]
-        public async Task<IActionResult> GetByIdBasicInformation(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMovieById(Guid id, CancellationToken cancellationToken)
         {
 
             var command = new GetMovieByIdQuery(id);
-            var response = await _mediator.Query<GetMovieByIdQuery, MovieBasicInfoResponse>(command, cancellationToken);
+            var result = await _mediator.Query<GetMovieByIdQuery, Result<MovieBasicInfoResponse>>(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return result.Failure!.Code switch
+                {
+                    404 => NotFound(result.Failure),
+                    _ => BadRequest(result.Failure)
+                };
+            }
+
+            var response = result.Success;
 
             return Ok(response);
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista todos os filmes", Tags = new[] { "Movie Queries" })]
         public async Task<IActionResult> GetAllPagination([FromQuery] MovieParametersRequest parameters, CancellationToken cancellationToken)
         {
             var query = new ListMoviesQuery(parameters);
-            var response = await _mediator.Query<ListMoviesQuery, IPagedList<MovieBasicInfoResponse>>(query, cancellationToken);
+            var result = await _mediator.Query<ListMoviesQuery, Result<IPagedList<MovieBasicInfoResponse>>>(query, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return result.Failure.Code switch
+                {
+                    500 => StatusCode(500, result.Failure),
+                    _ => BadRequest(result.Failure)
+                };
+            }
+
+            var response = result.Success;
 
             var metadata = new
             {
@@ -121,8 +155,8 @@ namespace MoviesAPIAdminModule.Controllers
 
         [HttpGet("filtered")]
         [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista filmes com filtros e paginação", Tags = new[] { "Movie Queries" })]
         public async Task<IActionResult> GetFilteredMovies([FromQuery] MovieBasicFilterRequest request, CancellationToken cancellationToken)
         {
@@ -138,7 +172,18 @@ namespace MoviesAPIAdminModule.Controllers
                 request
                 );
 
-            var response = await _mediator.Query<MovieBasicFilterQuery, IPagedList<MovieBasicInfoResponse>>(query, cancellationToken);
+            var result = await _mediator.Query<MovieBasicFilterQuery, Result<IPagedList<MovieBasicInfoResponse>>>(query, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return result.Failure.Code switch
+                {
+                    500 => StatusCode(500, result.Failure),
+                    _ => BadRequest(result.Failure)
+                };
+            }
+
+            var response = result.Success;
 
             var metadata = new
             {
@@ -158,14 +203,23 @@ namespace MoviesAPIAdminModule.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Exclui um filme por ID", Tags = new[] { "Movie Commands" })]
         public async Task<IActionResult> DeleteMovie(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteMovieCommand(id);
 
-            await _mediator.Send(command, cancellationToken);
+            var result =  await _mediator.Send<DeleteMovieCommand, Result<bool>>(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                if (result.Failure!.Code == 404)
+                {
+                    return NotFound(result.Failure);
+                }
+                return BadRequest(result.Failure);
+            }
 
             return NoContent();
         }
@@ -229,7 +283,7 @@ namespace MoviesAPIAdminModule.Controllers
 
             if (result.IsFailure)
             {
-                return result.Failure.Code switch
+                return result.Failure!.Code switch
                 {
                     404 => NotFound(result.Failure),
                     409 => Conflict(result.Failure),
