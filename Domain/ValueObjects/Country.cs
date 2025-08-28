@@ -1,4 +1,6 @@
-﻿using Domain.SeedWork;
+﻿using Domain.Entities;
+using Domain.SeedWork;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Validation;
 
 
@@ -8,15 +10,26 @@ namespace Domain.ValueObjects
     {
         public Country() { }
 
-        public Country(string name, string code) 
+        private Country(string name, string code) 
         {
-            Validate.NotNullOrEmpty(name, nameof(name));
-            Validate.NotNullOrEmpty(code, nameof(code));
-            Validate.MaxLength(name, 100, nameof(name));
-            Validate.MaxLength(code, 3, nameof(code));
-
             Name = name.Trim();
             Code = code.Trim().ToUpperInvariant();
+        }
+
+        public static Result<Country> Create(string name, string code)
+        {
+            var validationResult = Validate.NotNullOrEmpty(name, nameof(name))
+                .Combine(
+                Validate.NotNullOrEmpty(code, nameof(code)),
+                Validate.MaxLength(name, 100, nameof(name)),
+                Validate.MaxLength(code, 3, nameof(code)));
+
+            if (validationResult.IsFailure)
+                return Result<Country>.AsFailure(validationResult.Failure!);
+
+            var country = new Country(name, code);
+
+            return Result<Country>.AsSuccess(country);
         }
 
         public string Name { get; set; }

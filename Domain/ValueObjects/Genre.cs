@@ -1,4 +1,6 @@
-﻿using Domain.SeedWork;
+﻿using Domain.Entities;
+using Domain.SeedWork;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Validation;
 
 namespace Domain.ValueObjects
@@ -19,6 +21,28 @@ namespace Domain.ValueObjects
 
             Name = name.Trim();
             Description = description;
+        }
+
+        public static Result<Genre> Create(string name, string description)
+        {
+            if (!string.IsNullOrWhiteSpace(description))
+            {
+                var validationResult2 = Validate.MaxLength(description, 500, nameof(description));
+                if (validationResult2.IsFailure)
+                    return Result<Genre>.AsFailure(validationResult2.Failure!);
+            }
+
+            var validationResult = Validate.NotNullOrEmpty(name, nameof(name))
+                .Combine(
+                Validate.NotNullOrEmpty(description, nameof(description)),
+                Validate.MaxLength(name, 50, nameof(name)));
+
+            if (validationResult.IsFailure)
+                return Result<Genre>.AsFailure(validationResult.Failure!);
+
+            var genre = new Genre(name, description);
+
+            return Result<Genre>.AsSuccess(genre);
         }
 
         public string Name { get; private set; }

@@ -1,19 +1,35 @@
 ﻿using Domain.SeedWork;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Validation;
 
 namespace Domain.ValueObjects
 {
     public class Duration : ValueObject
     {
+        private const int MIN_DURATION_MINUTES = 1;
+        private const int MAX_DURATION_MINUTES = 600;
+
         public Duration() { }
 
-        public Duration(int minutes) 
+        private Duration(int minutes) 
         {
-            Validate.GreaterThan(minutes, 0, nameof(minutes));
-            Validate.LessThanOrEqualTo(minutes, 1000, nameof(minutes));
-
            Minutes = minutes;   
         }
+
+        public static Result<Duration> Create(int minutes)
+        {
+            var validationResult = Validate.Range(minutes, MIN_DURATION_MINUTES, MAX_DURATION_MINUTES, nameof(minutes))
+                .Combine(
+                    Validate.LessThanOrEqualTo(minutes, MAX_DURATION_MINUTES, nameof(minutes)));
+
+            if (validationResult.IsFailure)
+                return Result<Duration>.AsFailure(validationResult.Failure!);
+
+             var duration = new Duration(minutes);
+
+            return Result<Duration>.AsSuccess(duration);
+        }
+
         // Propriedade principal
         public int Minutes { get; private set; }
 
@@ -34,14 +50,6 @@ namespace Domain.ValueObjects
             return RemainingMinutes == 0
                 ? $"{Hours}h"
                 : $"{Hours}h {RemainingMinutes}min";
-        }
-
-        public static Duration FromHoursAndMinutes(int hours, int minutes)
-        {
-            Validate.GreaterThan(hours, -1, nameof(hours));
-            Validate.Range(minutes, 0, 59, nameof(minutes));
-
-            return new Duration(hours * 60 + minutes);
         }
     }
 }

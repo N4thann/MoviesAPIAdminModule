@@ -1,4 +1,6 @@
-﻿using Domain.SeedWork;
+﻿using Domain.Entities;
+using Domain.SeedWork;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Validation;
 
 namespace Domain.ValueObjects
@@ -7,14 +9,25 @@ namespace Domain.ValueObjects
     {
         public Money() { }
 
-        public Money(decimal amount, string currency = "USD") 
+        private Money(decimal amount, string currency) 
         {
-            Validate.GreaterThan((int)amount, -1, nameof(amount));
-            Validate.NotNullOrEmpty(currency, nameof(currency));
-            Validate.MaxLength(currency, 3, nameof(currency));
-
             Amount = amount;
             Currency = currency.ToUpperInvariant();
+        }
+
+        public static Result<Money> Create(decimal amount, string currency = "USD")
+        {
+            var validationResult = Validate.GreaterThan((int)amount, -1, nameof(amount))
+                .Combine(
+                    Validate.NotNullOrEmpty(currency, nameof(currency)),
+                    Validate.MaxLength(currency, 3, nameof(currency)));
+
+            if (validationResult.IsFailure)
+                return Result<Money>.AsFailure(validationResult.Failure!);
+
+            var money = new Money(amount, currency);
+
+            return Result<Money>.AsSuccess(money);
         }
 
         public decimal Amount { get; private set; }

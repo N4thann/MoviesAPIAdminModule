@@ -21,12 +21,24 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Movies API Admin Module",
         Version = "v1",
         Description = "API para administração de filmes, diretores e estúdios.",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "Nathan Farias",
+            Email = "francisco.nathan2@outlook.com",
+            Url = new Uri("www.linkedin.com/in/nathan-farias-5bb97a24"),
+        },
+        License = new Microsoft.OpenApi.Models.OpenApiLicense
+        {
+            Name = "Exemplo",
+            Url = new Uri("https://github.com/N4thann"),
+        }
     });
 
     c.EnableAnnotations();
 
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+
     if (System.IO.File.Exists(xmlPath))
     {
         c.IncludeXmlComments(xmlPath);
