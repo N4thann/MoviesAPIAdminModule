@@ -17,6 +17,7 @@ namespace MoviesAPIAdminModule.Controllers
     [Route("api/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
+    //[ApiConventionType(typeof(DefaultApiConventions))] Caso não tivessemos retornos personalizados e fosse preciso um mais geral
     public class DirectorController : ControllerBase
     {
         private readonly IMediator _mediator;

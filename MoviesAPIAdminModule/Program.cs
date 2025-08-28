@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen(c =>
         {
             Name = "Nathan Farias",
             Email = "francisco.nathan2@outlook.com",
-            Url = new Uri("www.linkedin.com/in/nathan-farias-5bb97a24"),
+            Url = new Uri("https://www.linkedin.com/in/nathan-farias-5bb97a24"),
         },
         License = new Microsoft.OpenApi.Models.OpenApiLicense
         {
