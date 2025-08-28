@@ -1,4 +1,5 @@
-﻿using Domain.SeedWork.Interfaces;
+﻿using Domain.SeedWork.Core;
+using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
@@ -8,20 +9,44 @@ namespace Domain.Entities
     public class Studio : BaseEntity, IAggregateRoot
     {
         private const int MAX_HISTORY_LENGTH = 5000;
+        private const int MAX_NAME_LENGTH = 100;
 
         protected Studio() { }
 
-        public Studio(string name, Country country, DateTime foundationDate, string? history = null) : this() 
+        private Studio(string name, Country country, DateTime foundationDate, string? history = null)
         {
-            ValidateConstructorInputs(name, country, foundationDate, history);
-
             Name = name.Trim();
             Country = country;
-            FoundationDate = foundationDate.Date; 
+            FoundationDate = foundationDate.Date;
             History = history?.Trim();
-            IsActive = true; 
+            IsActive = true;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
+        }
+
+        public static Result<Studio> Create(string name, Country country, DateTime foundationDate, string? history = null)
+        {
+            var validationResult = Validate.NotNullOrEmpty(name, nameof(name))
+                .Combine(
+                    Validate.MaxLength(name, MAX_NAME_LENGTH, nameof(name)),
+                    Validate.NotNull(country, nameof(country)),
+                    Validate.IsPastDate(foundationDate, nameof(foundationDate), allowToday: true)
+                );
+
+            if (validationResult.IsFailure)
+                return Result<Studio>.AsFailure(validationResult.Failure!);
+
+            if (!string.IsNullOrWhiteSpace(history))
+            {
+                var historyValidation = Validate.MaxLength(history, MAX_HISTORY_LENGTH, nameof(history));
+                if (historyValidation.IsFailure)
+                {
+                    return Result<Studio>.AsFailure(historyValidation.Failure!);
+                }
+            }
+
+            var studio = new Studio(name, country, foundationDate, history);
+            return Result<Studio>.AsSuccess(studio);
         }
 
         // Propriedades principais
@@ -37,62 +62,59 @@ namespace Domain.Entities
         // Propriedades calculadas (exemplo)
         public int YearsInOperation => CalculateYearsInOperation(FoundationDate);
 
-        #region Métodos de Validação
-        private static void ValidateConstructorInputs(
-            string name,           
-            Country country,
-            DateTime foundationDate,
-            string? history
-            )
-        {
-            Validate.NotNullOrEmpty(name, nameof(name));
-            Validate.MaxLength(name, 100, nameof(name));
-
-            Validate.NotNull(country, nameof(country));
-
-            Validate.IsPastDate(foundationDate, nameof(foundationDate), allowToday: true);
-
-            if (!string.IsNullOrWhiteSpace(history))
-            {
-                Validate.MaxLength(history, MAX_HISTORY_LENGTH, nameof(history));
-            }
-        }
-
-        private static void ValidateBasicInfoUpdate(string name, string? history)
-        {
-            Validate.NotNullOrEmpty(name, nameof(name));
-            Validate.MaxLength(name, 50, nameof(name));
-
-            if (!string.IsNullOrWhiteSpace(history))
-            {
-                Validate.MaxLength(history, MAX_HISTORY_LENGTH, nameof(history));
-            }
-        }
-        #endregion
-
         #region Métodos de Negócio - Informações Básiscas
-        public void UpdateBasicInfo(string name, string? history = null)
+        public Result<bool> UpdateBasicInfo(string name, string? history = null)
         {
-            ValidateBasicInfoUpdate(name, history);
+            var validationResult = Validate.NotNullOrEmpty(name, nameof(name))
+                .Combine(Validate.MaxLength(name, MAX_NAME_LENGTH, nameof(name)));
+
+            if (validationResult.IsFailure)
+            {
+                return Result<bool>.AsFailure(validationResult.Failure!);
+            }
+
+            if (!string.IsNullOrWhiteSpace(history))
+            {
+                var historyValidation = Validate.MaxLength(history, MAX_HISTORY_LENGTH, nameof(history));
+                if (historyValidation.IsFailure)
+                {
+                    return Result<bool>.AsFailure(historyValidation.Failure!);
+                }
+            }
 
             Name = name.Trim();
             History = history?.Trim();
             UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
 
-        public void UpdateCountry(Country country)
+        public Result<bool> UpdateCountry(Country country)
         {
-            Validate.NotNull(country, nameof(country));
+            var validationResult = Validate.NotNull(country, nameof(country));
+            if (validationResult.IsFailure)
+            {
+                return Result<bool>.AsFailure(validationResult.Failure!);
+            }
+
             Country = country;
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
-        
-        public void UpdateFoundationDate(DateTime foundationDate) 
+
+        public Result<bool> UpdateFoundationDate(DateTime foundationDate) 
         {
-            Validate.IsPastDate(foundationDate, nameof(foundationDate), allowToday: true);
+            var validationResult = Validate.IsPastDate(foundationDate, nameof(foundationDate), allowToday: true);
+            if (validationResult.IsFailure)
+            {
+                return Result<bool>.AsFailure(validationResult.Failure!);
+            }
 
             FoundationDate = foundationDate.Date;
             UpdatedAt = DateTime.UtcNow;
+
+            return Result<bool>.AsSuccess(true);
         }
         #endregion
 

@@ -4,19 +4,20 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Studio;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
 using Pandorax.PagedList;
 using Pandorax.PagedList.EntityFrameworkCore;
 
 namespace Application.UseCases.Studios
 {
-    public class StudioFilterUseCase : IQueryHandler<StudioFilterQuery, IPagedList<StudioInfoResponse>>
+    public class StudioFilterUseCase : IQueryHandler<StudioFilterQuery, Result<IPagedList<StudioInfoResponse>>>
     {
         private readonly IRepository<Studio> _repository;
 
         public StudioFilterUseCase(IRepository<Studio> repository) => _repository = repository;
 
-        public async Task<IPagedList<StudioInfoResponse>> Handle(StudioFilterQuery query, CancellationToken cancellationToken)
+        public async Task<Result<IPagedList<StudioInfoResponse>>> Handle(StudioFilterQuery query, CancellationToken cancellationToken)
         {
             var studios = _repository.GetAllQueryable();
 
@@ -35,9 +36,7 @@ namespace Application.UseCases.Studios
 
             var studiosPaged = await studios.ToPagedListAsync(query.Parameters.PageNumber, query.Parameters.PageSize, cancellationToken);
 
-            var response = studiosPaged.ToStudioPagedListDTO();
-
-            return response;           
+            return studiosPaged.ToStudioPagedListDTO();
         }
     }
 }

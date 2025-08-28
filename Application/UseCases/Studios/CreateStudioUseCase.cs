@@ -3,13 +3,13 @@ using Application.DTOs.Mappings;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Domain.Entities;
+using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
-using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 
 namespace Application.UseCases.Studios
 {
-    public class CreateStudioUseCase : ICommandHandler<CreateStudioCommand, StudioInfoResponse>
+    public class CreateStudioUseCase : ICommandHandler<CreateStudioCommand, Result<StudioInfoResponse>>
     {
         private readonly IRepository<Studio> _repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -20,24 +20,29 @@ namespace Application.UseCases.Studios
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<StudioInfoResponse> Handle(CreateStudioCommand command, CancellationToken cancellationToken)
+        public async Task<Result<StudioInfoResponse>> Handle(CreateStudioCommand command, CancellationToken cancellationToken)
         {
-            var country = new Country(command.CountryName, command.CountryCode);
+            var countryResult = Country.Create(command.CountryName, command.CountryCode);
 
-            var studio = new Studio(
+            if (countryResult.IsFailure)
+                return Result<StudioInfoResponse>.AsFailure(countryResult.Failure!);
+
+            var studioResult = Studio.Create(
                 command.Name,
-                country,
+                countryResult.Success!,
                 command.FoundationDate,
                 command.History
                 );
 
+            if (studioResult.IsFailure)
+                return Result<StudioInfoResponse>.AsFailure(studioResult.Failure!);
+
+            var studio = studioResult.Success!;
+
             _repository.Add(studio);
             await _unitOfWork.Commit(cancellationToken);
 
-            var response = studio.ToStudioDTO();
-
-            return response;
+            return studio.ToStudioDTO();
         }
-
     }
 }

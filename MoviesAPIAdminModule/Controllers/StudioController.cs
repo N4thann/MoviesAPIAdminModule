@@ -1,11 +1,9 @@
 ﻿using Application.Commands.Studio;
-using Application.Common;
 using Application.DTOs.Request.Studio;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Studio;
-using Domain.Entities;
-using Microsoft.AspNetCore.JsonPatch;
+using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
@@ -17,6 +15,7 @@ namespace MoviesAPIAdminModule.Controllers
     [ApiController]
     [Route("api/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
+    [Produces("application/json")]
     public class StudioController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -25,8 +24,7 @@ namespace MoviesAPIAdminModule.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Cria um novo estúdio", Tags = new[] { "Studio Commands" })]
         public async Task<IActionResult> CreateStudio([FromBody] CreateStudioRequest request, CancellationToken cancellationToken)
@@ -39,7 +37,12 @@ namespace MoviesAPIAdminModule.Controllers
                 request.History
                 );
 
-            var response = await _mediator.Send<CreateStudioCommand, StudioInfoResponse>(command, cancellationToken);
+            var result = await _mediator.Send<CreateStudioCommand, Result<StudioInfoResponse>>(command, cancellationToken);
+
+            if (result.IsFailure)
+                return BadRequest(result.Failure);
+
+            var response = result.Success!;
 
             return CreatedAtAction(nameof(GetById),
                 new {id = response.Id },
@@ -48,27 +51,42 @@ namespace MoviesAPIAdminModule.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Obtém um estúdio por ID", Tags = new[] { "Studio Queries" })]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken) 
         {
-            var command = new GetStudioByIdQuery(id);
-            var response = await _mediator.Query<GetStudioByIdQuery, StudioInfoResponse>(command, cancellationToken);
+            var query = new GetStudioByIdQuery(id);
+            var result = await _mediator.Query<GetStudioByIdQuery, Result<StudioInfoResponse>>(query, cancellationToken);
+
+            if (result.IsFailure)
+                return NotFound(result.Failure);
+
+            var response = result.Success!;
 
             return Ok(response);
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista todos os estúdios", Tags = new[] { "Studio Queries" })]
         public async Task<IActionResult> GetAllPagination([FromQuery] StudioParametersRequest parameters, CancellationToken cancellationToken)
         {
             var query = new ListStudiosQuery(parameters);
-            var response = await _mediator.Query<ListStudiosQuery, IPagedList<StudioInfoResponse>>(query, cancellationToken);
+            var result = await _mediator.Query<ListStudiosQuery, Result<IPagedList<StudioInfoResponse>>>(query, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return result.Failure.Code switch
+                {
+                    500 => StatusCode(500, result.Failure),
+                    _ => BadRequest(result.Failure)
+                };
+            }
+
+            var response = result.Success!;
 
             var metadata = new
             {
@@ -88,8 +106,8 @@ namespace MoviesAPIAdminModule.Controllers
 
         [HttpGet("filtered")]
         [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Lista estúdios com filtros e paginação", Tags = new[] { "Studio Queries" })]
         public async Task<IActionResult> GetFilteredStudios([FromQuery] StudioFilterRequest request, CancellationToken cancellationToken)
         {
@@ -102,7 +120,17 @@ namespace MoviesAPIAdminModule.Controllers
                 request
                 );
 
-            var response = await _mediator.Query<StudioFilterQuery, IPagedList<StudioInfoResponse>>(query, cancellationToken);
+            var result = await _mediator.Query<StudioFilterQuery, Result<IPagedList<StudioInfoResponse>>>(query, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return result.Failure.Code switch
+                {
+                    500 => StatusCode(500, result.Failure),
+                    _ => BadRequest(result.Failure)
+                };
+            }
+            var response = result.Success!;
 
             var metadata = new
             {
@@ -120,44 +148,53 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(response);
         }
 
-        [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Atualiza parcialmente um estúdio com o JsonPatchDocument", Tags = new[] { "Studio Commands" })]
-        public async Task<IActionResult> UpdatePatchStudio(
-            Guid id,
-            [FromBody] JsonPatchDocument<Studio> patchDoc,
-            CancellationToken cancellationToken)
-        {
-            if (patchDoc == null)
-            {
-                return BadRequest("Patch document cannot be null.");
-            }
+        //[HttpPatch("{id}")]
+        //[ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //[SwaggerOperation(Summary = "Atualiza parcialmente um estúdio com o JsonPatchDocument", Tags = new[] { "Studio Commands" })]
+        //public async Task<IActionResult> UpdatePatchStudio(
+        //    Guid id,
+        //    [FromBody] JsonPatchDocument<Studio> patchDoc,
+        //    CancellationToken cancellationToken)
+        //{
+        //    if (patchDoc == null)
+        //    {
+        //        return BadRequest("Patch document cannot be null.");
+        //    }
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var command = new PatchStudioCommand(id, patchDoc);
-            var response = await _mediator.Send<PatchStudioCommand, StudioInfoResponse>(command, cancellationToken);
+        //    var command = new PatchStudioCommand(id, patchDoc);
+        //    var response = await _mediator.Send<PatchStudioCommand, StudioInfoResponse>(command, cancellationToken);
             
-            return Ok(response);
-        }
+        //    return Ok(response);
+        //}
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Exclui um estúdio por ID", Tags = new[] { "Studio Commands" })]
         public async Task<IActionResult> DeleteStudio(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteStudioCommand(id);
 
-            await _mediator.Send(command, cancellationToken);
+            var result = await _mediator.Send<DeleteStudioCommand, Result<bool>>(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                if (result.Failure!.Code == 404)
+                {
+                    return NotFound(result.Failure);
+                }
+                return BadRequest(result.Failure);
+            }
 
             return NoContent();
         }

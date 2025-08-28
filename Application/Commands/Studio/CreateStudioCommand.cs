@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Response;
 using Application.Interfaces;
+using Domain.SeedWork.Core;
 
 namespace Application.Commands.Studio
 {
@@ -9,5 +10,5 @@ namespace Application.Commands.Studio
         string CountryCode,
         DateTime FoundationDate,
         string? History = null
-        ) : ICommand<StudioInfoResponse>;
+        ) : ICommand<Result<StudioInfoResponse>>;
 }

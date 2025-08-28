@@ -15,6 +15,7 @@ namespace MoviesAPIAdminModule.Controllers
     [ApiController]
     [Route("api/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
+    [Produces("application/json")]
     public class MovieController : ControllerBase
     {
         private readonly IMediator _mediator;

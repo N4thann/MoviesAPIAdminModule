@@ -16,6 +16,7 @@ namespace MoviesAPIAdminModule.Controllers
     [ApiController]
     [Route("api/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
+    [Produces("application/json")]
     public class DirectorController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -78,7 +79,6 @@ namespace MoviesAPIAdminModule.Controllers
         //}
 
         [HttpGet("{id}")]
-        // ALTERADO: Documentação do Swagger mais precisa
         [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -92,7 +92,9 @@ namespace MoviesAPIAdminModule.Controllers
             if (result.IsFailure)
                 return NotFound(result.Failure);
 
-            return Ok(result.Success);
+            var response = result.Success!;
+
+            return Ok(response);
         }
 
         [HttpGet]
