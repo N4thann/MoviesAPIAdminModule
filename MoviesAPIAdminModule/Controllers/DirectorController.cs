@@ -4,6 +4,7 @@ using Application.DTOs.Request.Director;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Director;
+using Asp.Versioning;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
@@ -14,10 +15,10 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace MoviesAPIAdminModule.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/v{version:apiVersion}/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
-    //[ApiConventionType(typeof(DefaultApiConventions))] Caso não tivessemos retornos personalizados e fosse preciso um mais geral
+    [ApiVersion("1.0")]
     public class DirectorController : ControllerBase
     {
         private readonly IMediator _mediator;

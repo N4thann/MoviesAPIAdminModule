@@ -1,4 +1,6 @@
+using Asp.Versioning;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.OpenApi.Models;
 using MoviesAPIAdminModule;
 using MoviesAPIAdminModule.Extensions;
 using MoviesAPIAdminModule.Filters;
@@ -16,18 +18,18 @@ builder.Services.AddHttpContextAccessor(); // Necessário para o LocalStorageServ
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Movies API Admin Module",
         Version = "v1",
         Description = "API para administração de filmes, diretores e estúdios.",
-        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        Contact = new OpenApiContact
         {
             Name = "Nathan Farias",
             Email = "francisco.nathan2@outlook.com",
             Url = new Uri("https://www.linkedin.com/in/nathan-farias-5bb97a24"),
         },
-        License = new Microsoft.OpenApi.Models.OpenApiLicense
+        License = new OpenApiLicense
         {
             Name = "Exemplo",
             Url = new Uri("https://github.com/N4thann"),
@@ -43,6 +45,21 @@ builder.Services.AddSwaggerGen(c =>
     {
         c.IncludeXmlComments(xmlPath);
     }
+});
+
+// Versionamento automático na ASP.Net Core 
+builder.Services.AddApiVersioning(o =>
+{
+    o.DefaultApiVersion = new ApiVersion(1, 0);
+    o.AssumeDefaultVersionWhenUnspecified = true;
+    o.ReportApiVersions = true;//Sem definir nenhum schema, ele utiliza por padrão o QueryString, lembrando que tamos o via URLSegment
+    o.ApiVersionReader = ApiVersionReader.Combine(//Agora utiliizando as duas abordagens
+                        new QueryStringApiVersionReader(),
+                        new UrlSegmentApiVersionReader()
+    );
+}).AddApiExplorer(options => {
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
 });
 
 builder.Logging.ClearProviders(); //Remove todos os providers de logging configurados por padrão pelo ASP.NET Core (como EventLog, Console, Debug)

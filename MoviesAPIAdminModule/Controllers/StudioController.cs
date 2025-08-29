@@ -3,6 +3,7 @@ using Application.DTOs.Request.Studio;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Studio;
+using Asp.Versioning;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
@@ -13,9 +14,10 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace MoviesAPIAdminModule.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/v{version:apiVersion}/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
+    [ApiVersion("1.0")]
     public class StudioController : ControllerBase
     {
         private readonly IMediator _mediator;

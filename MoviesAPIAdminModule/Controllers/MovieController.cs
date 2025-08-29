@@ -3,6 +3,7 @@ using Application.DTOs.Request.Movie;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.Movie;
+using Asp.Versioning;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
@@ -13,20 +14,26 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace MoviesAPIAdminModule.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/v{version:apiVersion}/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
+    [ApiVersion("1.0")]
+    //[ApiVersion("1.0, Deprecared = true")] Para indicar que essa versão está depreciada e irá ser descontinuada no futuro
+    //[ApiConventionType(typeof(DefaultApiConventions))] Caso não tivessemos retornos personalizados e fosse preciso um mais geral
+    //[ApiExplorerSettings(IgnoreApi = true)] Caso eu quisesse ignora a documentação na interface do swagger dessa controller
     public class MovieController : ControllerBase
     {
         private readonly IMediator _mediator;
 
         public MovieController(IMediator mediator) => _mediator = mediator;
 
+        //[MapToApiVersion(2)] Utilizando para mapear o método action informando que apenas na versão 2 poderá ser acessado esse action
         [HttpPost]
         [ProducesResponseType(typeof(MovieBasicInfoResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(Summary = "Cria um novo filme", Tags = new[] { "Movie Commands" })]
         public async Task<IActionResult> CreateMovie([FromBody] CreateMovieRequest request, CancellationToken cancellationToken)
         {
