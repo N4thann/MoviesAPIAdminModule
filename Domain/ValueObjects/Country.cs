@@ -12,16 +12,21 @@ namespace Domain.ValueObjects
 
         private Country(string name, string code) 
         {
-            Name = name.Trim();
-            Code = code.Trim().ToUpperInvariant();
+            Name = name;
+            Code = code;
         }
 
         public static Result<Country> Create(string name, string code)
         {
+            name = name.Trim();
+            code = code.Trim().ToUpperInvariant();
+
             var validationResult = Validate.NotNullOrEmpty(name, nameof(name))
                 .Combine(
                 Validate.NotNullOrEmpty(code, nameof(code)),
                 Validate.MaxLength(name, 100, nameof(name)),
+                Validate.MinLength(name, 2, nameof(name)),
+                Validate.MinLength(code, 2, nameof(code)),
                 Validate.MaxLength(code, 3, nameof(code)));
 
             if (validationResult.IsFailure)

@@ -13,7 +13,7 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddHttpContextAccessor(); // Necessário para o LocalStorageService
 
-//builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
+//builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions()); // Necessário para o bucket da Amazon
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

@@ -3,7 +3,6 @@ using Domain.SeedWork.Interfaces;
 using Domain.SeedWork.Validation;
 using Domain.ValueObjects;
 using MoviesAPIAdminModule.Domain.SeedWork;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Domain.Entities
 {
@@ -12,7 +11,9 @@ namespace Domain.Entities
         private const int MIN_RELEASE_YEAR = 1888;
         private const int MAX_FUTURE_YEARS = 5;
         private const int MAX_TITLE_LENGTH = 100;
+        private const int MIN_TITLE_LENGTH = 3;
         private const int MAX_SYNOPSIS_LENGTH = 2000;
+        private const int MIN_SYNOPSIS_LENGTH = 10;
         private const int MAX_GALLERY_IMAGES = 4;
 
         private readonly List<Award> _awards;
@@ -38,7 +39,7 @@ namespace Domain.Entities
             Money? budget) : this()
         {
             Name = title.Trim();
-            OriginalTitle = string.IsNullOrWhiteSpace(originalTitle) ? title.Trim() : originalTitle.Trim();
+            OriginalTitle = originalTitle.Trim();
             Synopsis = synopsis.Trim();
             ReleaseYear = releaseYear;
             Duration = duration;
@@ -71,9 +72,13 @@ namespace Domain.Entities
 
             var validationResult = Validate.NotNullOrEmpty(title, nameof(title))
                 .Combine(
-                Validate.MaxLength(title, MAX_TITLE_LENGTH, nameof(title)),
+                Validate.NotNullOrEmpty(originalTitle, nameof(originalTitle)),
+                Validate.MinLength(title, MIN_TITLE_LENGTH, nameof(title)),
+                 Validate.MaxLength(title, MAX_TITLE_LENGTH, nameof(title)),
+                Validate.MinLength(originalTitle, MIN_TITLE_LENGTH, nameof(originalTitle)),
                 Validate.MaxLength(originalTitle, MAX_TITLE_LENGTH, nameof(originalTitle)),
                 Validate.NotNullOrEmpty(synopsis, nameof(synopsis)),
+                Validate.MinLength(synopsis, MIN_SYNOPSIS_LENGTH, nameof(synopsis)),
                 Validate.MaxLength(synopsis, MAX_SYNOPSIS_LENGTH, nameof(synopsis)),
                 Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear)),
                 Validate.NotNull(country, nameof(country)),
@@ -133,12 +138,15 @@ namespace Domain.Entities
 
             var validationResult = Validate.NotNullOrEmpty(title, nameof(title))
                 .Combine(
+                    Validate.NotNullOrEmpty(originalTitle, nameof(originalTitle)),
+                    Validate.MinLength(title, MIN_TITLE_LENGTH, nameof(title)),
                     Validate.MaxLength(title, MAX_TITLE_LENGTH, nameof(title)),
-                    Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear)),
+                    Validate.MinLength(originalTitle, MIN_TITLE_LENGTH, nameof(originalTitle)),
+                    Validate.MaxLength(originalTitle, MAX_TITLE_LENGTH, nameof(originalTitle)),
                     Validate.Range(releaseYear, MIN_RELEASE_YEAR, maxYear, nameof(releaseYear)),
                     Validate.NotNull(durationInMinutes, nameof(durationInMinutes)),
-                    Validate.MaxLength(originalTitle, MAX_TITLE_LENGTH, nameof(originalTitle)),
                     Validate.NotNullOrEmpty(synopsis, nameof(synopsis)),
+                    Validate.MinLength(synopsis, MIN_SYNOPSIS_LENGTH, nameof(synopsis)),
                     Validate.MaxLength(synopsis, MAX_SYNOPSIS_LENGTH, nameof(synopsis))
                     );
 

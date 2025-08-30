@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.SeedWork;
+﻿using Domain.SeedWork;
 using Domain.SeedWork.Core;
 using Domain.SeedWork.Validation;
 
@@ -11,31 +10,20 @@ namespace Domain.ValueObjects
 
         public Genre(string name, string description)
         {
-            Validate.NotNullOrEmpty(name, nameof(name));
-            Validate.MaxLength(name, 50, nameof(name));
-
-            if (!string.IsNullOrWhiteSpace(description))
-            {
-                Validate.MaxLength(description, 500, nameof(description));
-            }
-
             Name = name.Trim();
-            Description = description;
+            Description = description.Trim();
         }
 
         public static Result<Genre> Create(string name, string description)
         {
-            if (!string.IsNullOrWhiteSpace(description))
-            {
-                var validationResult2 = Validate.MaxLength(description, 500, nameof(description));
-                if (validationResult2.IsFailure)
-                    return Result<Genre>.AsFailure(validationResult2.Failure!);
-            }
-
             var validationResult = Validate.NotNullOrEmpty(name, nameof(name))
                 .Combine(
                 Validate.NotNullOrEmpty(description, nameof(description)),
-                Validate.MaxLength(name, 50, nameof(name)));
+                Validate.MinLength(name, 3, nameof(name)),
+                Validate.MaxLength(name, 50, nameof(name)),
+                Validate.MinLength(description, 10, nameof(description)),
+                Validate.MaxLength(description, 500, nameof(description))
+                );
 
             if (validationResult.IsFailure)
                 return Result<Genre>.AsFailure(validationResult.Failure!);
