@@ -5,6 +5,7 @@ using Application.Interfaces;
 using Application.Queries.Movie;
 using Asp.Versioning;
 using Domain.SeedWork.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
@@ -125,6 +126,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]

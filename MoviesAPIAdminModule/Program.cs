@@ -47,6 +47,9 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 
+//Autenticação com JWT Bearer Token
+builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+
 // Versionamento automático na ASP.Net Core 
 builder.Services.AddApiVersioning(o =>
 {
@@ -110,7 +113,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseStaticFiles();
 
-app.UseAuthorization();
+//app.UseAuthorization(); Utilizando Bearer Token
 
 app.MapControllers();
 

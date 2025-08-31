@@ -46,12 +46,10 @@ namespace Infraestructure.Tests
             httpContext.Request.Host = new HostString("localhost:7211");
             _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-            // 3. --- CRIAÇÃO DO SERVIÇO SOB TESTE ---
             _service = new LocalStorageService(configuration, _mockHttpContextAccessor.Object, mockEnv.Object);
         }
 
         [Fact]
-        // SalvarArquivo_ParaUmPoster_DeveCriarDiretorioESalvarArquivoComNomeCorreto
         public async Task SaveFileAsync_ForPoster_ShouldCreateDirectoryAndSaveFileWithCorrectName()
         {
             // Arrange
@@ -70,18 +68,15 @@ namespace Infraestructure.Tests
             var result = await _service.SaveFileAsync(fileStream, originalFileName, "image/jpeg", movie, MovieImage.ImageType.Poster);
 
             // Assert
-            // Verifica se o resultado foi um sucesso com a URL correta
             result.IsSuccess.Should().BeTrue();
             result.Success.Should().Be(expectedUrl);
 
-            // Verifica se o diretório e o arquivo foram realmente criados no sistema de arquivos
             Directory.Exists(expectedDirectoryPath).Should().BeTrue();
             File.Exists(expectedFilePath).Should().BeTrue();
             (await File.ReadAllTextAsync(expectedFilePath)).Should().Be(fileContent);
         }
 
         [Fact]
-        // SalvarArquivo_ParaImagensDeGaleria_DeveIncrementarOIndiceNoNome
         public async Task SaveFileAsync_ForGalleryImages_ShouldIncrementIndexInFileName()
         {
             // Arrange

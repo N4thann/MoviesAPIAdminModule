@@ -5,6 +5,7 @@ using Infraestructure.Mediator;
 using Infraestructure.Persistence;
 using Infraestructure.Repository;
 using Infraestructure.Service;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -35,10 +36,15 @@ namespace MoviesAPIAdminModule
 
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddIdentity<IdentityUser, IdentityRole>() //Representa usuários e as funções dos usuários
+                        .AddEntityFrameworkStores<ApplicationDbContext>() //Utiliza o EF como mecanismo para armazenar os dados
+                        .AddDefaultTokenProviders(); //Adicionando os provedores de token necessários
+
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
+           
             // Deixe o código do S3 comentado para o futuro
             /* 
             services.AddAWSService<Amazon.S3.IAmazonS3>();
