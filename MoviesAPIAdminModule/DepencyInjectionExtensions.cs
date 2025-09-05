@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.SeedWork.Interfaces;
 using Infraestructure.Context;
+using Infraestructure.Identity;
 using Infraestructure.Mediator;
 using Infraestructure.Persistence;
 using Infraestructure.Repository;
@@ -36,7 +37,7 @@ namespace MoviesAPIAdminModule
 
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<IdentityUser, IdentityRole>() //Representa usuários e as funções dos usuários
+            services.AddIdentity<ApplicationUser, IdentityRole>() //Representa usuários e as funções dos usuários
                         .AddEntityFrameworkStores<ApplicationDbContext>() //Utiliza o EF como mecanismo para armazenar os dados
                         .AddDefaultTokenProviders(); //Adicionando os provedores de token necessários
 

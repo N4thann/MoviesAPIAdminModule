@@ -2,7 +2,7 @@
 using Domain.SeedWork.Core;
 using Domain.ValueObjects;
 
-namespace Domain.SeedWork.Interfaces
+namespace Application.Interfaces
 {
     public interface IFileStorageService
     {

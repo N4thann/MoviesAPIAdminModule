@@ -1,8 +1,8 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.SeedWork.Core;
-using Domain.SeedWork.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Text.RegularExpressions;
 using static Domain.ValueObjects.MovieImage;

@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using Domain.SeedWork.Core;
-using Domain.SeedWork.Interfaces;
 using Domain.ValueObjects;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

@@ -1,9 +1,12 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoviesAPIAdminModule;
 using MoviesAPIAdminModule.Extensions;
 using MoviesAPIAdminModule.Filters;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,9 +50,6 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 
-//Autenticação com JWT Bearer Token
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
-
 // Versionamento automático na ASP.Net Core 
 builder.Services.AddApiVersioning(o =>
 {
@@ -71,6 +71,30 @@ builder.Logging.AddDebug();//Adiciona o provider que exibe logs na janela de Deb
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+
+// Implementação para configuração utilizando JWT Bearer
+var secretKey = builder.Configuration["JWT:SecretKey"] ?? throw new ArgumentException("Invalid secret key!!");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+    };
+});
 
 builder.Services.AddScoped<ApiLoggingFilter>();
 
