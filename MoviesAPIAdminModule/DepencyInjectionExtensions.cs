@@ -19,6 +19,8 @@ namespace MoviesAPIAdminModule
             // Registrar o Mediator
             services.AddScoped<IMediator, InMemoryMediator>();
 
+            services.AddScoped<ITokenService, TokenService>();
+
             // **Registro de Handlers de Comando e Query (Usando varredura de Assembly)**
             var applicationAssembly = typeof(ICommand).Assembly; // Ou qualquer tipo do seu Application.UseCases
 
@@ -59,6 +61,8 @@ namespace MoviesAPIAdminModule
             services.AddScoped<IDirectorRepository, DirectorRepository>();
             services.AddScoped<IStudioRepository, StudioRepository>();
             services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
