@@ -1,6 +1,7 @@
 ﻿using Application.Commands.Authentication;
 using Application.DTOs.Response;
 using Application.Interfaces;
+using Domain.Identity;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -9,65 +10,65 @@ using System.Security.Claims;
 
 namespace Application.UseCases.Authentication
 {
-    public class LoginUseCase : ICommandHandler<LoginCommand, Result<LoginResponse>>
+    public class LoginUseCase : ICommandHandler<LoginCommand, Result<TokenResponse>>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _configuration;
 
         public LoginUseCase(
-            IUserRepository userRepository,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ITokenService tokenService,
             IConfiguration configuration)
         {
-            _userRepository = userRepository;
+            _userManager = userManager;
             _roleManager = roleManager;
             _tokenService = tokenService;
             _configuration = configuration;
         }
 
-        public async Task<Result<LoginResponse>> Handle(LoginCommand command, CancellationToken cancellationToken)
+        public async Task<Result<TokenResponse>> Handle(LoginCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.FindByNameAsync(command.UserName);
+            var user = await _userManager.FindByNameAsync(command.UserName);
 
-            if (user is null || !await _userRepository.CheckPasswordAsync(user, command.Password))
-            {
-                return Result<LoginResponse>.AsFailure(Failure.InvalidCredentials);
-            }
+            if (user is null || !await _userManager.CheckPasswordAsync(user, command.Password))
+                return Result<TokenResponse>.AsFailure(Failure.InvalidCredentials);
 
-            var userRoles = await _userRepository.GetRolesAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
 
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName!),
                 new Claim(ClaimTypes.Email, user.Email!),
-                new Claim("uid", user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
+
             foreach (var userRole in userRoles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             }
 
-            var accessToken = _tokenService.GenerateAccessToken(authClaims, _configuration);
+            var token = _tokenService.GenerateAccessToken(authClaims, _configuration);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
-            var expiryMinutes = _configuration.GetValue<int>("JWT:RefreshTokenValidityInMinutes");
-            var result = await _userRepository.UpdateUserRefreshTokenAsync(user.Id, refreshToken, DateTime.UtcNow.AddMinutes(expiryMinutes));
+            _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInMinutes"],
+                                out int refreshTokenValidityInMinutes);
 
-            if (result.IsFailure)
-                return Result<LoginResponse>.AsFailure(result.Failure!);
+            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(refreshTokenValidityInMinutes);
 
-            var response = new LoginResponse
-            {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
-                RefreshToken = refreshToken,
-                Expiration = accessToken.ValidTo
-            };
+            user.RefreshToken = refreshToken;
 
-            return Result<LoginResponse>.AsSuccess(response);
+            await _userManager.UpdateAsync(user);
+
+            var response = new TokenResponse(
+                new JwtSecurityTokenHandler().WriteToken(token),
+                refreshToken,
+                token.ValidTo
+            );
+
+            return Result<TokenResponse>.AsSuccess(response);
         }
     }
 }

@@ -66,7 +66,7 @@ namespace Infraestructure.Service
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters,
-                                                        out SecurityToken securityToken);//parametro de saída
+                                                        out SecurityToken securityToken); //parametro de saída
 
             if (securityToken is not JwtSecurityToken jwtSecurityToken ||
                               !jwtSecurityToken.Header.Alg.Equals(

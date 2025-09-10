@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs.Authentication
 {
-    public class TokenModel
+    public class TokenRequest
     {
         public string? AccessToken { get; set; }
 

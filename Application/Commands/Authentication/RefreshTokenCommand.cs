@@ -4,8 +4,8 @@ using Domain.SeedWork.Core;
 
 namespace Application.Commands.Authentication
 {
-    public record class LoginCommand(
-        string UserName,
-        string Password
+    public record class RefreshTokenCommand(
+        string AccessToken,
+        string RefreshToken
         ) : ICommand<Result<TokenResponse>>;
 }
