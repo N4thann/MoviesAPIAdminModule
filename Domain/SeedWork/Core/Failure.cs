@@ -1,18 +1,30 @@
-﻿namespace Domain.SeedWork.Core
+﻿using Domain.Enums;
+
+namespace Domain.SeedWork.Core
 {
-    public sealed record Failure(int Code, string Message)
+    public sealed record Failure(FailureType Type, string Message)
     {
-        public static readonly Failure InternalServerError = new(500, "An unexpected internal server error occurred.");
-        public static readonly Failure ValidationError = new(400, "One or more validation errors occurred.");
+        // Mapeamento de Tipo para Código HTTP
+        public int Code => Type switch
+        {
+            FailureType.Validation => 400,
+            FailureType.Unauthorized => 401,
+            FailureType.Forbidden => 403,
+            FailureType.NotFound => 404,
+            FailureType.Conflict => 409,
+            _ => 500 // InternalServer e Infrastructure
+        };
 
-        public static readonly Failure Unauthorized = new(401, "Authentication failed. Please provide a valid token.");
-        public static readonly Failure InvalidCredentials = new(401, "Invalid credentials provided.");
-        public static readonly Failure TokenExpired = new(401, "The provided token has expired.");
-        public static readonly Failure Forbidden = new(403, "You do not have permission to access this resource.");
+        // Erros estáticos, agora muito mais claros
+        public static readonly Failure InternalServerError = new(FailureType.InternalServer, "An unexpected internal server error occurred.");
+        public static readonly Failure InvalidCredentials = new(FailureType.Unauthorized, "Invalid username or password.");
+        public static readonly Failure TokenExpired = new(FailureType.Unauthorized, "The provided token has expired.");
 
-        public static Failure InfrastructureError(string message) => new(500, message);
-        public static Failure Validation(string message) => new(400, message);
-        public static Failure NotFound(string entityName, object key) => new(404, $"The {entityName} with key '{key}' was not found.");
-        public static Failure Conflict(string message) => new(409, message);
+        // Métodos fábrica
+        public static Failure Validation(string message) => new(FailureType.Validation, message);
+        public static Failure NotFound(string entityName, object key) => new(FailureType.NotFound, $"The {entityName} with key '{key}' was not found.");
+        public static Failure Conflict(string message) => new(FailureType.Conflict, message);
+        public static Failure Infrastructure(string message) => new(FailureType.Infrastructure, message);
+        public static Failure Unauthorized(string message) => new(FailureType.Unauthorized, message);
     }
 }

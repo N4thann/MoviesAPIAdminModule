@@ -1,7 +1,7 @@
 ﻿using Application.Interfaces;
+using Domain.Identity;
 using Domain.SeedWork.Interfaces;
 using Infraestructure.Context;
-using Infraestructure.Identity;
 using Infraestructure.Mediator;
 using Infraestructure.Persistence;
 using Infraestructure.Repository;
@@ -61,8 +61,6 @@ namespace MoviesAPIAdminModule
             services.AddScoped<IDirectorRepository, DirectorRepository>();
             services.AddScoped<IStudioRepository, StudioRepository>();
             services.AddScoped<IMovieRepository, MovieRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
