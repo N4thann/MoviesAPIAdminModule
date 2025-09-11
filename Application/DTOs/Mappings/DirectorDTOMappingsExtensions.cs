@@ -12,7 +12,7 @@ namespace Application.DTOs.Mappings
             if (director == null)
             {
                 return Result<DirectorInfoResponse>.AsFailure(
-                    Failure.InfrastructureError("Attempted to map a null Director entity. This indicates an unexpected error in the application logic."));
+                    Failure.Infrastructure("Attempted to map a null Director entity. This indicates an unexpected error in the application logic."));
             }
 
             var response = new DirectorInfoResponse(
@@ -35,7 +35,7 @@ namespace Application.DTOs.Mappings
             if (directorsPagedList == null)
             {
                 return Result<IPagedList<DirectorInfoResponse>>.AsFailure(
-                    Failure.InfrastructureError("Cannot map a null PagedList<Director> to PagedList<DirectorInfoResponse>. The provided 'directorsPagedList' object is null."));
+                    Failure.Infrastructure("Cannot map a null PagedList<Director> to PagedList<DirectorInfoResponse>. The provided 'directorsPagedList' object is null."));
             }
 
             var directorInfoResponses = new List<DirectorInfoResponse>();

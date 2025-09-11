@@ -53,7 +53,7 @@ namespace Infraestructure.Service
             }
             catch
             {
-                return Result<string>.AsFailure(Failure.InfrastructureError("Failed to save file to local storage."));
+                return Result<string>.AsFailure(Failure.Infrastructure("Failed to save file to local storage."));
             }       
         }
 

@@ -12,7 +12,7 @@ namespace Application.DTOs.Mappings
             if (studio == null)
             {
                 return Result<StudioInfoResponse>.AsFailure(
-                    Failure.InfrastructureError("Attempted to map a null Studio entity. This indicates an unexpected error in the application logic."));
+                    Failure.Infrastructure("Attempted to map a null Studio entity. This indicates an unexpected error in the application logic."));
             }
 
             var response = new StudioInfoResponse(
@@ -35,7 +35,7 @@ namespace Application.DTOs.Mappings
         {
             if (studiosPagedList == null) {
                 return Result<IPagedList<StudioInfoResponse>>.AsFailure(
-                    Failure.InfrastructureError("Cannot map a null PagedList<Studio> to PagedList<StudioInfoResponse>. The provided 'studiosPagedList' object is null."));
+                    Failure.Infrastructure("Cannot map a null PagedList<Studio> to PagedList<StudioInfoResponse>. The provided 'studiosPagedList' object is null."));
             }
 
             var studiosInfoResponses = new List<StudioInfoResponse>();

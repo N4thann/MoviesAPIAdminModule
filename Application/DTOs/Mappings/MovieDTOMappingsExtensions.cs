@@ -12,7 +12,7 @@ namespace Application.DTOs.Mappings
             if (movie == null)
             {
                 return Result<MovieBasicInfoResponse>.AsFailure(
-                    Failure.InfrastructureError("Attempted to map a null Movie entity. This indicates an unexpected error in the application logic."));
+                    Failure.Infrastructure("Attempted to map a null Movie entity. This indicates an unexpected error in the application logic."));
             }
 
             var response = new MovieBasicInfoResponse(
@@ -43,7 +43,7 @@ namespace Application.DTOs.Mappings
             if (moviesPagedList == null)
             {
                 return Result<IPagedList<MovieBasicInfoResponse>>.AsFailure(
-                    Failure.InfrastructureError("Cannot map a null PagedList<Movie> to PagedList<MovieInfoResponse>. The provided 'moviesPagedList' object is null."));
+                    Failure.Infrastructure("Cannot map a null PagedList<Movie> to PagedList<MovieInfoResponse>. The provided 'moviesPagedList' object is null."));
             }
 
             var movieBasicInfoResponses = new List<MovieBasicInfoResponse>();

@@ -4,6 +4,7 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Asp.Versioning;
 using Domain.SeedWork.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Swashbuckle.AspNetCore.Annotations;
@@ -60,7 +61,7 @@ namespace MoviesAPIAdminModule.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("refresh-token")]
         public async Task<IActionResult> RefreshToken(TokenRequest request, CancellationToken cancellationToken)
@@ -73,6 +74,24 @@ namespace MoviesAPIAdminModule.Controllers
                 return HandleFailure(result.Failure!);
 
             return Ok(result.Success);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
+        [Route("revoke/{username}")]
+        public async Task<IActionResult> Revoke(string username, CancellationToken cancellationToken)
+        {
+            var command = new RevokeByUsernameCommand(username);
+
+            var result = await _mediator.Send<RevokeByUsernameCommand, Result<bool>>(command, cancellationToken);
+
+            if (result.IsFailure)
+                return HandleFailure(result.Failure!);
+
+            return NoContent();
         }
     }
 }

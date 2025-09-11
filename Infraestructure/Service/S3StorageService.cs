@@ -45,7 +45,7 @@ namespace Infraestructure.Service
             }
             catch
             {
-                return Result<string>.AsFailure(Failure.InfrastructureError("Failed to save file to the Amazon S3 bucket."));
+                return Result<string>.AsFailure(Failure.Infrastructure("Failed to save file to the Amazon S3 bucket."));
             }         
         }
 
