@@ -39,8 +39,34 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 
-    c.EnableAnnotations();
+    // Habilitar no Swagger a autenticação com JWT na interface
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",//Nome do cabeçalho
+        Type = SecuritySchemeType.ApiKey,//Chave de API a autenticação
+        Scheme = "Bearer",//O schema especifíca o tipo de autenticação
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,//Indica que esse token virá no Header da requisição
+        Description = "Bearer JWT ",
+    });
+    //Habilitar o requisito de segurança que as operações da API requerem o esquema de segurança Bearer
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 
+    // Adicionando anotações da documentação
+    c.EnableAnnotations();
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
 

@@ -6,6 +6,7 @@ using Application.Interfaces;
 using Application.Queries.Director;
 using Asp.Versioning;
 using Domain.SeedWork.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
@@ -19,7 +20,7 @@ namespace MoviesAPIAdminModule.Controllers
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-    public class DirectorController : ControllerBase
+    public class DirectorController : BaseApiController
     {
         private readonly IMediator _mediator;
         public DirectorController(IMediator mediator) => _mediator = mediator;
@@ -43,7 +44,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Send<CreateDirectorCommand, Result<DirectorInfoResponse>>(command, cancellationToken);
 
             if (result.IsFailure)
-                return BadRequest(result.Failure);
+                return HandleFailure(result.Failure!);
 
             var response = result.Success!;
 
@@ -92,13 +93,14 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Query<GetDirectorByIdQuery, Result<DirectorInfoResponse>>(query, cancellationToken);
 
             if (result.IsFailure)
-                return NotFound(result.Failure);
+                return HandleFailure(result.Failure!);
 
             var response = result.Success!;
 
             return Ok(response);
         }
 
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(IPagedList<DirectorInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
@@ -110,13 +112,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Query<ListDirectorsQuery, Result<IPagedList<DirectorInfoResponse>>>(query, cancellationToken);
 
             if (result.IsFailure)
-            {
-                return result.Failure.Code switch
-                {
-                    500 => StatusCode(500, result.Failure),
-                    _ => BadRequest(result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
 
             var response = result.Success!;
 
@@ -154,13 +150,8 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Query<DirectorFilterQuery, Result<IPagedList<DirectorInfoResponse>>>(query, cancellationToken);
 
             if (result.IsFailure)
-            {
-                return result.Failure.Code switch
-                {
-                    500 => StatusCode(500, result.Failure),
-                    _ => BadRequest(result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
+
             var response = result.Success!;
 
             var metadata = new
@@ -191,13 +182,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Send<DeleteDirectorCommand, Result<bool>>(command, cancellationToken);
 
             if (result.IsFailure)
-            {
-                if (result.Failure!.Code == 404)
-                {
-                    return NotFound(result.Failure);
-                }
-                return BadRequest(result.Failure);
-            }
+                return HandleFailure(result.Failure!);
 
             return NoContent();
         }
