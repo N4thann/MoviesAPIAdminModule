@@ -122,6 +122,21 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+
+    options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("Admin").RequireClaim("id", "Nathan"));
+
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+
+    options.AddPolicy("ExclusivePolicyOnly", policy =>
+        policy.RequireAssertion(context =>
+        context.User.HasClaim(claim => claim.Type == "id" && claim.Value == "macoratti")
+        || context.User.IsInRole("SuperAdmin")));
+
+});
+
 builder.Services.AddScoped<ApiLoggingFilter>();
 
 var app = builder.Build();
