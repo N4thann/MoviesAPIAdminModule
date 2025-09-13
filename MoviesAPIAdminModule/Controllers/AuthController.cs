@@ -93,7 +93,37 @@ namespace MoviesAPIAdminModule.Controllers
             return NoContent();
         }
 
+        [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "(Admin) Cria uma nova role (função) no sistema.", Tags = new[] { "Roles Commands" })]
+        public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequest request, CancellationToken cancellationToken)
+        {
+            var command = new CreateRoleCommand(request.RoleName);
+            var result = await _mediator.Send<CreateRoleCommand, Result<bool>>(command, cancellationToken);
 
+            if (result.IsFailure)
+                return HandleFailure(result.Failure!);
 
+            return NoContent();
+        }
+
+        [HttpPost("add-user-to-role")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "(Admin) Adiciona um usuário a uma role existente.", Tags = new[] { "Roles Commands" })]
+        public async Task<IActionResult> AddUserToRole([FromBody] AddUserToRoleRequest request, CancellationToken cancellationToken)
+        {
+            var command = new AddUserToRoleCommand(request.Email, request.RoleName);
+            var result = await _mediator.Send<AddUserToRoleCommand, Result<bool>>(command, cancellationToken);
+
+            if (result.IsFailure)
+                return HandleFailure(result.Failure!);
+
+            return NoContent();
+        }
     }
 }
