@@ -22,7 +22,7 @@ namespace MoviesAPIAdminModule.Controllers
     //[ApiVersion("1.0, Deprecared = true")] Para indicar que essa versão está depreciada e irá ser descontinuada no futuro
     //[ApiConventionType(typeof(DefaultApiConventions))] Caso não tivessemos retornos personalizados e fosse preciso um mais geral
     //[ApiExplorerSettings(IgnoreApi = true)] Caso eu quisesse ignora a documentação na interface do swagger dessa controller
-    public class MovieController : ControllerBase
+    public class MovieController : BaseApiController
     {
         private readonly IMediator _mediator;
 
@@ -59,16 +59,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Send<CreateMovieCommand, Result<MovieBasicInfoResponse>>(command, cancellationToken);
 
             if (result.IsFailure)
-            {
-                // O switch agora mapeia cada código de erro para o helper method correto.
-                return result.Failure.Code switch
-                {
-                    404 => NotFound(result.Failure),
-                    409 => Conflict(result.Failure),
-                    400 => BadRequest(result.Failure),
-                    _ => StatusCode(500, result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
 
             var response = result.Success;
 
@@ -100,6 +91,7 @@ namespace MoviesAPIAdminModule.Controllers
         //}
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(MovieBasicInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
@@ -112,21 +104,15 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Query<GetMovieByIdQuery, Result<MovieBasicInfoResponse>>(command, cancellationToken);
 
             if (result.IsFailure)
-            {
-                return result.Failure!.Code switch
-                {
-                    404 => NotFound(result.Failure),
-                    _ => BadRequest(result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
 
             var response = result.Success;
 
             return Ok(response);
         }
 
-        [Authorize]
-        [HttpGet]       
+        [HttpGet]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
@@ -137,13 +123,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Query<ListMoviesQuery, Result<IPagedList<MovieBasicInfoResponse>>>(query, cancellationToken);
 
             if (result.IsFailure)
-            {
-                return result.Failure.Code switch
-                {
-                    500 => StatusCode(500, result.Failure),
-                    _ => BadRequest(result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
 
             var response = result.Success;
 
@@ -164,6 +144,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet("filtered")]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
@@ -185,13 +166,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Query<MovieBasicFilterQuery, Result<IPagedList<MovieBasicInfoResponse>>>(query, cancellationToken);
 
             if (result.IsFailure)
-            {
-                return result.Failure.Code switch
-                {
-                    500 => StatusCode(500, result.Failure),
-                    _ => BadRequest(result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
 
             var response = result.Success;
 
@@ -212,6 +187,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -223,13 +199,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result =  await _mediator.Send<DeleteMovieCommand, Result<bool>>(command, cancellationToken);
 
             if (result.IsFailure)
-            {
-                if (result.Failure!.Code == 404)
-                {
-                    return NotFound(result.Failure);
-                }
-                return BadRequest(result.Failure);
-            }
+                return HandleFailure(result.Failure!);
 
             return NoContent();
         }
@@ -253,14 +223,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Send<AddAwardCommand, Result<bool>>(command, cancellationToken);
 
             if (result.IsFailure)
-            {
-                return result.Failure.Code switch
-                {
-                    404 => NotFound(result.Failure),
-                    409 => Conflict(result.Failure),
-                    _ => BadRequest(result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
 
             return NoContent();
         }
@@ -292,16 +255,9 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Send<AddMovieImageCommand, Result<string>>(command, cancellationToken);
 
             if (result.IsFailure)
-            {
-                return result.Failure!.Code switch
-                {
-                    404 => NotFound(result.Failure),
-                    409 => Conflict(result.Failure),
-                    _ => BadRequest(result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
 
-            var response = new { imageUrl = result.Success };
+            var response = result.Success;
 
             return Ok(response);
         }

@@ -183,3 +183,17 @@ app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
+
+/*
+ * 
+ * Diferenças entre Manipulador JWT Tradicional (AddJwtBearer) e Novo Manipulador Identity (AddBearerToken)
+ -A abordagem manual (.AddJwtBearer) sempre será necessária para cenários avançados onde a flexibilidade é mais 
+importante que a simplicidade. / JWT (RFC 7519) / Total. Você controla cada parâmetro de validação / Config: Manual e explícita (você define todas as regras)
+/	Casos de Uso: APIs complexas, microserviços, alta customização / Sua responsabilidade total (armazenar, validar, revogar)
+
+-A abordagem automática (.AddBearerToken) será a escolha de 90% dos novos projetos, especialmente para desenvolvedores que 
+estão começando ou para aplicações onde os padrões de segurança da Microsoft são perfeitamente adequados (a grande maioria dos casos).
+/ Também é JWT, mas gerenciado pelo Identity / Pode criar os seus ou usar os pré-fabricados com .MapIdentityApi() / Limitado. A Microsoft abstrai os detalhes de você
+/ Complexidade Muito Baixa. Ideal para desenvolvimento rápido / Casos de uso: SPAs, aplicativos móveis, projetos onde os padrões são suficientes
+
+ */

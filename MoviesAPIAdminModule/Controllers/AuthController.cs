@@ -74,9 +74,10 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(result.Success);
         }
 
-        [Authorize]
+
         [HttpPost]
         [Route("{username}")]
+        [Authorize(Policy = "ExclusiveOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
@@ -94,6 +95,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Policy = "SuperAdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
@@ -110,6 +112,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpPost("add-user-to-role")]
+        [Authorize(Policy = "SuperAdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]

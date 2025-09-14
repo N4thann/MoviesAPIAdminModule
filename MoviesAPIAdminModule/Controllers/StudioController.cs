@@ -5,6 +5,7 @@ using Application.Interfaces;
 using Application.Queries.Studio;
 using Asp.Versioning;
 using Domain.SeedWork.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
@@ -18,7 +19,7 @@ namespace MoviesAPIAdminModule.Controllers
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-    public class StudioController : ControllerBase
+    public class StudioController : BaseApiController
     {
         private readonly IMediator _mediator;
 
@@ -42,7 +43,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Send<CreateStudioCommand, Result<StudioInfoResponse>>(command, cancellationToken);
 
             if (result.IsFailure)
-                return BadRequest(result.Failure);
+                return HandleFailure(result.Failure!);
 
             var response = result.Success!;
 
@@ -52,6 +53,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -62,7 +64,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Query<GetStudioByIdQuery, Result<StudioInfoResponse>>(query, cancellationToken);
 
             if (result.IsFailure)
-                return NotFound(result.Failure);
+                return HandleFailure(result.Failure!);
 
             var response = result.Success!;
 
@@ -70,6 +72,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
@@ -80,13 +83,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Query<ListStudiosQuery, Result<IPagedList<StudioInfoResponse>>>(query, cancellationToken);
 
             if (result.IsFailure)
-            {
-                return result.Failure.Code switch
-                {
-                    500 => StatusCode(500, result.Failure),
-                    _ => BadRequest(result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
 
             var response = result.Success!;
 
@@ -107,6 +104,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet("filtered")]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
@@ -125,13 +123,8 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Query<StudioFilterQuery, Result<IPagedList<StudioInfoResponse>>>(query, cancellationToken);
 
             if (result.IsFailure)
-            {
-                return result.Failure.Code switch
-                {
-                    500 => StatusCode(500, result.Failure),
-                    _ => BadRequest(result.Failure)
-                };
-            }
+                return HandleFailure(result.Failure!);
+
             var response = result.Success!;
 
             var metadata = new
@@ -179,6 +172,7 @@ namespace MoviesAPIAdminModule.Controllers
         //}
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -190,13 +184,7 @@ namespace MoviesAPIAdminModule.Controllers
             var result = await _mediator.Send<DeleteStudioCommand, Result<bool>>(command, cancellationToken);
 
             if (result.IsFailure)
-            {
-                if (result.Failure!.Code == 404)
-                {
-                    return NotFound(result.Failure);
-                }
-                return BadRequest(result.Failure);
-            }
+                return HandleFailure(result.Failure!);
 
             return NoContent();
         }
