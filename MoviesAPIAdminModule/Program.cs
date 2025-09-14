@@ -132,7 +132,7 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("ExclusivePolicyOnly", policy =>
         policy.RequireAssertion(context =>
-        context.User.HasClaim(claim => claim.Type == "id" && claim.Value == "macoratti")
+        context.User.HasClaim(claim => claim.Type == "id" && claim.Value == "Nathan")
         || context.User.IsInRole("SuperAdmin")));
 
 });

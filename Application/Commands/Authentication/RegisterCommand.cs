@@ -6,6 +6,7 @@ namespace Application.Commands.Authentication
     public record class RegisterCommand(
         string UserName,
         string Email,
-        string Password
+        string Password,
+        string? PhoneNumber
         ) : ICommand<Result<bool>>;
 }

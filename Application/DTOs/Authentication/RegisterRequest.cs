@@ -13,5 +13,8 @@ namespace Application.DTOs.Authentication
 
         [Required(ErrorMessage = "Passowrd is required")]
         public string? Password { get; set; }
+
+        [Phone]
+        public string? PhoneNumber { get; set; }
     }
 }

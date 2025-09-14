@@ -24,8 +24,6 @@ namespace Application.UseCases.Authentication
 
         public async Task<Result<bool>> Handle(RegisterCommand command, CancellationToken cancellationToken)
         {
-            var userExists = await _userManager.FindByNameAsync(command.UserName!);
-
             var userByUserName = await _userManager.FindByNameAsync(command.UserName);
 
             if (userByUserName != null)
@@ -40,7 +38,8 @@ namespace Application.UseCases.Authentication
             {
                 Email = command.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = command.UserName
+                UserName = command.UserName,
+                PhoneNumber = command.PhoneNumber
             };
 
             var identityResult = await _userManager.CreateAsync(user, command.Password);

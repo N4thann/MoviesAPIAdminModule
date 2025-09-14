@@ -39,6 +39,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "ExclusivePolicyOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
@@ -46,7 +47,7 @@ namespace MoviesAPIAdminModule.Controllers
         [SwaggerOperation(Summary = "Cria uma nova conta de usuário no sistema", Tags = new[] { "Authentication Commands" })]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
         {
-            var command = new RegisterCommand(request.UserName!, request.Email!, request.Password!);
+            var command = new RegisterCommand(request.UserName!, request.Email!, request.Password!, request.PhoneNumber);
 
             var result = await _mediator.Send<RegisterCommand, Result<bool>>(command, cancellationToken);
 
