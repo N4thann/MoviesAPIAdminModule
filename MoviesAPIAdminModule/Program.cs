@@ -1,12 +1,9 @@
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoviesAPIAdminModule;
 using MoviesAPIAdminModule.Extensions;
 using MoviesAPIAdminModule.Filters;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddHttpContextAccessor(); // Necessário para o LocalStorageService
-
 //builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions()); // Necessário para o bucket da Amazon
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -91,53 +86,16 @@ builder.Services.AddApiVersioning(o =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+builder.Services.AddScoped<ApiLoggingFilter>();
+
 builder.Logging.ClearProviders(); //Remove todos os providers de logging configurados por padrão pelo ASP.NET Core (como EventLog, Console, Debug)
 builder.Logging.AddConsole();//Adiciona o provider que exibe logs no console/terminal da aplicação 
 builder.Logging.AddDebug();//Adiciona o provider que exibe logs na janela de Debug Output do Visual Studio
 
+// Chamadas para os métodos de extensão
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-
-// Implementação para configuração utilizando JWT Bearer
-var secretKey = builder.Configuration["JWT:SecretKey"] ?? throw new ArgumentException("Invalid secret key!!");
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.Zero,
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-    };
-});
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-
-    options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("Admin").RequireClaim("id", "Nathan"));
-
-    options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
-
-    options.AddPolicy("ExclusivePolicyOnly", policy =>
-        policy.RequireAssertion(context =>
-        context.User.HasClaim(claim => claim.Type == "id" && claim.Value == "Nathan")
-        || context.User.IsInRole("SuperAdmin")));
-
-});
-
-builder.Services.AddScoped<ApiLoggingFilter>();
+builder.Services.AddWebApiServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -175,11 +133,15 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = $"/{staticFilesPath.Replace("\\", "/")}"
 });
 
+app.UseHttpsRedirection(); // Recomendado adicionar para produção
+app.UseStaticFiles(); // Para servir arquivos (como imagens de filmes)
 
-app.UseStaticFiles();
+app.UseRouting(); // Embora implícito, é bom saber que está aqui
 
-//app.UseAuthorization(); Utilizando Bearer Token
+app.UseCors();
 
+app.UseAuthentication();
+app.UseAuthorization(); 
 app.MapControllers();
 
 app.Run();

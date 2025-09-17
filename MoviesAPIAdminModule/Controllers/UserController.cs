@@ -9,9 +9,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
-    [ApiController]
+    
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
+    [ApiController]
     public class UsersController : BaseApiController
     {
         private readonly IMediator _mediator;

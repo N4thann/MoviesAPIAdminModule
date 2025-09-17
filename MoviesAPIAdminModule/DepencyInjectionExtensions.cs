@@ -6,14 +6,86 @@ using Infraestructure.Mediator;
 using Infraestructure.Persistence;
 using Infraestructure.Repository;
 using Infraestructure.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
 
 namespace MoviesAPIAdminModule
 {
     public static class DepencyInjectionExtensions
     {
+        public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            #region CORS
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("PoliticaCORS1",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:xxxx")
+                        .WithMethods("GET", "POST")
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                    });
+
+                options.AddPolicy("PoliticaCORS2",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:zzzz")
+                        .WithMethods("GET", "DELETE");
+                    });
+            }); // Configuração para usar o CORS para o EnableCORS escolhe a política no action ou na controller
+
+            #endregion
+
+            #region AUTENTICAÇÃO JWT
+            var secretKey = configuration["JWT:SecretKey"] ?? throw new ArgumentException("Invalid secret key!!");
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidAudience = configuration["JWT:ValidAudience"],
+                    ValidIssuer = configuration["JWT:ValidIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                };
+            });
+            #endregion
+
+            // ===== AUTORIZAÇÃO POLICIES =====
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+
+                options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("Admin").RequireClaim("id", "Nathan"));
+
+                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+
+                options.AddPolicy("ExclusivePolicyOnly", policy =>
+                    policy.RequireAssertion(context =>
+                    context.User.HasClaim(claim => claim.Type == "id" && claim.Value == "Nathan")
+                    || context.User.IsInRole("SuperAdmin")));
+
+            });
+
+            return services;
+        }
+
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             // Registrar o Mediator

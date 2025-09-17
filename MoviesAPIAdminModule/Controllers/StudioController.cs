@@ -14,11 +14,12 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
-    [ApiController]
+    
     [Route("api/v{version:apiVersion}/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
     [ApiVersion("1.0")]
+    [ApiController]
     public class StudioController : BaseApiController
     {
         private readonly IMediator _mediator;
