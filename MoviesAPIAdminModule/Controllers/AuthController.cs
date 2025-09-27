@@ -5,6 +5,7 @@ using Application.Interfaces;
 using Asp.Versioning;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Swashbuckle.AspNetCore.Annotations;
@@ -13,6 +14,7 @@ namespace MoviesAPIAdminModule.Controllers
 {
     
     [Route("api/v{version:apiVersion}/[controller]/[action]")]
+    [EnableCors("PoliticaCORS2")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
     [ApiVersion("1.0")]

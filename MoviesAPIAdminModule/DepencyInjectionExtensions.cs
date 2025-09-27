@@ -67,7 +67,7 @@ namespace MoviesAPIAdminModule
             });
             #endregion
 
-            // ===== AUTORIZAÇÃO POLICIES =====
+            #region AUTORIZAÇÃO POLICIES
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
@@ -82,6 +82,8 @@ namespace MoviesAPIAdminModule
                     || context.User.IsInRole("SuperAdmin")));
 
             });
+
+            #endregion
 
             return services;
         }
