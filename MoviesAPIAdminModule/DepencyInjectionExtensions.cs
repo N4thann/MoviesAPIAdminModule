@@ -8,10 +8,13 @@ using Infraestructure.Repository;
 using Infraestructure.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MoviesAPIAdminModule.RateLimitOptions;
 using System.Reflection;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace MoviesAPIAdminModule
 {
@@ -82,7 +85,51 @@ namespace MoviesAPIAdminModule
                     || context.User.IsInRole("SuperAdmin")));
 
             });
+            #endregion
 
+            #region RATE LIMIT
+            var myOptions = new MyRateLimitOptions();
+
+            configuration.GetSection(MyRateLimitOptions.MyRateLimit).Bind(myOptions);
+
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                // --- CONFIGURAÇÃO DO LIMITADOR GLOBAL ---
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpcontext =>
+                {
+                    var partitionKey = httpcontext.User.Identity?.Name ?? httpcontext.Request.Headers.Host.ToString();
+
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: partitionKey,
+                        factory: partition => new FixedWindowRateLimiterOptions
+                        {
+                            AutoReplenishment = true, 
+                            PermitLimit = myOptions.PermitLimit, 
+                            QueueLimit = 0,
+                            Window = TimeSpan.FromSeconds(myOptions.Window)
+                        });
+                });
+
+                // --- DEFINIÇÃO DE POLÍTICAS NOMEADAS ---
+                options.AddFixedWindowLimiter(policyName: "fixedwindow", opt =>
+                {
+                    opt.PermitLimit = 1; 
+                    opt.Window = TimeSpan.FromSeconds(5);
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst; 
+                    opt.QueueLimit = 0; 
+                });
+
+                // Política 2: "sliding"
+                options.AddSlidingWindowLimiter(policyName: "sliding", opt =>
+                {
+                    opt.PermitLimit = 10;
+                    opt.Window = TimeSpan.FromSeconds(10); 
+                    opt.SegmentsPerWindow = 2;
+                    opt.QueueLimit = 5; 
+                });
+            });
             #endregion
 
             return services;

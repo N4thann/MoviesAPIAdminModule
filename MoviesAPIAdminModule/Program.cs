@@ -93,9 +93,9 @@ builder.Logging.AddConsole();//Adiciona o provider que exibe logs no console/ter
 builder.Logging.AddDebug();//Adiciona o provider que exibe logs na janela de Debug Output do Visual Studio
 
 // Chamadas para os métodos de extensão
+builder.Services.AddWebApiServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddWebApiServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -137,6 +137,7 @@ app.UseHttpsRedirection(); // Recomendado adicionar para produção
 app.UseStaticFiles(); // Para servir arquivos (como imagens de filmes)
 
 app.UseRouting(); // Embora implícito, é bom saber que está aqui
+app.UseRateLimiter();
 
 app.UseCors();
 

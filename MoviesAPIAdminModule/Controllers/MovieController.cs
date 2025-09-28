@@ -8,6 +8,7 @@ using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
 using Pandorax.PagedList;
@@ -21,6 +22,7 @@ namespace MoviesAPIAdminModule.Controllers
     [Produces("application/json")]
     [ApiVersion("1.0")]
     [ApiController]
+    [EnableRateLimiting("fixedwindow")]
     //[ApiVersion("1.0, Deprecared = true")] Para indicar que essa versão está depreciada e irá ser descontinuada no futuro
     //[ApiConventionType(typeof(DefaultApiConventions))] Caso não tivessemos retornos personalizados e fosse preciso um mais geral
     //[ApiExplorerSettings(IgnoreApi = true)] Caso eu quisesse ignora a documentação na interface do swagger dessa controller
@@ -114,7 +116,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "UserOnly")]
+        //[Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
