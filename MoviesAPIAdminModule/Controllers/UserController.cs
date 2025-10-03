@@ -12,7 +12,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace MoviesAPIAdminModule.Controllers
 {
     [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]/users")]
+    [Route("api/v{version:apiVersion}/users")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
     [ApiVersion("1.0")]
@@ -40,7 +40,6 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpPost("{username}/Revoke")]
-
         [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]

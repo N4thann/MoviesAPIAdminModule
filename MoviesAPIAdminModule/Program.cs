@@ -93,9 +93,13 @@ builder.Logging.AddConsole();//Adiciona o provider que exibe logs no console/ter
 builder.Logging.AddDebug();//Adiciona o provider que exibe logs na janela de Debug Output do Visual Studio
 
 // Chamadas para os métodos de extensão
-builder.Services.AddWebApiServices(builder.Configuration);
-builder.Services.AddApplicationServices();
+// 1. Registra os serviços de infraestrutura primeiro (incluindo o AddIdentity)
 builder.Services.AddInfrastructureServices(builder.Configuration);
+// 2. Registra os serviços da aplicação
+builder.Services.AddApplicationServices();
+// 3. Registra os serviços da Web API por último, para que a configuração de JWT
+//    sobrescreva os padrões do Identity.
+builder.Services.AddWebApiServices(builder.Configuration);
 
 var app = builder.Build();
 

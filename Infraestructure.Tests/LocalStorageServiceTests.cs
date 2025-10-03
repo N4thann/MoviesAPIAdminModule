@@ -119,7 +119,7 @@ namespace Infraestructure.Tests
 
             // Assert
             result.IsFailure.Should().BeTrue();
-            result.Failure.Should().Be(Failure.InfrastructureError("Failed to save file to local storage."));
+            result.Failure.Should().Be(Failure.Infrastructure("Failed to save file to local storage."));
         }
 
         public void Dispose()

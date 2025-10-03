@@ -13,7 +13,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace MoviesAPIAdminModule.Controllers
 {
     [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]/auth")]
+    [Route("api/v{version:apiVersion}/auth")]
     [EnableCors("AllowMyClient")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
