@@ -139,7 +139,7 @@ app.UseStaticFiles(); // Para servir arquivos (como imagens de filmes)
 app.UseRouting(); // Embora implícito, é bom saber que está aqui
 app.UseRateLimiter();
 
-app.UseCors();
+app.UseCors("AllowMyClient");
 
 app.UseAuthentication();
 app.UseAuthorization(); 

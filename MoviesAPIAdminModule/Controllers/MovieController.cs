@@ -16,12 +16,12 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
+    [ApiController]
     [EnableCors("PoliticaCORS1")] //Usar [DisableCors] para desativar em algum método específico
     [Route("api/v{version:apiVersion}/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-    [ApiController]
     [EnableRateLimiting("fixedwindow")]
     //[ApiVersion("1.0, Deprecared = true")] Para indicar que essa versão está depreciada e irá ser descontinuada no futuro
     //[ApiConventionType(typeof(DefaultApiConventions))] Caso não tivessemos retornos personalizados e fosse preciso um mais geral
@@ -116,7 +116,7 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Policy = "UserOnly")]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]

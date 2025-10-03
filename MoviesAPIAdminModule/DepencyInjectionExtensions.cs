@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MoviesAPIAdminModule.RateLimitOptions;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
 
@@ -23,25 +24,18 @@ namespace MoviesAPIAdminModule
         public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration)
         {
             #region CORS
+            var nomeDaPoliticaCORS = "AllowMyClient";
 
             services.AddCors(options =>
             {
-                options.AddPolicy("PoliticaCORS1",
+                options.AddPolicy(name: nomeDaPoliticaCORS,
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:xxxx")
-                        .WithMethods("GET", "POST")
-                        .AllowAnyHeader()
-                        .AllowCredentials();
+                        policy.WithOrigins("http://www.apirequest.io", "http://localhost:4200", "https://localhost:7211") 
+                              .AllowAnyHeader() 
+                              .AllowAnyMethod(); 
                     });
-
-                options.AddPolicy("PoliticaCORS2",
-                    policy =>
-                    {
-                        policy.WithOrigins("http://localhost:zzzz")
-                        .WithMethods("GET", "DELETE");
-                    });
-            }); // Configuração para usar o CORS para o EnableCORS escolhe a política no action ou na controller
+            });
 
             #endregion
 
@@ -73,11 +67,14 @@ namespace MoviesAPIAdminModule
             #region AUTORIZAÇÃO POLICIES
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("AdminOnly", policy => 
+                        policy.RequireRole("Admin"));
 
-                options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("Admin").RequireClaim("id", "Nathan"));
+                options.AddPolicy("SuperAdminOnly", policy =>
+                        policy.RequireRole("SuperAdmin"));
 
-                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+                options.AddPolicy("UserOnly", policy => 
+                        policy.RequireRole("User"));
 
                 options.AddPolicy("ExclusivePolicyOnly", policy =>
                     policy.RequireAssertion(context =>
@@ -97,20 +94,20 @@ namespace MoviesAPIAdminModule
                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
                 // --- CONFIGURAÇÃO DO LIMITADOR GLOBAL ---
-                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpcontext =>
-                {
-                    var partitionKey = httpcontext.User.Identity?.Name ?? httpcontext.Request.Headers.Host.ToString();
+                //options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpcontext =>
+                //{
+                //    var partitionKey = httpcontext.User.Identity?.Name ?? httpcontext.Request.Headers.Host.ToString();
 
-                    return RateLimitPartition.GetFixedWindowLimiter(
-                        partitionKey: partitionKey,
-                        factory: partition => new FixedWindowRateLimiterOptions
-                        {
-                            AutoReplenishment = true, 
-                            PermitLimit = myOptions.PermitLimit, 
-                            QueueLimit = 0,
-                            Window = TimeSpan.FromSeconds(myOptions.Window)
-                        });
-                });
+                //    return RateLimitPartition.GetFixedWindowLimiter(
+                //        partitionKey: partitionKey,
+                //        factory: partition => new FixedWindowRateLimiterOptions
+                //        {
+                //            AutoReplenishment = true, 
+                //            PermitLimit = myOptions.PermitLimit, 
+                //            QueueLimit = 0,
+                //            Window = TimeSpan.FromSeconds(myOptions.Window)
+                //        });
+                //});
 
                 // --- DEFINIÇÃO DE POLÍTICAS NOMEADAS ---
                 options.AddFixedWindowLimiter(policyName: "fixedwindow", opt =>

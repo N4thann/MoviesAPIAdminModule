@@ -12,19 +12,18 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
-    
-    [Route("api/v{version:apiVersion}/[controller]/[action]")]
-    [EnableCors("PoliticaCORS2")]
+    [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]/auth")]
+    [EnableCors("AllowMyClient")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-    [ApiController]
     public class AuthController : BaseApiController
     {
         private readonly IMediator _mediator;
         public AuthController(IMediator mediator) => _mediator = mediator;
 
-        [HttpPost]
+        [HttpPost("login")]
         [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
@@ -41,8 +40,8 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(result.Success);
         }
 
-        [HttpPost]
-        [Authorize(Policy = "ExclusivePolicyOnly")]
+        [HttpPost("register")]
+        [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
@@ -60,7 +59,8 @@ namespace MoviesAPIAdminModule.Controllers
             return NoContent();
         }
 
-        [HttpPost]
+        [HttpPost("refresh-token")]
+        [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
@@ -76,61 +76,6 @@ namespace MoviesAPIAdminModule.Controllers
                 return HandleFailure(result.Failure!);
 
             return Ok(result.Success);
-        }
-
-
-        [HttpPost]
-        [Route("{username}")]
-        [Authorize(Policy = "ExclusiveOnly")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "(Admin) Invalida a sessão de um usuário, forçando um novo login", Tags = new[] { "Authentication Commands" })]
-        public async Task<IActionResult> Revoke(string username, CancellationToken cancellationToken)
-        {
-            var command = new RevokeByUsernameCommand(username);
-
-            var result = await _mediator.Send<RevokeByUsernameCommand, Result<bool>>(command, cancellationToken);
-
-            if (result.IsFailure)
-                return HandleFailure(result.Failure!);
-
-            return NoContent();
-        }
-
-        [HttpPost("create")]
-        [Authorize(Policy = "SuperAdminOnly")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
-        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
-        [SwaggerOperation(Summary = "(Admin) Cria uma nova role (função) no sistema.", Tags = new[] { "Roles Commands" })]
-        public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequest request, CancellationToken cancellationToken)
-        {
-            var command = new CreateRoleCommand(request.RoleName);
-            var result = await _mediator.Send<CreateRoleCommand, Result<bool>>(command, cancellationToken);
-
-            if (result.IsFailure)
-                return HandleFailure(result.Failure!);
-
-            return NoContent();
-        }
-
-        [HttpPost("add-user-to-role")]
-        [Authorize(Policy = "SuperAdminOnly")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
-        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
-        [SwaggerOperation(Summary = "(Admin) Adiciona um usuário a uma role existente.", Tags = new[] { "Roles Commands" })]
-        public async Task<IActionResult> AddUserToRole([FromBody] AddUserToRoleRequest request, CancellationToken cancellationToken)
-        {
-            var command = new AddUserToRoleCommand(request.Email, request.RoleName);
-            var result = await _mediator.Send<AddUserToRoleCommand, Result<bool>>(command, cancellationToken);
-
-            if (result.IsFailure)
-                return HandleFailure(result.Failure!);
-
-            return NoContent();
-        }
+        }                
     }
 }
