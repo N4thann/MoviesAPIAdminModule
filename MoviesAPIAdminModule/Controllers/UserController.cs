@@ -39,8 +39,27 @@ namespace MoviesAPIAdminModule.Controllers
             return Ok(result.Success);
         }
 
-        [HttpPost("{username}/Revoke")]
+        [HttpPost("register")]
         [Authorize(Policy = "AdminOnly")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(Summary = "Cria uma nova conta de usuário no sistema", Tags = new[] { "Authentication Commands" })]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
+        {
+            var command = new RegisterCommand(request.UserName!, request.Email!, request.Password!, request.PhoneNumber);
+
+            var result = await _mediator.Send<RegisterCommand, Result<bool>>(command, cancellationToken);
+
+            if (result.IsFailure)
+                return HandleFailure(result.Failure!);
+
+            return NoContent();
+        }
+
+        [HttpPost("{username}/Revoke")]
+        [Authorize(Policy = "ExclusivePolicyOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]

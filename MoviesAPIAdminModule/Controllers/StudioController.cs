@@ -17,6 +17,7 @@ namespace MoviesAPIAdminModule.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]/[action]")]
     [ServiceFilter(typeof(ApiLoggingFilter))]
+    [Authorize(Policy = "AdminOnly")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
     public class StudioController : BaseApiController
@@ -53,7 +54,6 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -72,7 +72,6 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
@@ -104,7 +103,6 @@ namespace MoviesAPIAdminModule.Controllers
         }
 
         [HttpGet("filtered")]
-        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
@@ -172,7 +170,6 @@ namespace MoviesAPIAdminModule.Controllers
         //}
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

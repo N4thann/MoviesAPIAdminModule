@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MoviesAPIAdminModule.RateLimitOptions;
 using System.Reflection;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
 

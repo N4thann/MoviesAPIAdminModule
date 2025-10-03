@@ -23,7 +23,7 @@ namespace MoviesAPIAdminModule.Controllers
         public RolesController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost("create")]
-        [Authorize(Policy = "SuperAdminOnly")]
+        [Authorize(Policy = "ExclusivePolicyOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
