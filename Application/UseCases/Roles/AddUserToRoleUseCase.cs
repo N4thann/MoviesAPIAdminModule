@@ -1,10 +1,10 @@
-﻿using Application.Commands.Authentication;
+﻿using Application.Commands.Role;
 using Application.Interfaces;
 using Domain.Identity;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.UseCases.Authentication
+namespace Application.UseCases.Roles
 {
     public class AddUserToRoleUseCase : ICommandHandler<AddUserToRoleCommand, Result<bool>>
     {

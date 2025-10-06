@@ -1,4 +1,5 @@
-﻿using Application.Commands.Authentication;
+﻿using Application.Commands.User;
+using Application.DTOs.Authentication;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Queries.User;

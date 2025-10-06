@@ -1,4 +1,4 @@
-﻿using Application.Commands.Authentication;
+﻿using Application.Commands.User;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using Domain.Identity;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 
-namespace Application.UseCases.Authentication
+namespace Application.UseCases.Uses
 {
     public class RegisterUseCase : ICommandHandler<RegisterCommand, Result<bool>>
     {

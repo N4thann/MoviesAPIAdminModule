@@ -138,7 +138,7 @@ namespace MoviesAPIAdminModule.Controllers
 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
-            return Ok(response);
+            return Ok(response);         
         }
 
         //[HttpPatch("{id}")]

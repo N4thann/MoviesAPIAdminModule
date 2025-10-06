@@ -1,10 +1,10 @@
-﻿using Application.Commands.Authentication;
+﻿using Application.Commands.User;
 using Application.Interfaces;
 using Domain.Identity;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.UseCases.Authentication
+namespace Application.UseCases.Uses
 {
     public class RevokeByUsernameUseCase : ICommandHandler<RevokeByUsernameCommand, Result<bool>>
     {
