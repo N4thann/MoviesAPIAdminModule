@@ -4,11 +4,10 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Asp.Versioning;
 using Domain.SeedWork.Core;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
-using Swashbuckle.AspNetCore.Annotations;
+using NSwag.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
@@ -18,6 +17,7 @@ namespace MoviesAPIAdminModule.Controllers
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
     [ApiVersion("1.0")]
+    [OpenApiTag("Authentication")]
     public class AuthController : BaseApiController
     {
         private readonly IMediator _mediator;
@@ -27,7 +27,7 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Autentica um usuário e retorna os tokens de acesso e atualização", Tags = new[] { "Authentication Commands" })]
+        [OpenApiOperation("Autentica um usuário e retorna os tokens de acesso e atualização")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
         {
             var command = new LoginCommand(request.UserName!, request.Password!);
@@ -45,7 +45,7 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Emite um novo token de acesso utilizando um token de atualização válido", Tags = new[] { "Authentication Commands" })]
+        [OpenApiOperation("Emite um novo token de acesso utilizando um token de atualização válido")]
         public async Task<IActionResult> RefreshToken(TokenRequest request, CancellationToken cancellationToken)
         {
             var command = new RefreshTokenCommand(request.AccessToken, request.RefreshToken);

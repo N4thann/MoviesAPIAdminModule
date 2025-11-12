@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
+using NSwag.Annotations;
 using Pandorax.PagedList;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
@@ -30,7 +30,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Cria um novo estúdio", Tags = new[] { "Studio Commands" })]
+        [OpenApiOperation("Cria um novo estúdio")]
+        [OpenApiTag("Roles Commands")]
         public async Task<IActionResult> CreateStudio([FromBody] CreateStudioRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateStudioCommand(
@@ -57,7 +58,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(StudioInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Obtém um estúdio por ID", Tags = new[] { "Studio Queries" })]
+        [OpenApiOperation("Obtém um estúdio por ID")]
+        [OpenApiTag("Roles Queries")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken) 
         {
             var query = new GetStudioByIdQuery(id);
@@ -75,7 +77,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Lista todos os estúdios", Tags = new[] { "Studio Queries" })]
+        [OpenApiOperation("Lista todos os estúdios")]
+        [OpenApiTag("Roles Queries")]
         public async Task<IActionResult> GetAllPagination([FromQuery] StudioParametersRequest parameters, CancellationToken cancellationToken)
         {
             var query = new ListStudiosQuery(parameters);
@@ -106,7 +109,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(IPagedList<StudioInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Lista estúdios com filtros e paginação", Tags = new[] { "Studio Queries" })]
+        [OpenApiOperation("Lista estúdios com filtros e paginação")]
+        [OpenApiTag("Roles Queries")]
         public async Task<IActionResult> GetFilteredStudios([FromQuery] StudioFilterRequest request, CancellationToken cancellationToken)
         {
             var query = new StudioFilterQuery(
@@ -147,7 +151,8 @@ namespace MoviesAPIAdminModule.Controllers
         //[ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         //[ProducesResponseType(StatusCodes.Status404NotFound)]
         //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[SwaggerOperation(Summary = "Atualiza parcialmente um estúdio com o JsonPatchDocument", Tags = new[] { "Studio Commands" })]
+        //[OpenApiOperation("Atualiza parcialmente um estúdio com o JsonPatchDocument")]
+        //[OpenApiTag("Roles Commands")]
         //public async Task<IActionResult> UpdatePatchStudio(
         //    Guid id,
         //    [FromBody] JsonPatchDocument<Studio> patchDoc,
@@ -165,7 +170,7 @@ namespace MoviesAPIAdminModule.Controllers
 
         //    var command = new PatchStudioCommand(id, patchDoc);
         //    var response = await _mediator.Send<PatchStudioCommand, StudioInfoResponse>(command, cancellationToken);
-            
+
         //    return Ok(response);
         //}
 
@@ -173,7 +178,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Exclui um estúdio por ID", Tags = new[] { "Studio Commands" })]
+        [OpenApiOperation("Exclui um estúdio por ID")]
+        [OpenApiTag("Roles Commands")]
         public async Task<IActionResult> DeleteStudio(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteStudioCommand(id);

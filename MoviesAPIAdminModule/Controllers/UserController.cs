@@ -8,7 +8,7 @@ using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
-using Swashbuckle.AspNetCore.Annotations;
+using NSwag.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
@@ -17,6 +17,7 @@ namespace MoviesAPIAdminModule.Controllers
     [ServiceFilter(typeof(ApiLoggingFilter))]
     [Produces("application/json")]
     [ApiVersion("1.0")]
+    [OpenApiTag("Users")]
     public class UsersController : BaseApiController
     {
         private readonly IMediator _mediator;
@@ -28,7 +29,7 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(IEnumerable<UserSummaryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)] // Se o usuário não for Admin
-        [SwaggerOperation(Summary = "(Admin) Lista todos os usuários registrados no sistema.", Tags = new[] { "Users Queries" })]
+        [OpenApiOperation("(Admin) Lista todos os usuários registrados no sistema.")]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var query = new GetAllUsersQuery();
@@ -46,7 +47,7 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Cria uma nova conta de usuário no sistema", Tags = new[] { "Authentication Commands" })]
+        [OpenApiOperation("Cria uma nova conta de usuário no sistema")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
         {
             var command = new RegisterCommand(request.UserName!, request.Email!, request.Password!, request.PhoneNumber);
@@ -64,7 +65,7 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "(Admin) Invalida a sessão de um usuário, forçando um novo login", Tags = new[] { "Users Commands" })]
+        [OpenApiOperation("(Admin) Invalida a sessão de um usuário, forçando um novo login")]
         public async Task<IActionResult> Revoke(string username, CancellationToken cancellationToken)
         {
             var command = new RevokeByUsernameCommand(username);

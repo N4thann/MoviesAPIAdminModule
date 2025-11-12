@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
+using NSwag.Annotations;
 using Pandorax.PagedList;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
@@ -30,7 +30,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Cria um novo diretor", Tags = new[] { "Director Commands" })]
+        [OpenApiOperation("Cria um novo diretor")]
+        [OpenApiTag("Director Commands")]
         public async Task<IActionResult> CreateDirector([FromBody] CreateDirectorRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateDirectorCommand(
@@ -60,7 +61,8 @@ namespace MoviesAPIAdminModule.Controllers
         //[ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         //[ProducesResponseType(StatusCodes.Status404NotFound)]
         //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[SwaggerOperation(Summary = "Atualiza parcialmente um diretor com o JsonPatchDocument", Tags = new[] { "Director Commands" })]
+        //[OpenApiOperation"Atualiza parcialmente um diretor com o JsonPatchDocument")]
+        //[OpenApiTag("Director Commands")]
         //public async Task<IActionResult> UpdatePatchDirector(
         //    Guid id,
         //    [FromBody] JsonPatchDocument<Director> patchDoc,
@@ -86,7 +88,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Obtém um diretor por ID", Tags = new[] { "Director Queries" })]
+        [OpenApiOperation("Obtém um diretor por ID")]
+        [OpenApiTag("Director Queries")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var query = new GetDirectorByIdQuery(id);
@@ -105,7 +108,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(IPagedList<DirectorInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Lista todos os diretores aplicando paginação", Tags = new[] { "Director Queries" })]
+        [OpenApiOperation("Lista todos os diretores aplicando paginação")]
+        [OpenApiTag("Director Queries")]
         public async Task<IActionResult> GetAllPagination([FromQuery] DirectorParametersRequest parameters,CancellationToken cancellationToken)
         {
             var query = new ListDirectorsQuery(parameters);
@@ -135,7 +139,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(IPagedList<DirectorInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Lista diretores com filtros e paginação", Tags = new[] { "Director Queries" })]
+        [OpenApiOperation("Lista diretores com filtros e paginação")]
+        [OpenApiTag("Director Queries")]
         public async Task<IActionResult> GetFilteredDirectors([FromQuery] DirectorFilterRequest request, CancellationToken cancellationToken)
         {
             var query = new DirectorFilterQuery(
@@ -174,7 +179,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Exclui um diretor por ID", Tags = new[] { "Director Commands" })]
+        [OpenApiOperation("Exclui um diretor por ID")]
+        [OpenApiTag("Director Commands")]
         public async Task<IActionResult> DeleteDirector(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteDirectorCommand(id);

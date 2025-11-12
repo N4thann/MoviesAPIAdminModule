@@ -1,9 +1,8 @@
 using Asp.Versioning;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.OpenApi.Models;
-using MoviesAPIAdminModule;
 using MoviesAPIAdminModule.Extensions;
 using MoviesAPIAdminModule.Filters;
+using NSwag.Generation.Processors.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,76 +13,55 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddHttpContextAccessor(); // Necessário para o LocalStorageService
 //builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions()); // Necessário para o bucket da Amazon
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddOpenApiDocument(settings =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
+    settings.PostProcess = document =>
     {
-        Title = "Movies API Admin Module",
-        Version = "v1",
-        Description = "API para administração de filmes, diretores e estúdios.",
-        Contact = new OpenApiContact
+        document.Info.Title = "Movies API Admin Module";
+        document.Info.Version = "v1"; // Será sobrescrito pelo versionamento
+        document.Info.Description = "API para administração de filmes, diretores e estúdios.";
+
+        document.Info.Contact = new NSwag.OpenApiContact
         {
             Name = "Nathan Farias",
             Email = "francisco.nathan2@outlook.com",
-            Url = new Uri("https://www.linkedin.com/in/nathan-farias-5bb97a24"),
-        },
-        License = new OpenApiLicense
+            Url = "https://www.linkedin.com/in/nathan-farias-5bb97a24"
+        };
+
+        document.Info.License = new NSwag.OpenApiLicense
         {
             Name = "Exemplo",
-            Url = new Uri("https://github.com/N4thann"),
-        }
-    });
+            Url = "https://github.com/N4thann"
+        };
+    };
 
-    // Habilitar no Swagger a autenticação com JWT na interface
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    // 2. Configuração de Segurança JWT (Bearer)
+    // (Isso substitui o AddSecurityDefinition)
+    settings.AddSecurity("Bearer", new NSwag.OpenApiSecurityScheme
     {
-        Name = "Authorization",//Nome do cabeçalho
-        Type = SecuritySchemeType.ApiKey,//Chave de API a autenticação
-        Scheme = "Bearer",//O schema especifíca o tipo de autenticação
+        Name = "Authorization",
+        Type = NSwag.OpenApiSecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
         BearerFormat = "JWT",
-        In = ParameterLocation.Header,//Indica que esse token virá no Header da requisição
-        Description = "Bearer JWT ",
-    });
-    //Habilitar o requisito de segurança que as operações da API requerem o esquema de segurança Bearer
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
+        In = NSwag.OpenApiSecurityApiKeyLocation.Header,
+        Description = "Insira o token JWT: Bearer {seu_token}",
     });
 
-    // Adicionando anotações da documentação
-    c.EnableAnnotations();
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
-
-    if (System.IO.File.Exists(xmlPath))
-    {
-        c.IncludeXmlComments(xmlPath);
-    }
+    // 3. Aplica o "cadeado" de segurança a todos os endpoints
+    // (Isso substitui o AddSecurityRequirement)
+    settings.OperationProcessors.Add(
+        new OperationSecurityScopeProcessor("Bearer"));
 });
 
-// Versionamento automático na ASP.Net Core 
 builder.Services.AddApiVersioning(o =>
 {
     o.DefaultApiVersion = new ApiVersion(1, 0);
     o.AssumeDefaultVersionWhenUnspecified = true;
-    o.ReportApiVersions = true;//Sem definir nenhum schema, ele utiliza por padrão o QueryString, lembrando que tamos o via URLSegment
-    o.ApiVersionReader = ApiVersionReader.Combine(//Agora utiliizando as duas abordagens
+    o.ReportApiVersions = true;
+    o.ApiVersionReader = ApiVersionReader.Combine(
                         new QueryStringApiVersionReader(),
                         new UrlSegmentApiVersionReader()
     );
-}).AddApiExplorer(options => {
-    options.GroupNameFormat = "'v'VVV";
-    options.SubstituteApiVersionInUrl = true;
 });
 
 builder.Services.AddScoped<ApiLoggingFilter>();
@@ -103,12 +81,24 @@ builder.Services.AddWebApiServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
     app.ConfigureExceptionHandler();
+    // 1. O Gerador (onde o arquivo .json é criado)
+    // Precisamos dizer a ele para usar o MESMO caminho que a UI espera.
+    app.UseOpenApi(settings =>
+    {
+        settings.Path = "/openapi/{documentName}/openapi.json";
+    });
+
+    // 2. A UI (onde o usuário vê)
+    // (O seu já estava quase certo, apontando para o caminho correto)
+    app.UseSwaggerUi(settings =>
+    {
+        // Este caminho DEVE ser o mesmo do 'settings.Path' acima
+        settings.DocumentPath = "/openapi/{documentName}/openapi.json";
+        settings.DocumentTitle = "Movies API - Docs";
+    });
 }
 
 // ===== CONFIGURAÇÃO CORRIGIDA DE ARQUIVOS ESTÁTICOS =====

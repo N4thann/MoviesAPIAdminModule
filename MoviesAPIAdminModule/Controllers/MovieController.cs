@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using MoviesAPIAdminModule.Filters;
 using Newtonsoft.Json;
+using NSwag.Annotations;
 using Pandorax.PagedList;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoviesAPIAdminModule.Controllers
 {
@@ -40,7 +40,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Cria um novo filme", Tags = new[] { "Movie Commands" })]
+        [OpenApiOperation("Cria um novo filme")]
+        [OpenApiTag("Movies Commands")]
         public async Task<IActionResult> CreateMovie([FromBody] CreateMovieRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateMovieCommand(
@@ -79,7 +80,8 @@ namespace MoviesAPIAdminModule.Controllers
         //[ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         //[ProducesResponseType(StatusCodes.Status404NotFound)]
         //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[SwaggerOperation(Summary = "Atualiza parcialmente um filme com o JsonPatchDocument", Tags = new[] { "Movie Commands" })]
+        //[OpenApiOperation("Atualiza parcialmente um filme com o JsonPatchDocument")]
+        //[OpenApiTag("Movies Commands")]
         //public async Task<IActionResult> UpdatePatchMovie(Guid id, [FromBody] JsonPatchDocument<Movie> patchDoc, CancellationToken cancellationToken)
         //{
         //    if (patchDoc == null)
@@ -100,7 +102,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Obtém um filme por ID", Tags = new[] { "Movie Queries" })]
+        [OpenApiOperation("Obtém um filme por ID")]
+        [OpenApiTag("Movies Queries")]
         public async Task<IActionResult> GetMovieById(Guid id, CancellationToken cancellationToken)
         {
 
@@ -119,7 +122,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Lista todos os filmes", Tags = new[] { "Movie Queries" })]
+        [OpenApiOperation("Lista todos os filmes")]
+        [OpenApiTag("Movies Queries")]
         public async Task<IActionResult> GetAllPagination([FromQuery] MovieParametersRequest parameters, CancellationToken cancellationToken)
         {
             var query = new ListMoviesQuery(parameters);
@@ -150,7 +154,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(IPagedList<MovieBasicInfoResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Lista filmes com filtros e paginação", Tags = new[] { "Movie Queries" })]
+        [OpenApiOperation("Lista filmes com filtros e paginação")]
+        [OpenApiTag("Movies Queries")]
         public async Task<IActionResult> GetFilteredMovies([FromQuery] MovieBasicFilterRequest request, CancellationToken cancellationToken)
         {
             var query = new MovieBasicFilterQuery(
@@ -192,7 +197,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Exclui um filme por ID", Tags = new[] { "Movie Commands" })]
+        [OpenApiOperation("Exclui um filme por ID")]
+        [OpenApiTag("Movies Commands")]
         public async Task<IActionResult> DeleteMovie(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteMovieCommand(id);
@@ -211,7 +217,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Adiciona um prêmio ao filme", Tags = new[] { "Movie Commands" })]
+        [OpenApiOperation("Adiciona um prêmio ao filme")]
+        [OpenApiTag("Movies Commands")]
         public async Task<IActionResult> AddAwardToMovie(Guid Id, [FromBody] AwardRequest request, CancellationToken cancellationToken)
         {
             var command = new AddAwardCommand(
@@ -236,7 +243,8 @@ namespace MoviesAPIAdminModule.Controllers
         [ProducesResponseType(typeof(Failure), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(Summary = "Adiciona uma imagem que pode ser do tipo Poster, Thumbnail ou Gallery ao filme", Tags = new[] { "Movie Commands" })]
+        [OpenApiOperation("Adiciona uma imagem que pode ser do tipo Poster, Thumbnail ou Gallery ao filme")]
+        [OpenApiTag("Movies Commands")]
         public async Task<IActionResult> UploadImage(Guid Id, [FromForm] UploadImageRequest request, CancellationToken cancellationToken)
         {
             if (request.ImageFile == null || request.ImageFile.Length == 0)
