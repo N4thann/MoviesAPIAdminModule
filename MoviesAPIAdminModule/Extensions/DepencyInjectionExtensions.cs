@@ -16,7 +16,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.RateLimiting;
 
-namespace MoviesAPIAdminModule
+namespace MoviesAPIAdminModule.Extensions
 {
     public static class DepencyInjectionExtensions
     {
