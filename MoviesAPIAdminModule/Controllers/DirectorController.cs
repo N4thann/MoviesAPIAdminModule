@@ -26,6 +26,14 @@ namespace MoviesAPIAdminModule.Controllers
         private readonly IMediator _mediator;
         public DirectorController(IMediator mediator) => _mediator = mediator;
 
+        /// <summary>
+        /// Creates a new director using the specified request data.
+        /// </summary>
+        /// <param name="request">The request containing the details of the director to create. Must not be null.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> that represents the result of the operation. Returns a 201 Created response
+        /// with the director information if successful; otherwise, returns a 400 Bad Request or 500 Internal Server
+        /// Error response.</returns>
         [HttpPost]
         [ProducesResponseType(typeof(DirectorInfoResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(Failure), StatusCodes.Status400BadRequest)]

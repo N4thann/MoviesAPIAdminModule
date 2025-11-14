@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35327.3
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoviesAPIAdminModule", "MoviesAPIAdminModule\MoviesAPIAdminModule.csproj", "{66B65390-C7E0-408C-8F00-24C83AE3E12D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -18,9 +18,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tests", "Domain.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Tests", "Application.Tests\Application.Tests.csproj", "{B1B0E2FA-8134-435D-A3FA-AC16891C921F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infraestructure.Tests", "Infraestructure.Tests\Infraestructure.Tests.csproj", "{5FAC26FC-3525-4104-A317-564B73474B85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infraestructure.Integration.Tests", "Infraestructure.Tests\Infraestructure.Integration.Tests.csproj", "{5FAC26FC-3525-4104-A317-564B73474B85}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Shared", "Tests.Shared\Tests.Shared.csproj", "{7F013279-B307-4302-B191-D94E9AE0135A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,10 @@ Global
 		{5FAC26FC-3525-4104-A317-564B73474B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FAC26FC-3525-4104-A317-564B73474B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FAC26FC-3525-4104-A317-564B73474B85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F013279-B307-4302-B191-D94E9AE0135A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F013279-B307-4302-B191-D94E9AE0135A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F013279-B307-4302-B191-D94E9AE0135A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F013279-B307-4302-B191-D94E9AE0135A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

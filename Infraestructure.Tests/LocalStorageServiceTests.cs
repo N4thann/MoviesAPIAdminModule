@@ -1,37 +1,33 @@
-﻿using Domain.SeedWork.Core;
+﻿using Bogus;
+using Domain.SeedWork.Core;
 using Domain.ValueObjects;
 using FluentAssertions;
 using Infraestructure.Service;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Moq;
+using NSubstitute;
 using System.Text;
-using TestsCommon;
+using Tests.Shared;
 
-namespace Infraestructure.Tests
+namespace Infraestructure.Integration.Tests
 {
     public class LocalStorageServiceTests : IDisposable
     {
         private readonly LocalStorageService _service;
-        private readonly string _testRootPath; // O diretório raiz temporário para nossos testes
-        private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
+        private readonly string _testRootPath;
+        private readonly IHttpContextAccessor _subHttpContextAccessor;
+        private readonly Faker _faker;
 
         public LocalStorageServiceTests()
         {
-            // 1. --- SETUP DO AMBIENTE DE TESTE ---
-
-            // Cria um diretório temporário único para esta execução de teste.
+            _faker = new Faker();
             _testRootPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(_testRootPath);
 
-            // 2. --- MOCK DAS DEPENDÊNCIAS ---
+            var subEnv = Substitute.For<IWebHostEnvironment>();
+            subEnv.ContentRootPath.Returns(_testRootPath);
 
-            // Mock IWebHostEnvironment para apontar para nossa pasta de teste.
-            var mockEnv = new Mock<IWebHostEnvironment>();
-            mockEnv.Setup(e => e.ContentRootPath).Returns(_testRootPath);
-
-            // Mock IConfiguration para fornecer o caminho de upload.
             var inMemorySettings = new Dictionary<string, string> {
             {"FileStorageSettings:LocalUploadPath", "StaticFiles/Images"}
         };
@@ -39,14 +35,13 @@ namespace Infraestructure.Tests
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
 
-            // Mock IHttpContextAccessor para simular uma requisição web.
-            _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+            _subHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Scheme = "https";
             httpContext.Request.Host = new HostString("localhost:7211");
-            _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
+            _subHttpContextAccessor.HttpContext.Returns(httpContext); 
 
-            _service = new LocalStorageService(configuration, _mockHttpContextAccessor.Object, mockEnv.Object);
+            _service = new LocalStorageService(configuration, _subHttpContextAccessor, subEnv);
         }
 
         [Fact]
@@ -104,15 +99,13 @@ namespace Infraestructure.Tests
         }
 
         [Fact]
-        // SalvarArquivo_QuandoOcorreExcecao_DeveRetornarFalhaDeInfraestrutura
         public async Task SaveFileAsync_WhenExceptionOccurs_ShouldReturnInfrastructureFailure()
         {
             // Arrange
             var movie = TestDataFactory.CreateInceptionMovie().Success!;
             var fileStream = new MemoryStream();
 
-            // Simula um erro grave (neste caso, o HttpContext é nulo, o que causará uma NullReferenceException)
-            _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null);
+            _subHttpContextAccessor.HttpContext.Returns((HttpContext)null);
 
             // Act
             var result = await _service.SaveFileAsync(fileStream, "file.jpg", "image/jpeg", movie, MovieImage.ImageType.Poster);

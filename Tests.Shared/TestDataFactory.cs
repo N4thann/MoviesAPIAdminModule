@@ -2,7 +2,7 @@
 using Domain.SeedWork.Core;
 using Domain.ValueObjects;
 
-namespace Domain.Tests
+namespace Tests.Shared
 {
     public static class TestDataFactory
     {
@@ -147,7 +147,6 @@ namespace Domain.Tests
 
             return movieResult;
         }
-
         #endregion
     }
 }
