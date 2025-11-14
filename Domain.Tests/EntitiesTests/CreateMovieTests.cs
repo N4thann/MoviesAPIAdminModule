@@ -1,6 +1,8 @@
-﻿using Domain.Entities;
+﻿using Bogus;
+using Domain.Entities;
 using Domain.ValueObjects;
 using FluentAssertions;
+using Tests.Shared;
 
 namespace Domain.Tests.EntitiesTests
 {
@@ -12,35 +14,40 @@ namespace Domain.Tests.EntitiesTests
         private readonly Country _validCountry;
         private readonly Genre _validGenre;
 
+        private readonly Faker _faker;
+        private readonly string _validTitle;
+        private readonly string _validOriginalTitle;
+        private readonly string _validSynopsis;
+        private readonly int _validReleaseYear;
+
         public CreateMovieTests()
         {
-            _validDirector = TestDataFactory.ChristopherNolan().Success!;
-            _validStudio = TestDataFactory.WarnerBros().Success!;
+            _faker = new Faker("pt_BR");
+
+            _validCountry = TestDataBogusFactory.CreateCountry().Success!;
+            _validGenre = TestDataBogusFactory.CreateGenre().Success!;
+            _validStudio = TestDataBogusFactory.CreateStudio().Success!;
+            _validDirector = TestDataBogusFactory.CreateDirector().Success!;
             _validDuration = Duration.Create(120).Success!;
-            _validCountry = Country.Create("USA", "US").Success!;
-            _validGenre = Genre.Create("Action", "Action genre").Success!;
+
+            _validTitle = _faker.Lorem.Sentence(3);
+            _validOriginalTitle = _faker.Lorem.Sentence(3);
+            _validSynopsis = _faker.Lorem.Sentence(10);
+            _validReleaseYear = _faker.Random.Int(1900, DateTime.UtcNow.Year);
         }
 
         [Fact]
         public void Create_WithValidData_ShouldReturnSuccess()
         {
             // Arrange & Act
-            var movieResult = Movie.Create(
-                title: "Filme Válido",
-                originalTitle: "Valid Movie",
-                synopsis: "Uma sinopse válida e interessante.",
-                releaseYear: 2023,
-                duration: _validDuration,
-                country: _validCountry,
-                studio: _validStudio,
-                director: _validDirector,
-                genre: _validGenre
-            );
+            var movieResult = TestDataBogusFactory.CreateBogusMovie();
 
             // Assert
             movieResult.IsSuccess.Should().BeTrue();
             movieResult.Success.Should().NotBeNull();
-            movieResult.Success.Name.Should().Be("Filme Válido");
+
+            movieResult.Success.Name.Should().NotBeNullOrWhiteSpace();
+            movieResult.Success.Synopsis.Should().NotBeNullOrWhiteSpace();
         }
 
         [Theory]
@@ -52,9 +59,9 @@ namespace Domain.Tests.EntitiesTests
             // Arrange & Act
             var movieResult = Movie.Create(
                 title: invalidTitle, 
-                originalTitle: "Valid Movie",
-                synopsis: "Uma sinopse válida.",
-                releaseYear: 2023,
+                originalTitle: _validOriginalTitle,
+                synopsis: _validSynopsis,
+                releaseYear: _validReleaseYear,
                 duration: _validDuration,
                 country: _validCountry,
                 studio: _validStudio,
@@ -75,10 +82,10 @@ namespace Domain.Tests.EntitiesTests
         {
             // Arrange & Act
             var movieResult = Movie.Create(
-                title: "Title",
-                originalTitle: "Valid Movie",
+                title: _validTitle,
+                originalTitle: _validOriginalTitle,
                 synopsis: invalidSynopsis,
-                releaseYear: 2023,
+                releaseYear: _validReleaseYear,
                 duration: _validDuration,
                 country: _validCountry,
                 studio: _validStudio,
@@ -98,10 +105,10 @@ namespace Domain.Tests.EntitiesTests
         {
             // Arrange & Act
             var movieResult = Movie.Create(
-                title: "Title",
-                originalTitle: "Valid Movie",
+                title: _validTitle,
+                originalTitle: _validOriginalTitle,
                 synopsis: shortSynopse,
-                releaseYear: 2023,
+                releaseYear: _validReleaseYear,
                 duration: _validDuration,
                 country: _validCountry,
                 studio: _validStudio,
@@ -123,10 +130,10 @@ namespace Domain.Tests.EntitiesTests
 
             // Act
             var movieResult = Movie.Create(
-                title: "Título Válido",
-                originalTitle: "Valid Movie",
+                title: _validTitle,
+                originalTitle: _validOriginalTitle,
                 synopsis: longSynopsis,
-                releaseYear: 2023,
+                releaseYear: _validReleaseYear,
                 duration: _validDuration,
                 country: _validCountry,
                 studio: _validStudio,
@@ -149,8 +156,8 @@ namespace Domain.Tests.EntitiesTests
             // Arrange & Act
             var movieResult = Movie.Create(
                 title: shortTitle,
-                originalTitle: "Valid Movie",
-                synopsis: "Uma sinopse válida.",
+                originalTitle: _validOriginalTitle,
+                synopsis: _validSynopsis,
                 releaseYear: 2023,
                 duration: _validDuration,
                 country: _validCountry,
@@ -172,10 +179,10 @@ namespace Domain.Tests.EntitiesTests
         {
             // Arrange & Act
             var movieResult = Movie.Create(
-                title: "invalidTitle",
+                title: _validTitle,
                 originalTitle: invalidTitle,
-                synopsis: "Uma sinopse válida.",
-                releaseYear: 2023,
+                synopsis: _validSynopsis,
+                releaseYear: _validReleaseYear,
                 duration: _validDuration,
                 country: _validCountry,
                 studio: _validStudio,
@@ -195,10 +202,10 @@ namespace Domain.Tests.EntitiesTests
         {
             // Arrange & Act
             var movieResult = Movie.Create(
-                title: "teste",
+                title: _validTitle,
                 originalTitle: shortTitle,
-                synopsis: "Uma sinopse válida.",
-                releaseYear: 2023,
+                synopsis: _validSynopsis,
+                releaseYear: _validReleaseYear,
                 duration: _validDuration,
                 country: _validCountry,
                 studio: _validStudio,
@@ -218,10 +225,10 @@ namespace Domain.Tests.EntitiesTests
         {
             // Arrange & Act
             var movieResult = Movie.Create(
-                title: "Filme Válido",
-                originalTitle: "Valid Movie",
-                synopsis: "Sinopse válida.",
-                releaseYear: invalidYear, // <-- Dado inválido
+                title: _validTitle,
+                originalTitle: _validOriginalTitle,
+                synopsis: _validSynopsis,
+                releaseYear: invalidYear,
                 duration: _validDuration,
                 country: _validCountry,
                 studio: _validStudio,
@@ -260,10 +267,10 @@ namespace Domain.Tests.EntitiesTests
         {
             // Arrange & Act
             var movieResult = Movie.Create(
-                title: "Filme Válido",
-                originalTitle: "Valid Movie",
-                synopsis: "Sinopse válida.",
-                releaseYear: 2023,
+                title: _validTitle,
+                originalTitle: _validOriginalTitle,
+                synopsis: _validSynopsis,
+                releaseYear: _validReleaseYear,
                 duration: _validDuration,
                 country: _validCountry,
                 studio: null,
@@ -281,10 +288,10 @@ namespace Domain.Tests.EntitiesTests
         {
             // Arrange & Act
             var movieResult = Movie.Create(
-                title: "Filme Válido",
-                originalTitle: "Valid Movie",
-                synopsis: "Sinopse válida.",
-                releaseYear: 2023,
+                title: _validTitle,
+                originalTitle: _validOriginalTitle,
+                synopsis: _validSynopsis,
+                releaseYear: _validReleaseYear,
                 duration: _validDuration,
                 country: _validCountry,
                 studio: _validStudio,
@@ -302,10 +309,10 @@ namespace Domain.Tests.EntitiesTests
         {
             // Arrange & Act
             var movieResult = Movie.Create(
-                title: "Filme Válido",
-                originalTitle: "Valid Movie",
-                synopsis: "Sinopse válida.",
-                releaseYear: 2023,
+                title: _validTitle,
+                originalTitle: _validOriginalTitle,
+                synopsis: _validSynopsis,
+                releaseYear: _validReleaseYear,
                 duration: _validDuration,
                 country: null,
                 studio: _validStudio,
@@ -323,10 +330,10 @@ namespace Domain.Tests.EntitiesTests
         {
             // Arrange & Act
             var movieResult = Movie.Create(
-                title: "Filme Válido",
-                originalTitle: "Valid Movie",
-                synopsis: "Sinopse válida.",
-                releaseYear: 2023,
+                title: _validTitle,
+                originalTitle: _validOriginalTitle,
+                synopsis: _validSynopsis,
+                releaseYear: _validReleaseYear,
                 duration: null,
                 country: _validCountry,
                 studio: _validStudio,
