@@ -1,6 +1,7 @@
 ﻿using Application.Commands.Authentication;
 using Application.DTOs.Response;
 using Application.Interfaces;
+using Domain.Enums;
 using Domain.Identity;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,8 @@ namespace Application.UseCases.Authentication
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _configuration;
+
+        private readonly List<string> _adminRoles = new() { "Admin", "SuperAdmin" };
 
         public LoginUseCase(
             UserManager<ApplicationUser> userManager,
@@ -38,6 +41,13 @@ namespace Application.UseCases.Authentication
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
+            if (userRoles == null || !userRoles.Any(role => _adminRoles.Contains(role)))
+            {
+                return Result<TokenResponse>.AsFailure(
+                    new Failure(FailureType.Forbidden, "User does not have the required role to access this module.")
+                );
+            }
+
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName!),
@@ -54,14 +64,26 @@ namespace Application.UseCases.Authentication
             var token = _tokenService.GenerateAccessToken(authClaims, _configuration);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
-            _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInMinutes"],
-                                out int refreshTokenValidityInMinutes);
+            if (!int.TryParse(_configuration["JWT:RefreshTokenValidityInMinutes"],
+                                out int refreshTokenValidityInMinutes))
+            {
+                return Result<TokenResponse>.AsFailure(
+                    Failure.Infrastructure("Configuration error: 'JWT:RefreshTokenValidityInMinutes' is missing or invalid.")
+                );
+            }
 
             user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(refreshTokenValidityInMinutes);
 
             user.RefreshToken = refreshToken;
 
-            await _userManager.UpdateAsync(user);
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if(!updateResult.Succeeded)
+            {
+               var errors = string.Join(", ", updateResult.Errors.Select(e => e.Description));
+
+               return Result<TokenResponse>.AsFailure(Failure.Infrastructure($"Failed to save refresh token: {errors}"));
+            }
 
             var response = new TokenResponse(
                 new JwtSecurityTokenHandler().WriteToken(token),

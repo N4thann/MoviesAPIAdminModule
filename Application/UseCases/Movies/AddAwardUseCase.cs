@@ -27,11 +27,23 @@ namespace Application.UseCases.Movies
             if (movie is null)
                 return Result<bool>.AsFailure(Failure.NotFound("Filme", command.Id));
 
-            var category = AwardCategory.FromValue<AwardCategory>(command.CategoryId);
-            var institution = Institution.FromValue<Institution>(command.InstitutionId);
+            AwardCategory? category;
+            Institution? institution;
 
-            if (category  is null || institution is null)
-                return Result<bool>.AsFailure(Failure.Validation("Failed to resolve one or more Smart Enum values from the provided IDs."));
+            try
+            {
+                category = AwardCategory.FromValue<AwardCategory>(command.CategoryId);
+                institution = Institution.FromValue<Institution>(command.InstitutionId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Result<bool>.AsFailure(
+                    Failure.Validation($"Failed to resolve Smart Enum: {ex.Message}")
+                );
+            }
+            if (category is null || institution is null)
+                return Result<bool>.AsFailure(Failure.Validation(
+                    "Failed to resolve one or more Smart Enum values from the provided IDs."));
 
             var awardResult = Award.Create(category, institution, command.Year);
 
