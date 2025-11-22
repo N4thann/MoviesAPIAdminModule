@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Application.Queries.Roles;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Identity;

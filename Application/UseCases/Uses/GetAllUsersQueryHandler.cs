@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Application.Queries.User;
 using Domain.Identity;
 using Domain.SeedWork.Core;

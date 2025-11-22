@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+﻿using Application.Interfaces.Mediator;
 using Domain.SeedWork.Core;
 
 namespace Application.Commands.User

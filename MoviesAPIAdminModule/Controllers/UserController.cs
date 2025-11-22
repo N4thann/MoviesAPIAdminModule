@@ -1,7 +1,7 @@
 ﻿using Application.Commands.User;
 using Application.DTOs.Authentication;
 using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Application.Queries.User;
 using Asp.Versioning;
 using Domain.SeedWork.Core;

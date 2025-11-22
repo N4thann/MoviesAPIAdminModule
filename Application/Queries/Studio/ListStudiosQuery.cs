@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.Request.Studio;
 using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Domain.SeedWork.Core;
 using Pandorax.PagedList;
 

@@ -14,7 +14,7 @@ namespace MoviesAPIAdminModule.Controllers
                 FailureType.NotFound => NotFound(failure),
                 FailureType.Validation => BadRequest(failure),
                 FailureType.Unauthorized => Unauthorized(failure),
-                FailureType.Forbidden => Forbid(), // Forbid não leva um corpo
+                FailureType.Forbidden => Forbid(),
                 FailureType.Conflict => Conflict(failure),
                 _ => StatusCode(500, failure) // InternalServer e Infrastructure
             };

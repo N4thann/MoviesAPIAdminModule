@@ -1,7 +1,7 @@
 ﻿using Application.Commands.Movie;
 using Application.DTOs.Request.Movie;
 using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Application.Queries.Movie;
 using Asp.Versioning;
 using Domain.SeedWork.Core;

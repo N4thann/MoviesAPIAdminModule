@@ -1,5 +1,5 @@
 ﻿using Application.Commands.Director;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Domain.Entities;
 using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;

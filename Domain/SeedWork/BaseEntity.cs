@@ -1,7 +1,7 @@
 ﻿namespace MoviesAPIAdminModule.Domain.SeedWork
 {
     /// <summary>
-    /// Representa a entidade base para todas as entidades do domínio, fornecendo um identificador único.
+    /// Represents the base entity with common properties.
     /// </summary>
     public abstract class BaseEntity
     {

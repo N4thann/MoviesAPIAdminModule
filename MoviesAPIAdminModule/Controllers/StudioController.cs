@@ -1,7 +1,7 @@
 ﻿using Application.Commands.Studio;
 using Application.DTOs.Request.Studio;
 using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Application.Queries.Studio;
 using Asp.Versioning;
 using Domain.SeedWork.Core;

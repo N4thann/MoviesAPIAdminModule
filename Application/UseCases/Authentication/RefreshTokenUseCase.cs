@@ -1,6 +1,7 @@
 ﻿using Application.Commands.Authentication;
 using Application.DTOs.Response;
 using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Domain.Identity;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Identity;

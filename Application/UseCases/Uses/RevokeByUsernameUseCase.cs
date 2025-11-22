@@ -1,5 +1,5 @@
 ﻿using Application.Commands.User;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Domain.Identity;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Identity;

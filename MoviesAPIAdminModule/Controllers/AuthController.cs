@@ -1,7 +1,7 @@
 ﻿using Application.Commands.Authentication;
 using Application.DTOs.Authentication;
 using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Asp.Versioning;
 using Domain.SeedWork.Core;
 using Microsoft.AspNetCore.Cors;

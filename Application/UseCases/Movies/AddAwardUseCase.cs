@@ -1,6 +1,6 @@
 ﻿
 using Application.Commands.Movie;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Domain.SeedWork.Core;
 using Domain.SeedWork.Interfaces;
 using Domain.ValueObjects;

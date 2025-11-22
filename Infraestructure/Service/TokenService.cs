@@ -15,10 +15,10 @@ namespace Infraestructure.Service
             var key = _config.GetSection("JWT").GetValue<string>("SecretKey") ??
                 throw new InvalidOperationException("Invalid secret Key");
 
-            var privateKey = Encoding.UTF8.GetBytes(key);//Converte para um array de Bytes
+            var privateKey = Encoding.UTF8.GetBytes(key);
 
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(privateKey),
-                                     SecurityAlgorithms.HmacSha256Signature); //Criar crendencias de assinatura
+                                     SecurityAlgorithms.HmacSha256Signature); 
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -38,14 +38,13 @@ namespace Infraestructure.Service
 
         public string GenerateRefreshToken()
         {
-            var secureRandomBytes = new byte[128]; //Armazenar bytes aleatórios de forma seguro
+            var secureRandomBytes = new byte[128]; 
 
-            using var randomNumberGenerator = RandomNumberGenerator.Create(); //randomNumberGenerator é uma instancia dese Create
+            using var randomNumberGenerator = RandomNumberGenerator.Create(); 
 
             randomNumberGenerator.GetBytes(secureRandomBytes);
 
-            var refreshToken = Convert.ToBase64String(secureRandomBytes);//Convertando os bytes aleatórios para uma representação de string
-            // token legível, fácil de armazenar ou de transmitir
+            var refreshToken = Convert.ToBase64String(secureRandomBytes);
 
             return refreshToken;
         }
@@ -54,19 +53,19 @@ namespace Infraestructure.Service
         {
             var secretKey = _config["JWT:SecretKey"] ?? throw new InvalidOperationException("Invalid key");
 
-            var tokenValidationParameters = new TokenValidationParameters //Parametros de validação do token expirado
+            var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-                ValidateLifetime = false //expirado
+                ValidateLifetime = false
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters,
-                                                        out SecurityToken securityToken); //parametro de saída
+                                                        out SecurityToken securityToken);
 
             if (securityToken is not JwtSecurityToken jwtSecurityToken ||
                               !jwtSecurityToken.Header.Alg.Equals(
@@ -75,6 +74,7 @@ namespace Infraestructure.Service
             {
                 throw new SecurityTokenException("Invalid token");
             }
+
             return principal;
         }
     }

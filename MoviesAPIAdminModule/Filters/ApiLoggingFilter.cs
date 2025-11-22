@@ -5,16 +5,12 @@ namespace MoviesAPIAdminModule.Filters
     public class ApiLoggingFilter : IActionFilter
     {
         private readonly ILogger<ApiLoggingFilter> _logger;
-        /// <summary>
-        /// Foca em registrar o fluxo normal e anormal das requisições dentro do contexto das ações do controlador. 
-        /// É para monitoramento e diagnóstico de sucesso e falha.
-        /// </summary>
-        /// <param name="logger"></param>
+        
         public ApiLoggingFilter(ILogger<ApiLoggingFilter> logger) => _logger = logger;
 
         void IActionFilter.OnActionExecuting(ActionExecutingContext context)
         {
-            //executa antes do método Action
+            // Beginning of the Action method
             _logger.LogInformation("### Executando -> OnActionExecuting");
             _logger.LogInformation("####################################");
             _logger.LogInformation($"{DateTime.Now.ToLongTimeString}");
@@ -24,7 +20,7 @@ namespace MoviesAPIAdminModule.Filters
 
         void IActionFilter.OnActionExecuted(ActionExecutedContext context)
         {
-            //executa depois do método Action
+            // End of the Action method
             _logger.LogInformation("### Executado -> OnActionExecuted");
             _logger.LogInformation("####################################");
             _logger.LogInformation($"{DateTime.Now.ToLongTimeString}");
@@ -33,9 +29,3 @@ namespace MoviesAPIAdminModule.Filters
         }
     }
 }
-/*Existem 5 tipos de filtros na asp.net core, authorization, resource, action, exception e result.
- * São 2 abordagens, implementação síncrona e assíncrona. 
- * Síncronos executam código antes e depois do estágio do pipeline definidos pelo os métodos
- * OnActionExecuting e OnActionExecuted. Os filtros podem ser adicionados eo pipeline em um dos 
- * tres escopos: Pelo método Action, pela a classe controlador ou Globalmente(é aplicado a todos os controladores e actions)
- */

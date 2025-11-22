@@ -1,7 +1,7 @@
 ﻿using Application.Common;
 using Application.DTOs.Mappings;
 using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Application.Queries.Studio;
 using Domain.Entities;
 using Domain.SeedWork.Core;

@@ -3,63 +3,61 @@
 namespace Domain.SeedWork.Interfaces
 {
     /// <summary>
-    /// Interface genérica para repositórios, fornecendo operações básicas de CRUD e consultas.
+    /// Defines a generic contract for a repository that provides data access operations for entities of type T.
+    /// Supports querying, adding, and deleting entities, as well as checking for existence and retrieving entities by
+    /// identifier.
     /// </summary>
-    /// <typeparam name="T">Tipo da entidade.</typeparam>
+    /// <remarks>This interface abstracts common data access patterns for working with entities in a
+    /// persistence store. Implementations typically support asynchronous operations for scalability and may be used in
+    /// conjunction with a Unit of Work pattern. The repository does not prescribe how entities are stored or retrieved,
+    /// allowing flexibility in underlying data sources (such as databases or in-memory collections).</remarks>
+    /// <typeparam name="T">The type of entity managed by the repository. Must be a reference type.</typeparam>
     public interface IRepository<T> where T : class
     {
         /// <summary>
-        /// Obtém uma entidade pelo ID.
+        /// Asynchronously retrieves an entity of type T by its unique identifier.
         /// </summary>
-        /// <param name="id">Identificador da entidade.</param>
-        /// <returns>Entidade correspondente ao ID informado.</returns>
+        /// <param name="id">The unique identifier of the entity to retrieve.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the entity of type T if found;
+        /// otherwise, null.</returns>
         Task<T> GetByIdAsync(Guid id);
         /// <summary>
-        /// Obtém todas as entidades do repositório.
+        /// Asynchronously retrieves all entities of type <typeparamref name="T"/> from the data source.
         /// </summary>
-        /// <returns>Lista de entidades.</returns>
+        /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable collection of all
+        /// entities of type <typeparamref name="T"/>. If no entities are found, the collection will be empty.</returns>
         Task<IEnumerable<T>> GetAllAsync();
         /// <summary>
-        /// Obtém um IQueryable para realizar consultas avançadas sobre as entidades.
+        /// Returns a queryable collection of all entities of type T in the data source.
         /// </summary>
-        /// <returns>Consulta IQueryable.</returns>
+        /// <remarks>The returned <see cref="IQueryable{T}"/> allows for deferred execution and further
+        /// composition of queries using LINQ operators. Changes to the underlying data source after obtaining the
+        /// queryable may affect the results when the query is executed.</remarks>
+        /// <returns>An <see cref="IQueryable{T}"/> that can be used to query all entities of type T. The returned query is not
+        /// executed until enumerated.</returns>
         IQueryable<T> GetAllQueryable();
         /// <summary>
-        /// Verifica se existe alguma entidade que atende ao critério informado.
+        /// Asynchronously determines whether any entities match the specified criteria.
         /// </summary>
-        /// <param name="predicate">Expressão para filtrar a existência da entidade.</param>
-        /// <returns>Verdadeiro se a entidade existir, falso caso contrário.</returns>
+        /// <param name="predicate">An expression that defines the conditions to test against entities of type <typeparamref name="T"/>.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains <see langword="true"/> if at
+        /// least one entity matches the criteria; otherwise, <see langword="false"/>.</returns>
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
         /// <summary>
-        /// Adiciona uma nova entidade ao repositório. Método para o UnitOfWork
+        /// Adds the specified entity to the collection.
         /// </summary>
-        /// <param name="entity">Entidade a ser adicionada.</param>
+        /// <param name="entity">The entity to add to the collection. Cannot be null.</param>
         void Add(T entity);
         /// <summary>
-        /// Adiciona uma coleção de entidades ao banco de dados de forma assíncrona. Método para o UnitOfWork
+        /// Adds the elements of the specified collection to the current set.
         /// </summary>
-        /// <param name="entities">Lista de entidades a serem adicionadas.</param>
-        /// <returns>Uma tarefa assíncrona que representa a operação.</returns>
-        /// <remarks>
-        /// Este método melhora a performance ao inserir múltiplas entidades em uma única transação,
-        /// reduzindo o número de chamadas ao banco de dados.
-        /// </remarks>
+        /// <param name="entities">The collection of entities to add. Cannot be null.</param>
         void AddRange(IEnumerable<T> entities);
         /// <summary>
-        /// Remove uma entidade do repositório com base no ID informado. Método para o UnitOfWork
+        /// Removes the specified entity from the data store.
         /// </summary>
-        /// <param name="entity">Identificador da entidade a ser removida.</param>
+        /// <param name="entity">The entity to be deleted. Cannot be null.</param>
         void Delete(T entity);
     }
 }
-// Mesmo que esse método GetAllAsync() seja para uma listagem em uma tabela em que cada registro tenha uma opção
-// de edição, o AsNoTracking ainda irá otimizar apenas para o carregamento da tabela 
-// e posteriormente posso fazer uma procura sem o AsNoTracking para procurar o registro com GetByIdAsync       
-
-/* Por que GetAllQueryable não precisa ser assíncrono?
-IQueryable representa apenas a definição da consulta e não a execução dela.
-Ele não faz nenhuma operação no banco até que seja "materializado" (com ToList, First, etc.).
-Tornar o método assíncrono criaria complexidade desnecessária sem ganho real.
-O compilador não permite o uso de await para um retorno que já é materializado de forma síncrona.
- */
 

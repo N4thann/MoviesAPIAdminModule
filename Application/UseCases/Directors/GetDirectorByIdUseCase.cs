@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.Mappings;
 using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Application.Queries.Director;
 using Domain.Entities;
 using Domain.SeedWork.Core;

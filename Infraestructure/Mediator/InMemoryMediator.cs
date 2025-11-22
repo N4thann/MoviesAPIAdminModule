@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+﻿using Application.Interfaces.Mediator;
 using Microsoft.Extensions.DependencyInjection;// Para IServiceProvider, GetRequiredService
 using System.Reflection;// Para Type.MakeGenericType, MethodInfo.Invoke
 

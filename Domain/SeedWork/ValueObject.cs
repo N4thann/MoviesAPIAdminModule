@@ -1,8 +1,7 @@
 ﻿namespace Domain.SeedWork
 {
     /// <summary>
-    /// Abstract base class for Value Objects.
-    /// Defines default equality and comparison behavior for immutable value objects.
+    /// Abstract base class for value objects in a domain-driven design context.
     /// </summary>
     public abstract class ValueObject
     {
@@ -74,8 +73,6 @@
             return !(left == right); // Simply negates the result of the == operator
         }
         
-        // This method could be removed if not needed, as immutability is the key concept.
-        // Or kept as a base for specific copy logic (like "With" methods).
         /// <summary>
         /// Creates a copy of the value object.
         /// Since value objects are immutable, it returns the same instance.

@@ -2,7 +2,7 @@
 using Application.Common.Parameters;
 using Application.DTOs.Request.Director;
 using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Application.Queries.Director;
 using Asp.Versioning;
 using Domain.SeedWork.Core;

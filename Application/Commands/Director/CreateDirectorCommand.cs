@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Response;
-using Application.Interfaces;
+using Application.Interfaces.Mediator;
 using Domain.Entities;
 using Domain.SeedWork.Core;
 

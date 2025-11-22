@@ -1,4 +1,4 @@
-﻿namespace Application.Interfaces
+﻿namespace Application.Interfaces.Mediator
 {
     public interface IQueryHandler<in TQuery, TResult> where TQuery : IQuery<TResult>
     {
