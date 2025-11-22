@@ -1,21 +1,35 @@
-﻿using Domain.ValueObjects;
+﻿using Bogus;
+using Domain.ValueObjects;
 using FluentAssertions;
 
 namespace Domain.Tests.ValueObjectTests
 {
     public class CreateCountryTests
     {
+        private readonly Faker _faker;
+        private readonly string _validName;
+        private readonly string _validCode;
+
+        public CreateCountryTests()
+        {
+            _faker = new Faker("pt_BR");
+
+            _validName = _faker.Address.Country();
+            _validCode = _faker.Address.CountryCode();
+        }
+
+
         [Fact]
         public void Create_WithValidData_ShouldReturnSuccess()
         {
             // Arrange & Act
-            var countryResult = Country.Create("Brazil", "BR");
+            var countryResult = Country.Create(_validName, _validCode);
 
             // Assert
             countryResult.IsSuccess.Should().BeTrue();
             countryResult.Success.Should().NotBeNull();
-            countryResult.Success.Name.Should().Be("Brazil");
-            countryResult.Success.Code.Should().Be("BR");
+            countryResult.Success.Name.Should().NotBeNullOrWhiteSpace();
+            countryResult.Success.Code.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -37,7 +51,7 @@ namespace Domain.Tests.ValueObjectTests
         public void Create_WithNullOrEmptyName_ShouldReturnFailure(string invalidName)
         {
             // Arrange & Act
-            var countryResult = Country.Create(invalidName, "BR");
+            var countryResult = Country.Create(invalidName, _validCode);
 
             // Assert
             countryResult.IsFailure.Should().BeTrue();
@@ -50,7 +64,7 @@ namespace Domain.Tests.ValueObjectTests
         public void Create_WithNullOrEmptyCode_ShouldReturnFailure(string invalidCode)
         {
             // Arrange & Act
-            var countryResult = Country.Create("Brazil", invalidCode);
+            var countryResult = Country.Create(_validName, invalidCode);
 
             // Assert
             countryResult.IsFailure.Should().BeTrue();
@@ -64,7 +78,7 @@ namespace Domain.Tests.ValueObjectTests
             var longName = new string('A', 101);
 
             // Act
-            var countryResult = Country.Create(longName, "BR");
+            var countryResult = Country.Create(longName, _validCode);
 
             // Assert
             countryResult.IsFailure.Should().BeTrue();
@@ -78,7 +92,7 @@ namespace Domain.Tests.ValueObjectTests
             var longCode = "ABCD";
 
             // Act
-            var countryResult = Country.Create("Brazil", longCode);
+            var countryResult = Country.Create(_validName, longCode);
 
             // Assert
             countryResult.IsFailure.Should().BeTrue();

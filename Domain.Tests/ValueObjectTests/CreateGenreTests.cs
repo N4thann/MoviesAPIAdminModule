@@ -1,4 +1,5 @@
 ﻿
+using Bogus;
 using Domain.ValueObjects;
 using FluentAssertions;
 
@@ -6,73 +7,89 @@ namespace Domain.Tests.ValueObjectTests
 {
     public class CreateGenreTests
     {
+        private readonly Faker _faker;
+
+        public CreateGenreTests() => _faker = new Faker("pt_BR");           
+
         [Fact]
         public void Create_WithValidData_ShouldReturnSuccess()
         {
+            var validName = _faker.Lorem.Sentence(3);
+            var validDescription = _faker.Lorem.Sentence(10);
             // Arrange & Act
-            var genreResult = Genre.Create("Science Fiction", "Films featuring futuristic or technological themes.");
+            var genreResult = Genre.Create(validName, validDescription);
 
             // Assert
             genreResult.IsSuccess.Should().BeTrue();
             genreResult.Success.Should().NotBeNull();
-            genreResult.Success.Name.Should().Be("Science Fiction");
-            genreResult.Success.Description.Should().Be("Films featuring futuristic or technological themes.");
+            genreResult.Success.Name.Should().Be(validName);
+            genreResult.Success.Description.Should().Be(validDescription);
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData(" ")]
-        public void Create_WithEmptyDescription_ShouldReturnFailure(string emptyDescription)
-        {
-            // Arrange & Act
-            var genreResult = Genre.Create("Horror", emptyDescription);
-
-            // Assert
-            genreResult.IsFailure.Should().BeTrue();
-            genreResult.Failure.Code.Should().Be(400);
-            genreResult.Failure.Message.Should().Contain(emptyDescription);
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData(" ")]
-        public void Create_WithEmptyName_ShouldReturnFailure(string invalidName)
-        {
-            // Arrange & Act
-            var genreResult = Genre.Create(invalidName, "A valid description.");
-
-            // Assert
-            genreResult.IsFailure.Should().BeTrue();
-            genreResult.Failure.Code.Should().Be(400);
-            genreResult.Failure.Message.Should().Contain(invalidName);
-        }
-
-        [Fact]
-        public void Create_WithNameTooLong_ShouldReturnFailure()
+        [InlineData(null, "cannot be null or empty")]
+        [InlineData("", "cannot be null or empty")]
+        [InlineData(" ", "cannot be null or empty")]
+        [InlineData("123456789", "must be at least 10 characters long")] 
+        public void Create_WithInvalidDescription_ShouldReturnFailure(string invalidDescription, string expectedMessage)
         {
             // Arrange
-            var longName = new string('A', 51); // Max é 50
+            var validName = _faker.Lorem.Sentence(3);
 
             // Act
-            var genreResult = Genre.Create(longName, "A valid description.");
+            var genreResult = Genre.Create(validName, invalidDescription);
 
             // Assert
             genreResult.IsFailure.Should().BeTrue();
-            genreResult.Failure.Message.Should().Contain("name");
+            genreResult.Failure.Message.Should().Contain(expectedMessage);
         }
 
         [Fact]
         public void Create_WithDescriptionTooLong_ShouldReturnFailure()
         {
             // Arrange
-            var longDescription = new string('B', 501); // Max é 500
+            var longDescription = _faker.Random.String2(501);
+            var validName = _faker.Lorem.Sentence(3);
 
             // Act
-            var genreResult = Genre.Create("Thriller", longDescription);
+            var genreResult = Genre.Create(validName, longDescription);
 
             // Assert
             genreResult.IsFailure.Should().BeTrue();
-            genreResult.Failure.Message.Should().Contain("description");
+            genreResult.Failure.Message.Should().Contain("description must not exceed 500 characters. Current length: 501");
+        }
+
+        [Theory]
+        [InlineData(null, "cannot be null or empty")]
+        [InlineData("", "cannot be null or empty")]
+        [InlineData(" ", "cannot be null or empty")]
+        [InlineData("Ab", "must be at least 3 characters long")] 
+        public void Create_WithInvalidName_ShouldReturnFailure(string invalidName, string expectedMessage)
+        {
+            // Arrange
+            var validDescription = _faker.Lorem.Sentence(10);
+
+            // Act
+            var genreResult = Genre.Create(invalidName, validDescription);
+
+            // Assert
+            genreResult.IsFailure.Should().BeTrue();
+            genreResult.Failure.Message.Should().Contain(expectedMessage);
+        }
+
+        [Fact]
+        public void Create_WithNameTooLong_ShouldReturnFailure()
+        {
+            // Arrange
+            var longName = _faker.Random.String2(51);
+            var validDescription = _faker.Lorem.Sentence(10);
+
+            // Act
+            var genreResult = Genre.Create(longName, validDescription);
+
+            // Assert
+            genreResult.IsFailure.Should().BeTrue();
+            genreResult.Failure.Message.Should().Contain("name must not exceed 50 characters. Current length: 51");
         }
 
         [Fact]
